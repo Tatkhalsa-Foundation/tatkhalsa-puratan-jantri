@@ -1,0 +1,1045 @@
+import type {HistoricalEvent} from './types';
+
+/**
+ * Verified Puratan Bikrami Gurpurabs, Shaheedi Divases, and Khalsa/Sampardai historical events
+ * for Sambat 2083 (Nov 2026 – Mar 2027) and full Sambat 2084 (Mar 2027 – Mar 2028).
+ *
+ * All dates strictly follow Puratan luni-solar Bikrami chronology (Purnimanta tithis & sidereal solar dates).
+ * Zero fixed Nanakshahi dates and zero astrology/rashifal/muhurat entries.
+ */
+export const HISTORICAL_EVENTS: readonly HistoricalEvent[] = [
+  // =========================================================================
+  // SAMBAT 2083 (Nov 2026 – Mar 2027)
+  // =========================================================================
+  {
+    id: '2083-bandi-chhor-divas',
+    date: '2026-11-09',
+    sambat: 2083,
+    category: 'khalsa',
+    titleEn: 'Bandi Chhor Divas (Sri Guru Hargobind Sahib Ji)',
+    titlePa: 'ਬੰਦੀ ਛੋੜ ਦਿਵਸ (ਸ੍ਰੀ ਗੁਰੂ ਹਰਿਗੋਬਿੰਦ ਸਾਹਿਬ ਜੀ)',
+    shortLabelEn: 'Bandi Chhor Divas',
+    shortLabelPa: 'ਬੰਦੀ ਛੋੜ ਦਿਵਸ',
+    tithiRuleEn: 'Katak Masya (Vadhi 15)',
+    tithiRulePa: 'ਕੱਤਕ ਮੱਸਿਆ (ਵਦੀ ੧੫)',
+    summaryEn: 'Return of the Sixth Patshah to Sri Amritsar Sahib after securing the freedom of 52 imprisoned rulers from Gwalior Fort.',
+    summaryPa: 'ਗਵਾਲੀਅਰ ਦੇ ਕਿਲ੍ਹੇ ਤੋਂ ੫੨ ਰਾਜਿਆਂ ਨੂੰ ਰਿਹਾਅ ਕਰਵਾ ਕੇ ਛੇਵੇਂ ਪਾਤਸ਼ਾਹ ਜੀ ਦਾ ਸ੍ਰੀ ਅੰਮ੍ਰਿਤਸਰ ਸਾਹਿਬ ਆਗਮਨ।',
+    historicalContextEn:
+      'On Katak Masya, Sri Guru Hargobind Sahib Ji arrived at Sri Harmandir Sahib after insisting upon the release of fifty-two detained hill Rajas from Gwalior Fort by holding the fifty-two tassels of His specially stitched chola. Bhai Gurdas Ji and Baba Buddha Ji illuminated Sri Harmandir Sahib with ghee lamps in celebration.',
+    historicalContextPa:
+      'ਕੱਤਕ ਦੀ ਮੱਸਿਆ ਨੂੰ ਸ੍ਰੀ ਗੁਰੂ ਹਰਿਗੋਬਿੰਦ ਸਾਹਿਬ ਜੀ ੫੨ ਕਲੀਆਂ ਵਾਲੇ ਚੋਲੇ ਸਹਿਤ ਬਵੰਜਾ ਰਾਜਿਆਂ ਨੂੰ ਗਵਾਲੀਅਰ ਦੇ ਕਿਲ੍ਹੇ ਤੋਂ ਮੁਕਤ ਕਰਵਾ ਕੇ ਸ੍ਰੀ ਅੰਮ੍ਰਿਤਸਰ ਸਾਹਿਬ ਪਹੁੰਚੇ। ਭਾਈ ਗੁਰਦਾਸ ਜੀ ਅਤੇ ਬਾਬਾ ਬੁੱਢਾ ਜੀ ਨੇ ਸ੍ਰੀ ਹਰਿਮੰਦਰ ਸਾਹਿਬ ਵਿਖੇ ਦੀਪਮਾਲਾ ਕੀਤੀ।',
+    citations: [
+      {
+        sourceEn: 'Sri Gur Pratap Suraj Granth (Kavi Santokh Singh)',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰ ਪ੍ਰਤਾਪ ਸੂਰਜ ਗ੍ਰੰਥ (ਕਵੀ ਸੰਤੋਖ ਸਿੰਘ)',
+        referenceEn: 'Raas 5, Ansu 26–32 · Gwalior Fort Liberation & Amritsar Deepmala',
+        referencePa: 'ਰਾਸਿ ੫, ਅੰਸੂ ੨੬–੩੨ · ਗਵਾਲੀਅਰ ਮੁਕਤੀ ਅਤੇ ਅੰਮ੍ਰਿਤਸਰ ਦੀਪਮਾਲਾ',
+      },
+      {
+        sourceEn: 'Bhai Gurdas Ji — Vaaran',
+        sourcePa: 'ਭਾਈ ਗੁਰਦਾਸ ਜੀ — ਵਾਰਾਂ',
+        referenceEn: 'Vaar 19, Pauri 6 · Deepmala Metaphor of Gurmat',
+        referencePa: 'ਵਾਰ ੧੯, ਪਉੜੀ ੬ · ਦੀਵਾਲੀ ਦੀ ਰਾਤਿ ਦੀਵੇ ਬਾਲੀਅਨਿ',
+        excerptPa: 'ਦੀਵਾਲੀ ਦੀ ਰਾਤਿ ਦੀਵੇ ਬਾਲੀਅਨਿ ॥',
+        excerptTranslit: 'Deevaalee dee raat deeve baaleean.',
+      },
+    ],
+  },
+  {
+    id: '2083-gurgaddi-sggs',
+    date: '2026-11-13',
+    sambat: 2083,
+    category: 'gurpurab',
+    titleEn: 'Gurgaddi Divas — Sri Guru Granth Sahib Ji',
+    titlePa: 'ਗੁਰਗੱਦੀ ਦਿਵਸ — ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+    shortLabelEn: 'Gurgaddi SGGS Ji',
+    shortLabelPa: 'ਗੁਰਗੱਦੀ ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+    tithiRuleEn: 'Katak Sudhi 4 (Chauth)',
+    tithiRulePa: 'ਕੱਤਕ ਸੁਦੀ ੪ (ਚੌਥ)',
+    summaryEn: 'Sri Guru Gobind Singh Ji bestowed eternal Guruship upon Sri Guru Granth Sahib Ji at Sri Hazur Sahib, Nanded (1765 Bikrami).',
+    summaryPa: 'ਸ੍ਰੀ ਗੁਰੂ ਗੋਬਿੰਦ ਸਿੰਘ ਜੀ ਨੇ ਸੰਮਤ ੧੭੬੫ ਬਿਕ੍ਰਮੀ ਵਿੱਚ ਸ੍ਰੀ ਹਜ਼ੂਰ ਸਾਹਿਬ, ਨਾਂਦੇੜ ਵਿਖੇ ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ ਨੂੰ ਸਦੀਵੀ ਗੁਰਗੱਦੀ ਬਖ਼ਸ਼ੀ।',
+    historicalContextEn:
+      'At Nanded in Sambat 1765 (1708 CE), Dashmesh Pita Sri Guru Gobind Singh Ji bowed before the Adi Sri Guru Granth Sahib Ji with five paise and a coconut, proclaiming the Shabad Guru as the eternal living Sovereign of the Khalsa Panth.',
+    historicalContextPa:
+      'ਸੰਮਤ ੧੭੬੫ ਬਿਕ੍ਰਮੀ ਨੂੰ ਨਾਂਦੇੜ ਸਾਹਿਬ ਵਿਖੇ ਦਸਮੇਸ਼ ਪਿਤਾ ਜੀ ਨੇ ਪੰਜ ਪੈਸੇ ਅਤੇ ਨਾਰੀਅਲ ਰੱਖ ਕੇ ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ ਅੱਗੇ ਮੱਥਾ ਟੇਕਿਆ ਅਤੇ ਸਮੂਹ ਸਿੱਖ ਸੰਗਤ ਨੂੰ ਸ਼ਬਦ ਗੁਰੂ ਦੇ ਲੜ ਲਾਇਆ।',
+    citations: [
+      {
+        sourceEn: 'Bhatt Vahi Talauda (Pargana Jind)',
+        sourcePa: 'ਭੱਟ ਵਹੀ ਤਲੌਡਾ (ਪਰਗਣਾ ਜੀਂਦ)',
+        referenceEn: 'Entry for Katak Sudhi 4, Sambat 1765 Bikrami · Testimony of Narbud Singh Bhatt',
+        referencePa: 'ਕੱਤਕ ਸੁਦੀ ੪, ਸੰਮਤ ੧੭੬੫ ਬਿਕ੍ਰਮੀ · ਨਰਬੁਦ ਸਿੰਘ ਭੱਟ ਦੀ ਸਾਖੀ',
+      },
+      {
+        sourceEn: 'Rehatnama Bhai Prahlad Singh & Panth Prakash',
+        sourcePa: 'ਰਹਿਤਨਾਮਾ ਭਾਈ ਪ੍ਰਹਿਲਾਦ ਸਿੰਘ ਅਤੇ ਪੰਥ ਪ੍ਰਕਾਸ਼',
+        referenceEn: 'Aagya Bhaee Akaal Kee — Eternal Guruship Colophon',
+        referencePa: 'ਆਗਿਆ ਭਈ ਅਕਾਲ ਕੀ ਤਬੈ ਚਲਾਯੋ ਪੰਥ — ਸਦੀਵੀ ਗੁਰਗੱਦੀ ਹਵਾਲਾ',
+        excerptPa: 'ਸਭ ਸਿਖਨ ਕੋ ਹੁਕਮ ਹੈ ਗੁਰੂ ਮਾਨਿਓ ਗ੍ਰੰਥ ॥',
+        excerptTranslit: 'Sabh sikhan ko hukam hai Guroo maanio Granth.',
+      },
+    ],
+  },
+  {
+    id: '2083-joti-jot-guru-gobind-singh',
+    date: '2026-11-14',
+    sambat: 2083,
+    category: 'gurpurab',
+    titleEn: 'Joti Jot Divas — Sri Guru Gobind Singh Ji',
+    titlePa: 'ਜੋਤੀ ਜੋਤ ਦਿਵਸ — ਸ੍ਰੀ ਗੁਰੂ ਗੋਬਿੰਦ ਸਿੰਘ ਜੀ',
+    shortLabelEn: 'Joti Jot Guru Gobind Singh Ji',
+    shortLabelPa: 'ਜੋਤੀ ਜੋਤ ਗੁਰੂ ਗੋਬਿੰਦ ਸਿੰਘ ਜੀ',
+    tithiRuleEn: 'Katak Sudhi 5 (Panchmi)',
+    tithiRulePa: 'ਕੱਤਕ ਸੁਦੀ ੫ (ਪੰਚਮੀ)',
+    summaryEn: 'Tenth Patshah merged into the Eternal Light at Sachkhand Sri Hazur Sahib, Nanded on Katak Sudhi 5, Sambat 1765.',
+    summaryPa: 'ਦਸਵੇਂ ਪਾਤਸ਼ਾਹ ਸ੍ਰੀ ਗੁਰੂ ਗੋਬਿੰਦ ਸਿੰਘ ਜੀ ਕੱਤਕ ਸੁਦੀ ੫, ਸੰਮਤ ੧੭੬੫ ਨੂੰ ਸੱਚਖੰਡ ਸ੍ਰੀ ਹਜ਼ੂਰ ਸਾਹਿਬ ਵਿਖੇ ਜੋਤੀ ਜੋਤ ਸਮਾਏ।',
+    historicalContextEn:
+      'Following the bestowal of eternal Guruship upon Sri Guru Granth Sahib Ji and entrusting temporal leadership to the Khalsa Panth, Sri Guru Gobind Singh Ji departed for Sachkhand on Katak Sudhi 5, Sambat 1765 Bikrami along the banks of the Godavari.',
+    historicalContextPa:
+      'ਗੁਰਗੱਦੀ ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ ਨੂੰ ਸੌਂਪਣ ਉਪਰੰਤ ਕੱਤਕ ਸੁਦੀ ੫, ਸੰਮਤ ੧੭੬੫ ਬਿਕ੍ਰਮੀ ਨੂੰ ਗੋਦਾਵਰੀ ਨਦੀ ਦੇ ਕੰਢੇ ਦਸਮੇਸ਼ ਪਿਤਾ ਜੀ ਜੋਤੀ ਜੋਤ ਸਮਾ ਗਏ।',
+    citations: [
+      {
+        sourceEn: 'Sri Gur Sobha (Kavi Sainapati)',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰ ਸੋਭਾ (ਕਵੀ ਸੈਨਾਪਤਿ)',
+        referenceEn: 'Adhyay 18 · Samat 1765 Katak Sudhi Panchmi Colophon',
+        referencePa: 'ਅਧਿਆਇ ੧੮ · ਸੰਮਤ ੧੭੬੫ ਕੱਤਕ ਸੁਦੀ ਪੰਚਮੀ',
+      },
+      {
+        sourceEn: 'Sri Gur Pratap Suraj Granth',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰ ਪ੍ਰਤਾਪ ਸੂਰਜ ਗ੍ਰੰਥ',
+        referenceEn: 'Ayan 2, Ansu 44 · Sachkhand Payana',
+        referencePa: 'ਅਯਨ ੨, ਅੰਸੂ ੪੪ · ਸੱਚਖੰਡ ਪਿਆਨਾ',
+      },
+    ],
+  },
+  {
+    id: '2083-parkash-guru-nanak-dev-ji',
+    date: '2026-11-24',
+    sambat: 2083,
+    category: 'gurpurab',
+    titleEn: '557th Parkash Purab — Sri Guru Nanak Dev Ji',
+    titlePa: '੫੫੭ਵਾਂ ਪ੍ਰਕਾਸ਼ ਪੁਰਬ — ਸ੍ਰੀ ਗੁਰੂ ਨਾਨਕ ਦੇਵ ਜੀ',
+    shortLabelEn: '557th Parkash Sri Guru Nanak Dev Ji',
+    shortLabelPa: '੫੫੭ਵਾਂ ਪ੍ਰਕਾਸ਼ ਸ੍ਰੀ ਗੁਰੂ ਨਾਨਕ ਦੇਵ ਜੀ',
+    tithiRuleEn: 'Katak Puranmashi (9 Maghar, Sambat 2083)',
+    tithiRulePa: 'ਕੱਤਕ ਪੂਰਨਮਾਸ਼ੀ (੯ ਮੱਘਰ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Sacred 557th Parkash Purab of Jagat Guru Sri Guru Nanak Dev Ji, observed across the Panth on Katak Puranmashi (9 Maghar, Sambat 2083).',
+    summaryPa: 'ਜਗਤ ਗੁਰੂ ਸ੍ਰੀ ਗੁਰੂ ਨਾਨਕ ਦੇਵ ਜੀ ਦਾ ੫੫੭ਵਾਂ ਪਾਵਨ ਪ੍ਰਕਾਸ਼ ਪੁਰਬ — ਕੱਤਕ ਪੂਰਨਮਾਸ਼ੀ, ੯ ਮੱਘਰ ਸੰਮਤ ੨੦੮੩ ਬਿਕ੍ਰਮੀ।',
+    historicalContextEn:
+      'Observed universally across Puratan Sikh Sampradaye and Takhts on Katak Puranmashi (falling on 9 Maghar, Tuesday, 24 November 2026 in Sambat 2083), commemorating the advent of Sri Guru Nanak Dev Ji (1526 Bikrami / 1469 CE) at Rai Bhoi di Talwandi (Sri Nankana Sahib). As Bhai Gurdas Ji sings, with the emergence of Satguru Nanak, the mist of spiritual ignorance lifted and light radiated throughout the cosmos.',
+    historicalContextPa:
+      'ਸਮੁੱਚੇ ਪੰਥ, ਤਖ਼ਤ ਸਾਹਿਬਾਨ ਅਤੇ ਪੁਰਾਤਨ ਸੰਪਰਦਾਵਾਂ ਵੱਲੋਂ ਕੱਤਕ ਪੂਰਨਮਾਸ਼ੀ (੯ ਮੱਘਰ, ਮੰਗਲਵਾਰ ੨੪ ਨਵੰਬਰ ੨੦੨੬) ਨੂੰ ਸ੍ਰੀ ਗੁਰੂ ਨਾਨਕ ਦੇਵ ਜੀ ਦਾ ੫੫੭ਵਾਂ ਪ੍ਰਕਾਸ਼ ਪੁਰਬ ਸ਼ਰਧਾ-ਸਤਿਕਾਰ ਸਹਿਤ ਮਨਾਇਆ ਜਾਂਦਾ ਹੈ। ਭਾਈ ਗੁਰਦਾਸ ਜੀ ਫ਼ੁਰਮਾਉਂਦੇ ਹਨ ਕਿ ਸਤਿਗੁਰੂ ਨਾਨਕ ਜੀ ਦੇ ਪ੍ਰਗਟ ਹੋਣ ਨਾਲ ਜਗਤ ਵਿੱਚੋਂ ਧੁੰਦ ਮਿਟ ਗਈ ਅਤੇ ਚਾਨਣ ਹੋ ਗਿਆ।',
+    citations: [
+      {
+        sourceEn: 'Bhai Gurdas Ji — Vaaran',
+        sourcePa: 'ਭਾਈ ਗੁਰਦਾਸ ਜੀ — ਵਾਰਾਂ',
+        referenceEn: 'Vaar 1, Pauri 27 · Advent of Satguru Nanak',
+        referencePa: 'ਵਾਰ ੧, ਪਉੜੀ ੨੭ · ਸਤਿਗੁਰ ਨਾਨਕ ਪ੍ਰਗਟਿਆ',
+        excerptPa: 'ਸਤਿਗੁਰ ਨਾਨਕ ਪ੍ਰਗਟਿਆ ਮਿਟੀ ਧੁੰਧੁ ਜਗਿ ਚਾਨਣੁ ਹੋਆ ॥',
+        excerptTranslit: 'Satgur Naanak pragatiaa mitee dhundh jag chaanan hoaa.',
+      },
+      {
+        sourceEn: 'Sri Gur Pratap Suraj Granth (Nanak Prakash)',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰ ਪ੍ਰਤਾਪ ਸੂਰਜ ਗ੍ਰੰਥ (ਨਾਨਕ ਪ੍ਰਕਾਸ਼)',
+        referenceEn: 'Purbaradh, Adhyay 1 · Katak Puranmashi Tradition at Nankana Sahib',
+        referencePa: 'ਪੂਰਬਾਰਧ, ਅਧਿਆਇ ੧ · ਕੱਤਕ ਪੂਰਨਮਾਸ਼ੀ ਪ੍ਰਕਾਸ਼ ਪ੍ਰਸੰਗ',
+      },
+      {
+        sourceEn: 'Sri Guru Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ang 1389 · Swaiye Mahalle Pehle Ke (Bhatt Kal)',
+        referencePa: 'ਅੰਗ ੧੩੮੯ · ਸਵਈਏ ਮਹਲੇ ਪਹਿਲੇ ਕੇ (ਭੱਟ ਕਲ੍ਹ)',
+        excerptPa: 'ਸਤਿਜੁਗਿ ਤੈ ਮਾਣਿਓ ਛਲਿਓ ਬਲਿ ਬਾਵਨ ਭਾਇਓ ॥',
+        excerptTranslit: 'Satjug tai maanio chhalio bal baavan bhaaio.',
+      },
+    ],
+    featured: true,
+  },
+  {
+    id: '2083-shaheedi-guru-tegh-bahadur',
+    date: '2026-12-14',
+    sambat: 2083,
+    category: 'shaheedi',
+    titleEn: 'Shaheedi Divas — Sri Guru Tegh Bahadur Ji & Three Beloved Sikhs',
+    titlePa: 'ਸ਼ਹੀਦੀ ਦਿਵਸ — ਸ੍ਰੀ ਗੁਰੂ ਤੇਗ਼ ਬਹਾਦਰ ਜੀ, ਭਾਈ ਮਤੀ ਦਾਸ, ਭਾਈ ਸਤੀ ਦਾਸ ਤੇ ਭਾਈ ਦਿਆਲਾ ਜੀ',
+    shortLabelEn: 'Shaheedi Guru Tegh Bahadur Ji',
+    shortLabelPa: 'ਸ਼ਹੀਦੀ ਸ੍ਰੀ ਗੁਰੂ ਤੇਗ਼ ਬਹਾਦਰ ਜੀ',
+    tithiRuleEn: 'Maghar Sudhi 5 (29 Maghar, Sambat 2083)',
+    tithiRulePa: 'ਮੱਘਰ ਸੁਦੀ ੫ (੨੯ ਮੱਘਰ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Supreme martyrdom of the Ninth Patshah at Chandni Chowk, Delhi in defense of dharam and freedom of conscience (Maghar Sudhi 5, 1732 Bikrami).',
+    summaryPa: 'ਧਰਮ ਅਤੇ ਮਨੁੱਖੀ ਆਜ਼ਾਦੀ ਦੀ ਰੱਖਿਆ ਲਈ ਚਾਂਦਨੀ ਚੌਕ ਦਿੱਲੀ ਵਿਖੇ ਨੌਵੇਂ ਪਾਤਸ਼ਾਹ ਜੀ ਦੀ ਲਾਸਾਨੀ ਸ਼ਹਾਦਤ (ਮੱਘਰ ਸੁਦੀ ੫, ਸੰਮਤ ੧੭੩੨)।',
+    historicalContextEn:
+      'On Maghar Sudhi 5, Sambat 1732 Bikrami (1675 CE), Sri Guru Tegh Bahadur Ji offered His head at Chandni Chowk, Delhi to uphold freedom of conscience for Kashmiri Pandits and all humanity, immediately following the steadfast martyrdoms of Bhai Mati Das Ji, Bhai Dayala Ji, and Bhai Sati Das Ji.',
+    historicalContextPa:
+      'ਮੱਘਰ ਸੁਦੀ ੫, ਸੰਮਤ ੧੭੩੨ ਬਿਕ੍ਰਮੀ ਨੂੰ ਸ੍ਰੀ ਗੁਰੂ ਤੇਗ਼ ਬਹਾਦਰ ਜੀ ਨੇ ਤਿਲਕ-ਜੰਞੂ ਅਤੇ ਧਾਰਮਿਕ ਆਜ਼ਾਦੀ ਦੀ ਰਾਖੀ ਹਿੱਤ ਦਿੱਲੀ ਚਾਂਦਨੀ ਚੌਕ ਵਿੱਚ ਸੀਸ ਬਲਿਦਾਨ ਦਿੱਤਾ। ਆਪ ਜੀ ਤੋਂ ਪਹਿਲਾਂ ਭਾਈ ਮਤੀ ਦਾਸ ਜੀ, ਭਾਈ ਦਿਆਲਾ ਜੀ ਅਤੇ ਭਾਈ ਸਤੀ ਦਾਸ ਜੀ ਨੇ ਅਡੋਲ ਸ਼ਹਾਦਤਾਂ ਦਿੱਤੀਆਂ।',
+    citations: [
+      {
+        sourceEn: 'Sri Dasam Granth Sahib Ji (Bachitar Natak)',
+        sourcePa: 'ਸ੍ਰੀ ਦਸਮ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ (ਬਚਿਤ੍ਰ ਨਾਟਕ)',
+        referenceEn: 'Adhyay 5, Chhand 13–15 · Tilak Janju Rakha Prabh Taaka',
+        referencePa: 'ਅਧਿਆਇ ੫, ਛੰਦ ੧੩–੧੫ · ਤਿਲਕ ਜੰਞੂ ਰਾਖਾ ਪ੍ਰਭ ਤਾਕਾ',
+        excerptPa: 'ਠੀਕਰਿ ਫੋਰਿ ਦਿਲੀਸਿ ਸਿਰਿ ਪ੍ਰਭ ਪੁਰਿ ਕਿਯਾ ਪਯਾਨ ॥',
+        excerptTranslit: 'Theekar phor Dilees sir Prabh pur kiyaa payaan.',
+      },
+      {
+        sourceEn: 'Bhatt Vahi Multani Sindhi',
+        sourcePa: 'ਭੱਟ ਵਹੀ ਮੁਲਤਾਨੀ ਸਿੰਧੀ',
+        referenceEn: 'Maghar Sudhi 5, Sambat 1732 · Witness record of Delhi Shaheedi',
+        referencePa: 'ਮੱਘਰ ਸੁਦੀ ੫, ਸੰਮਤ ੧੭੩੨ · ਦਿੱਲੀ ਸ਼ਹਾਦਤ ਦੀ ਸਾਖੀ',
+      },
+    ],
+    featured: true,
+  },
+  {
+    id: '2083-vadde-sahibzade',
+    date: '2026-12-23',
+    sambat: 2083,
+    category: 'shaheedi',
+    titleEn: 'Shaheedi Divas — Vadde Sahibzade (Sri Chamkaur Sahib)',
+    titlePa: 'ਸ਼ਹੀਦੀ ਦਿਵਸ — ਵੱਡੇ ਸਾਹਿਬਜ਼ਾਦੇ (ਸ੍ਰੀ ਚਮਕੌਰ ਸਾਹਿਬ)',
+    shortLabelEn: 'Shaheedi Vadde Sahibzade',
+    shortLabelPa: 'ਸ਼ਹੀਦੀ ਵੱਡੇ ਸਾਹਿਬਜ਼ਾਦੇ',
+    tithiRuleEn: '8 Poh (Sambat 2083)',
+    tithiRulePa: '੮ ਪੋਹ (ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Martyrdom of Baba Ajit Singh Ji, Baba Jujhar Singh Ji, and the Singhs of Garhi Chamkaur (8 Poh, 1761 Bikrami).',
+    summaryPa: 'ਗੜ੍ਹੀ ਚਮਕੌਰ ਦੀ ਜੰਗ ਵਿੱਚ ਬਾਬਾ ਅਜੀਤ ਸਿੰਘ ਜੀ, ਬਾਬਾ ਜੁਝਾਰ ਸਿੰਘ ਜੀ ਅਤੇ ਸ਼ਹੀਦ ਸਿੰਘਾਂ ਦੀ ਅਦੁੱਤੀ ਸ਼ਹਾਦਤ (੮ ਪੋਹ, ਸੰਮਤ ੧੭੬੧)।',
+    historicalContextEn:
+      'On 8 Poh, Sambat 1761 Bikrami (1704 CE), forty Singhs led by Sri Guru Gobind Singh Ji held the mud fortress of Chamkaur against overwhelming imperial forces. Sahibzada Baba Ajit Singh Ji, Sahibzada Baba Jujhar Singh Ji, and three of the Panj Piare attained immortal shaheedi in battlefield valor.',
+    historicalContextPa:
+      '੮ ਪੋਹ, ਸੰਮਤ ੧੭੬੧ ਬਿਕ੍ਰਮੀ ਨੂੰ ਚਮਕੌਰ ਦੀ ਕੱਚੀ ਗੜ੍ਹੀ ਵਿੱਚ ਚਾਲੀ ਭੁੱਖੇ-ਭਾਣੇ ਸਿੰਘਾਂ ਨੇ ਲੱਖਾਂ ਦੀ ਫ਼ੌਜ ਦਾ ਟਾਕਰਾ ਕੀਤਾ। ਸਾਹਿਬਜ਼ਾਦਾ ਬਾਬਾ ਅਜੀਤ ਸਿੰਘ ਜੀ, ਬਾਬਾ ਜੁਝਾਰ ਸਿੰਘ ਜੀ ਅਤੇ ਪਿਆਰੇ ਸਿੰਘ ਜੂਝ ਕੇ ਸ਼ਹੀਦ ਹੋਏ।',
+    citations: [
+      {
+        sourceEn: 'Sri Dasam Granth Sahib Ji (Zafarnama)',
+        sourcePa: 'ਸ੍ਰੀ ਦਸਮ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ (ਜ਼ਫ਼ਰਨਾਮਾ)',
+        referenceEn: 'Verses 19–22 & 78 · Battle of Chamkaur & Four Sons',
+        referencePa: 'ਸ਼ੇਅਰ ੧੯–੨੨ ਅਤੇ ੭੮ · ਗੁਰਸਨਹ ਚਿਹ ਕਾਰਹ ਕੁਨਦ ਚਿਹਲ ਨਰ',
+        excerptPa: 'ਚਿਹਾ ਸ਼ੁਦ ਕਿ ਚੂੰ ਬੱਚਗਾਂ ਕੁਸ਼ਤਹ ਚਾਰ ॥ ਕਿ ਬਾਕੀ ਬਿਮਾਂਦਸਤ ਪੇਚੀਦਹ ਮਾਰ ॥',
+        excerptTranslit: 'Chihaa shud ki choon bachagaan kushtah chaar, ki baakee bimaandasat pecheedah maar.',
+      },
+      {
+        sourceEn: 'Prachin Panth Prakash (Rattan Singh Bhangu)',
+        sourcePa: 'ਪ੍ਰਾਚੀਨ ਪੰਥ ਪ੍ਰਕਾਸ਼ (ਰਤਨ ਸਿੰਘ ਭੰਗੂ)',
+        referenceEn: 'Sakhi Garhi Chamkaur · 8 Poh 1761 Bikrami',
+        referencePa: 'ਸਾਖੀ ਗੜ੍ਹੀ ਚਮਕੌਰ · ੮ ਪੋਹ ੧੭੬੧ ਬਿਕ੍ਰਮੀ',
+      },
+    ],
+  },
+  {
+    id: '2083-chhote-sahibzade',
+    date: '2026-12-28',
+    sambat: 2083,
+    category: 'shaheedi',
+    titleEn: 'Shaheedi Divas — Chhote Sahibzade & Mata Gujri Ji (Sri Fatehgarh Sahib)',
+    titlePa: 'ਸ਼ਹੀਦੀ ਦਿਵਸ — ਛੋਟੇ ਸਾਹਿਬਜ਼ਾਦੇ ਅਤੇ ਮਾਤਾ ਗੁਜਰੀ ਜੀ (ਸ੍ਰੀ ਫ਼ਤਹਿਗੜ੍ਹ ਸਾਹਿਬ)',
+    shortLabelEn: 'Shaheedi Chhote Sahibzade',
+    shortLabelPa: 'ਸ਼ਹੀਦੀ ਛੋਟੇ ਸਾਹਿਬਜ਼ਾਦੇ',
+    tithiRuleEn: '13 Poh (Sambat 2083)',
+    tithiRulePa: '੧੩ ਪੋਹ (ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Bricking alive and martyrdom of Baba Zorawar Singh Ji, Baba Fateh Singh Ji, and Mata Gujri Ji at Sirhind (13 Poh, 1761 Bikrami).',
+    summaryPa: 'ਸਰਹਿੰਦ ਵਿਖੇ ਬਾਬਾ ਜ਼ੋਰਾਵਰ ਸਿੰਘ ਜੀ, ਬਾਬਾ ਫ਼ਤਹਿ ਸਿੰਘ ਜੀ ਅਤੇ ਮਾਤਾ ਗੁਜਰੀ ਜੀ ਦੀ ਅਦੁੱਤੀ ਸ਼ਹਾਦਤ (੧੩ ਪੋਹ, ਸੰਮਤ ੧੭੬੧)।',
+    historicalContextEn:
+      'On 13 Poh, Sambat 1761 Bikrami, the young Sahibzadas Baba Zorawar Singh Ji (age 9) and Baba Fateh Singh Ji (age 7) refused to renounce Sikhi in Wazir Khan’s court and were bricked alive and martyred at Sirhind. Upon hearing the news in the Thanda Burj, Mata Gujri Ji merged into the Divine.',
+    historicalContextPa:
+      '੧੩ ਪੋਹ, ਸੰਮਤ ੧੭੬੧ ਬਿਕ੍ਰਮੀ ਨੂੰ ਬਾਬਾ ਜ਼ੋਰਾਵਰ ਸਿੰਘ ਜੀ ਅਤੇ ਬਾਬਾ ਫ਼ਤਹਿ ਸਿੰਘ ਜੀ ਨੇ ਵਜ਼ੀਰ ਖ਼ਾਨ ਦੀ ਕਚਹਿਰੀ ਵਿੱਚ ਧਰਮ ਨਾ ਹਾਰਦਿਆਂ ਨੀਂਹਾਂ ਵਿੱਚ ਚਿਣੇ ਜਾ ਕੇ ਸ਼ਹਾਦਤ ਪ੍ਰਾਪਤ ਕੀਤੀ, ਅਤੇ ਠੰਢੇ ਬੁਰਜ ਵਿੱਚ ਮਾਤਾ ਗੁਜਰੀ ਜੀ ਸੱਚਖੰਡ ਪਿਆਨਾ ਕਰ ਗਏ।',
+    citations: [
+      {
+        sourceEn: 'Bhatt Vahi Talauda & Bhatt Vahi Jado Bansian',
+        sourcePa: 'ਭੱਟ ਵਹੀ ਤਲੌਡਾ ਅਤੇ ਭੱਟ ਵਹੀ ਜਾਦੋ ਬੰਸੀਆਂ',
+        referenceEn: '13 Poh, Sambat 1761 · Sirhind Martyrdom & Diwan Todar Mal Seva',
+        referencePa: '੧੩ ਪੋਹ, ਸੰਮਤ ੧੭੬੧ · ਸਰਹਿੰਦ ਸ਼ਹਾਦਤ ਅਤੇ ਦੀਵਾਨ ਟੋਡਰ ਮੱਲ ਜੀ ਦੀ ਸੇਵਾ',
+      },
+      {
+        sourceEn: 'Sri Gur Pratap Suraj Granth',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰ ਪ੍ਰਤਾਪ ਸੂਰਜ ਗ੍ਰੰਥ',
+        referenceEn: 'Ayan 1, Ansu 26–32 · Sirhind Saka',
+        referencePa: 'ਅਯਨ ੧, ਅੰਸੂ ੨੬–੩੨ · ਸਰਹਿੰਦ ਸਾਕਾ',
+      },
+    ],
+    featured: true,
+  },
+  {
+    id: '2083-maghi-chali-mukte',
+    date: '2027-01-14',
+    sambat: 2083,
+    category: 'shaheedi',
+    titleEn: 'Maghi — Shaheedi Divas of Chali Mukte (Sri Muktsar Sahib)',
+    titlePa: 'ਮਾਘੀ — ਚਾਲੀ ਮੁਕਤਿਆਂ ਦਾ ਸ਼ਹੀਦੀ ਦਿਹਾੜਾ (ਸ੍ਰੀ ਮੁਕਤਸਰ ਸਾਹਿਬ)',
+    shortLabelEn: 'Maghi · 40 Mukte',
+    shortLabelPa: 'ਮਾਘੀ · ਚਾਲੀ ਮੁਕਤੇ',
+    tithiRuleEn: '1 Magh (Magh Sangrand, Sambat 2083)',
+    tithiRulePa: '੧ ਮਾਘ (ਮਾਘ ਸੰਗਰਾਂਦ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Commemoration of Bhai Mahan Singh Ji, Mai Bhago Ji, and the Forty Liberated Ones (Chali Mukte) at Khidrane di Dhab.',
+    summaryPa: 'ਖਿਦਰਾਣੇ ਦੀ ਢਾਬ (ਸ੍ਰੀ ਮੁਕਤਸਰ ਸਾਹਿਬ) ਵਿਖੇ ਭਾਈ ਮਹਾਂ ਸਿੰਘ ਜੀ, ਮਾਈ ਭਾਗੋ ਜੀ ਅਤੇ ਚਾਲੀ ਮੁਕਤਿਆਂ ਦੀ ਯਾਦਗਾਰ।',
+    historicalContextEn:
+      'Observed on 1 Magh (Magh Sangrand), honoring the forty Singhs led by Mai Bhago Ji and Bhai Mahan Singh Ji who redeemed their bedava in battle at Khidrane di Dhab, earning the eternal blessing of Mukti from Sri Guru Gobind Singh Ji.',
+    historicalContextPa:
+      '੧ ਮਾਘ ਨੂੰ ਸ੍ਰੀ ਮੁਕਤਸਰ ਸਾਹਿਬ ਵਿਖੇ ਉਨ੍ਹਾਂ ਚਾਲੀ ਮੁਕਤਿਆਂ ਦੀ ਯਾਦ ਮਨਾਈ ਜਾਂਦੀ ਹੈ ਜਿਨ੍ਹਾਂ ਨੇ ਮਾਈ ਭਾਗੋ ਜੀ ਦੀ ਅਗਵਾਈ ਹੇਠ ਖਿਦਰਾਣੇ ਦੀ ਢਾਬ ’ਤੇ ਜੂਝਦਿਆਂ ਦਸਮੇਸ਼ ਪਿਤਾ ਜੀ ਤੋਂ ਟੁੱਟੀ ਗੰਢਵਾਈ।',
+    citations: [
+      {
+        sourceEn: 'Sri Gur Pratap Suraj Granth',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰ ਪ੍ਰਤਾਪ ਸੂਰਜ ਗ੍ਰੰਥ',
+        referenceEn: 'Ayan 1, Ansu 44–49 · Khidrane di Dhab & Tuti Gandhan',
+        referencePa: 'ਅਯਨ ੧, ਅੰਸੂ ੪੪–੪੯ · ਖਿਦਰਾਣੇ ਦੀ ਢਾਬ ਅਤੇ ਟੁੱਟੀ ਗੰਢਣ ਪ੍ਰਸੰਗ',
+      },
+    ],
+  },
+  {
+    id: '2083-parkash-guru-gobind-singh',
+    date: '2027-01-15',
+    sambat: 2083,
+    category: 'gurpurab',
+    titleEn: 'Parkash Purab — Sri Guru Gobind Singh Ji',
+    titlePa: 'ਪ੍ਰਕਾਸ਼ ਪੁਰਬ — ਸ੍ਰੀ ਗੁਰੂ ਗੋਬਿੰਦ ਸਿੰਘ ਜੀ',
+    shortLabelEn: 'Parkash Guru Gobind Singh Ji',
+    shortLabelPa: 'ਪ੍ਰਕਾਸ਼ ਸ੍ਰੀ ਗੁਰੂ ਗੋਬਿੰਦ ਸਿੰਘ ਜੀ',
+    tithiRuleEn: 'Poh Sudhi 7 (2 Magh, Sambat 2083)',
+    tithiRulePa: 'ਪੋਹ ਸੁਦੀ ੭ (੨ ਮਾਘ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Sacred Parkash Purab of Dashmesh Pita Sri Guru Gobind Singh Ji at Takht Sri Patna Sahib (Poh Sudhi 7, 1723 Bikrami).',
+    summaryPa: 'ਦਸਮੇਸ਼ ਪਿਤਾ ਸ੍ਰੀ ਗੁਰੂ ਗੋਬਿੰਦ ਸਿੰਘ ਜੀ ਦਾ ਪਾਵਨ ਪ੍ਰਕਾਸ਼ ਪੁਰਬ — ਪੋਹ ਸੁਦੀ ੭ (ਤਖ਼ਤ ਸ੍ਰੀ ਪਟਨਾ ਸਾਹਿਬ, ਸੰਮਤ ੧੭੨੩)।',
+    historicalContextEn:
+      'Born on Poh Sudhi 7, Sambat 1723 Bikrami (1666 CE) at Patna Sahib to Sri Guru Tegh Bahadur Ji and Mata Gujri Ji. In Sambat 2083, Poh Sudhi 7 falls on Friday, 15 January 2027 (2 Magh), demonstrating the authentic luni-solar motion of Puratan Bikrami chronology.',
+    historicalContextPa:
+      'ਪੋਹ ਸੁਦੀ ੭, ਸੰਮਤ ੧੭੨੩ ਬਿਕ੍ਰਮੀ ਨੂੰ ਪਟਨਾ ਸਾਹਿਬ ਵਿਖੇ ਸ੍ਰੀ ਗੁਰੂ ਤੇਗ਼ ਬਹਾਦਰ ਜੀ ਅਤੇ ਮਾਤਾ ਗੁਜਰੀ ਜੀ ਦੇ ਗ੍ਰਹਿ ਦਸਮੇਸ਼ ਪਿਤਾ ਜੀ ਦਾ ਪ੍ਰਕਾਸ਼ ਹੋਇਆ। ਸੰਮਤ ੨੦੮੩ ਵਿੱਚ ਪੋਹ ਸੁਦੀ ੭ ਸ਼ੁੱਕਰਵਾਰ, ੧੫ ਜਨਵਰੀ ੨੦੨੭ (੨ ਮਾਘ) ਨੂੰ ਆਉਂਦੀ ਹੈ।',
+    citations: [
+      {
+        sourceEn: 'Sri Dasam Granth Sahib Ji (Bachitar Natak)',
+        sourcePa: 'ਸ੍ਰੀ ਦਸਮ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ (ਬਚਿਤ੍ਰ ਨਾਟਕ)',
+        referenceEn: 'Adhyay 7 · Tahi Parkash Hamara Bhayo, Patna Shehar Bikhai Bhav Layo',
+        referencePa: 'ਅਧਿਆਇ ੭ · ਤਹੀ ਪ੍ਰਕਾਸ਼ ਹਮਾਰਾ ਭਯੋ, ਪਟਨਾ ਸ਼ਹਰ ਬਿਖੈ ਭਵ ਲਯੋ',
+        excerptPa: 'ਤਹੀ ਪ੍ਰਕਾਸ਼ ਹਮਾਰਾ ਭਯੋ ॥ ਪਟਨਾ ਸ਼ਹਰ ਬਿਖੈ ਭਵ ਲਯੋ ॥',
+        excerptTranslit: 'Tahee prakaash hamaaraa bhayo, Patanaa shahar bikhai bhav layo.',
+      },
+      {
+        sourceEn: 'Hukamnamas of Sri Guru Tegh Bahadur Ji & Bhatt Vahis',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਤੇਗ਼ ਬਹਾਦਰ ਜੀ ਦੇ ਹੁਕਮਨਾਮੇ ਅਤੇ ਭੱਟ ਵਹੀਆਂ',
+        referenceEn: 'Patna Sangat Hukamnamas · Poh Sudhi Saptami 1723 Bikrami',
+        referencePa: 'ਪਟਨਾ ਸੰਗਤ ਦੇ ਹੁਕਮਨਾਮੇ · ਪੋਹ ਸੁਦੀ ਸਪਤਮੀ ੧੭੨੩ ਬਿਕ੍ਰਮੀ',
+      },
+    ],
+    featured: true,
+  },
+  {
+    id: '2083-parkash-guru-har-rai',
+    date: '2027-02-19',
+    sambat: 2083,
+    category: 'gurpurab',
+    titleEn: 'Parkash Purab — Sri Guru Har Rai Sahib Ji',
+    titlePa: 'ਪ੍ਰਕਾਸ਼ ਪੁਰਬ — ਸ੍ਰੀ ਗੁਰੂ ਹਰਿ ਰਾਇ ਸਾਹਿਬ ਜੀ',
+    shortLabelEn: 'Parkash Guru Har Rai Ji',
+    shortLabelPa: 'ਪ੍ਰਕਾਸ਼ ਗੁਰੂ ਹਰਿ ਰਾਇ ਜੀ',
+    tithiRuleEn: 'Magh Sudhi 13 (7 Phagun, Sambat 2083)',
+    tithiRulePa: 'ਮਾਘ ਸੁਦੀ ੧੩ (੭ ਫੱਗਣ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Parkash Purab of the Seventh Patshah, embodiment of compassion, ecological stewardship, and Gurbani fidelity (Kiratpur Sahib, 1686 Bikrami).',
+    summaryPa: 'ਸੱਤਵੇਂ ਪਾਤਸ਼ਾਹ ਸ੍ਰੀ ਗੁਰੂ ਹਰਿ ਰਾਇ ਸਾਹਿਬ ਜੀ ਦਾ ਪਾਵਨ ਪ੍ਰਕਾਸ਼ ਪੁਰਬ — ਮਾਘ ਸੁਦੀ ੧੩ (ਸ੍ਰੀ ਕੀਰਤਪੁਰ ਸਾਹਿਬ, ਸੰਮਤ ੧੬੮੬)।',
+    historicalContextEn:
+      'Born at Kiratpur Sahib on Magh Sudhi 13, Sambat 1686 Bikrami (1630 CE), Sri Guru Har Rai Sahib Ji maintained 2,200 mounted Khalsa precursors while establishing medicinal gardens and upholding the inviolability of every letter of Gurbani.',
+    historicalContextPa:
+      'ਮਾਘ ਸੁਦੀ ੧੩, ਸੰਮਤ ੧੬੮੬ ਬਿਕ੍ਰਮੀ ਨੂੰ ਸ੍ਰੀ ਕੀਰਤਪੁਰ ਸਾਹਿਬ ਵਿਖੇ ਸ੍ਰੀ ਗੁਰੂ ਹਰਿ ਰਾਇ ਸਾਹਿਬ ਜੀ ਦਾ ਪ੍ਰਕਾਸ਼ ਹੋਇਆ। ਆਪ ਜੀ ਨੇ ਦਵਾਖ਼ਾਨੇ, ਬਾਗ਼-ਬਗ਼ੀਚੇ ਸਥਾਪਤ ਕੀਤੇ ਅਤੇ ਗੁਰਬਾਣੀ ਦੇ ਅੱਖਰ-ਅੱਖਰ ਦੀ ਪਵਿੱਤਰਤਾ ’ਤੇ ਪਹਿਰਾ ਦਿੱਤਾ।',
+    citations: [
+      {
+        sourceEn: 'Sri Gur Pratap Suraj Granth',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰ ਪ੍ਰਤਾਪ ਸੂਰਜ ਗ੍ਰੰਥ',
+        referenceEn: 'Raas 9, Ansu 1 · Kiratpur Sahib Parkash & Dawaakhana Tradition',
+        referencePa: 'ਰਾਸਿ ੯, ਅੰਸੂ ੧ · ਸ੍ਰੀ ਕੀਰਤਪੁਰ ਸਾਹਿਬ ਪ੍ਰਕਾਸ਼ ਪ੍ਰਸੰਗ',
+      },
+    ],
+  },
+  {
+    id: '2083-parkash-bhagat-ravidas',
+    date: '2027-02-20',
+    sambat: 2083,
+    category: 'khalsa',
+    titleEn: 'Parkash Purab — Bhagat Ravidas Ji',
+    titlePa: 'ਪ੍ਰਕਾਸ਼ ਪੁਰਬ — ਭਗਤ ਰਵਿਦਾਸ ਜੀ',
+    shortLabelEn: 'Parkash Bhagat Ravidas Ji',
+    shortLabelPa: 'ਪ੍ਰਕਾਸ਼ ਭਗਤ ਰਵਿਦਾਸ ਜੀ',
+    tithiRuleEn: 'Magh Puranmashi (8 Phagun, Sambat 2083)',
+    tithiRulePa: 'ਮਾਘ ਪੂਰਨਮਾਸ਼ੀ (੮ ਫੱਗਣ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Commemoration of Bhagat Ravidas Ji, whose 41 hymns in Sri Guru Granth Sahib Ji envision Begampura, the city without sorrow.',
+    summaryPa: 'ਭਗਤ ਰਵਿਦਾਸ ਜੀ ਦਾ ਪ੍ਰਕਾਸ਼ ਦਿਹਾੜਾ, ਜਿਨ੍ਹਾਂ ਦੇ ੪੧ ਸ਼ਬਦ ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ ਵਿੱਚ ਦਰਜ ਹਨ।',
+    historicalContextEn:
+      'Observed on Magh Puranmashi, honoring Bhagat Ravidas Ji whose Bani in Sri Guru Granth Sahib Ji articulates fearless devotion, human dignity, and the sovereign spiritual city of Begampura.',
+    historicalContextPa:
+      'ਮਾਘ ਪੂਰਨਮਾਸ਼ੀ ਨੂੰ ਭਗਤ ਰਵਿਦਾਸ ਜੀ ਦਾ ਪ੍ਰਕਾਸ਼ ਦਿਹਾੜਾ ਮਨਾਇਆ ਜਾਂਦਾ ਹੈ, ਜਿਨ੍ਹਾਂ ਦੀ ਪਾਵਨ ਬਾਣੀ ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ ਵਿੱਚ ਬੇਗਮਪੁਰਾ ਦੇ ਆਦਰਸ਼ ਸਮਾਜ ਦਾ ਸੰਦੇਸ਼ ਦਿੰਦੀ ਹੈ।',
+    citations: [
+      {
+        sourceEn: 'Sri Guru Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ang 345 · Raag Gauri Bani Bhagat Ravidas Ji',
+        referencePa: 'ਅੰਗ ੩੪੫ · ਰਾਗੁ ਗਉੜੀ ਬਾਣੀ ਭਗਤ ਰਵਿਦਾਸ ਜੀ',
+        excerptPa: 'ਬੇਗਮ ਪੁਰਾ ਸਹਰ ਕੋ ਨਾਉ ॥ ਦੂਖੁ ਅੰਦੋਹੁ ਨਹੀ ਤਿਹਿ ਠਾਉ ॥',
+        excerptTranslit: 'Begam puraa sahar ko naao, dookh andoh nahee tih thaao.',
+      },
+    ],
+  },
+
+  // =========================================================================
+  // FULL SAMBAT 2084 (1 Chet 2084 / Mar 15, 2027 – 30 Phagun 2084 / Mar 13, 2028)
+  // =========================================================================
+  {
+    id: '2084-chet-new-year',
+    date: '2027-03-15',
+    sambat: 2084,
+    category: 'khalsa',
+    titleEn: 'Chet Sangrand — Bikrami Sambat 2084 New Year',
+    titlePa: 'ਚੇਤ ਸੰਗਰਾਂਦ — ਬਿਕ੍ਰਮੀ ਸੰਮਤ ੨੦੮੪ ਨਵਾਂ ਸਾਲ',
+    shortLabelEn: 'Sambat 2084 New Year',
+    shortLabelPa: 'ਸੰਮਤ ੨੦੮੪ ਆਰੰਭ',
+    tithiRuleEn: '1 Chet, Sambat 2084 (Meena Sankranti)',
+    tithiRulePa: '੧ ਚੇਤ, ਸੰਮਤ ੨੦੮੪ (ਮੀਨ ਸੰਕ੍ਰਾਂਤੀ)',
+    summaryEn: 'Dawn of Puratan Bikrami Sambat 2084 on 1 Chet, opening the annual cycle of Barah Maha in Sri Guru Granth Sahib Ji.',
+    summaryPa: '੧ ਚੇਤ ਨੂੰ ਪੁਰਾਤਨ ਬਿਕ੍ਰਮੀ ਸੰਮਤ ੨੦੮੪ ਦਾ ਆਰੰਭ ਅਤੇ ਬਾਰਹ ਮਾਹਾ ਦੇ ਨਵੇਂ ਚੱਕਰ ਦੀ ਸ਼ੁਰੂਆਤ।',
+    historicalContextEn:
+      'In the Puratan Bikrami reckoning preserved in Gurbani (Barah Maha Majh & Tukhari), Chet is the opening month of the solar year. The solar transition into Meena Rashi initiates Sambat 2084.',
+    historicalContextPa:
+      'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ ਵਿੱਚ ਦਰਜ ਬਾਰਹ ਮਾਹਾ ਮਾਂਝ ਅਤੇ ਤੁਖਾਰੀ ਅਨੁਸਾਰ ਚੇਤ ਸਾਲ ਦਾ ਪਹਿਲਾ ਮਹੀਨਾ ਹੈ। ਮੀਨ ਸੰਕ੍ਰਾਂਤੀ ਨਾਲ ਪੁਰਾਤਨ ਬਿਕ੍ਰਮੀ ਸੰਮਤ ੨੦੮੪ ਦਾ ਆਰੰਭ ਹੁੰਦਾ ਹੈ।',
+    citations: [
+      {
+        sourceEn: 'Sri Guru Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ang 133 · Barah Maha Majh Mahalla 5',
+        referencePa: 'ਅੰਗ ੧੩੩ · ਬਾਰਹ ਮਾਹਾ ਮਾਂਝ ਮਹਲਾ ੫',
+        excerptPa: 'ਚੇਤਿ ਗੋਵਿੰਦੁ ਅਰਾਧੀਐ ਹੋਵੈ ਅਨੰਦੁ ਘਣਾ ॥',
+        excerptTranslit: 'Chet Govind araadheeai hovai anand ghanaa.',
+      },
+    ],
+  },
+  {
+    id: '2084-holla-mohalla',
+    date: '2027-03-23',
+    sambat: 2084,
+    category: 'khalsa',
+    titleEn: 'Holla Mohalla (Sri Anandpur Sahib)',
+    titlePa: 'ਹੋਲਾ ਮਹੱਲਾ (ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ)',
+    shortLabelEn: 'Holla Mohalla',
+    shortLabelPa: 'ਹੋਲਾ ਮਹੱਲਾ',
+    tithiRuleEn: 'Chet Vadhi 1 (9 Chet, Sambat 2084)',
+    tithiRulePa: 'ਚੇਤ ਵਦੀ ੧ (੯ ਚੇਤ, ਸੰਮਤ ੨੦੮੪)',
+    summaryEn: 'Martial Khalsa gathering established by Sri Guru Gobind Singh Ji at Qila Holgarh, Sri Anandpur Sahib in Sambat 1757.',
+    summaryPa: 'ਸੰਮਤ ੧੭੫੭ ਬਿਕ੍ਰਮੀ ਵਿੱਚ ਦਸਮੇਸ਼ ਪਿਤਾ ਜੀ ਵੱਲੋਂ ਕਿਲ੍ਹਾ ਹੋਲਗੜ੍ਹ, ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ ਵਿਖੇ ਆਰੰਭਿਆ ਖ਼ਾਲਸਾਈ ਸ਼ਸਤਰ-ਅਭਿਆਸ ਜੋੜ ਮੇਲਾ।',
+    historicalContextEn:
+      'Instituted on Chet Vadhi 1, Sambat 1757 (1701 CE) at Holgarh Fort in Sri Anandpur Sahib, Holla Mohalla transformed seasonal festivities into disciplined Khalsa martial exercises, Gatka, horsemanship, and poetry.',
+    historicalContextPa:
+      'ਚੇਤ ਵਦੀ ੧, ਸੰਮਤ ੧੭੫੭ ਨੂੰ ਸ੍ਰੀ ਗੁਰੂ ਗੋਬਿੰਦ ਸਿੰਘ ਜੀ ਨੇ ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ ਦੇ ਕਿਲ੍ਹਾ ਹੋਲਗੜ੍ਹ ਵਿਖੇ ਖ਼ਾਲਸੇ ਨੂੰ ਸ਼ਸਤਰ-ਵਿੱਦਿਆ, ਘੋੜ-ਸਵਾਰੀ ਅਤੇ ਨਕਲੀ ਜੰਗ ਦੇ ਅਭਿਆਸ ਲਈ ਹੋਲਾ ਮਹੱਲਾ ਆਰੰਭਿਆ।',
+    citations: [
+      {
+        sourceEn: 'Sri Gur Pratap Suraj Granth',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰ ਪ੍ਰਤਾਪ ਸੂਰਜ ਗ੍ਰੰਥ',
+        referenceEn: 'Rut 4, Ansu 20–24 · Holgarh Khalsa Martial Gathering',
+        referencePa: 'ਰੁੱਤ ੪, ਅੰਸੂ ੨੦–੨੪ · ਕਿਲ੍ਹਾ ਹੋਲਗੜ੍ਹ ਹੋਲਾ ਮਹੱਲਾ ਪ੍ਰਸੰਗ',
+      },
+      {
+        sourceEn: 'Bhai Nand Lal Ji — Diwan-e-Goya',
+        sourcePa: 'ਭਾਈ ਨੰਦ ਲਾਲ ਜੀ — ਦੀਵਾਨ-ਏ-ਗੋਯਾ',
+        referenceEn: 'Holi-nama · Khalsa Spiritual Chivalry',
+        referencePa: 'ਹੋਲੀ-ਨਾਮਾ · ਗੁਲਿ ਹੋਲੀ ਬ-ਬਾਗ਼ਿ ਦਹਰ ਬੂ ਕਰਦ',
+      },
+    ],
+    featured: true,
+  },
+  {
+    id: '2084-vaisakhi-khalsa-sajna',
+    date: '2027-04-14',
+    sambat: 2084,
+    category: 'khalsa',
+    titleEn: 'Vaisakhi — 328th Khalsa Sajna Divas',
+    titlePa: 'ਵੈਸਾਖੀ — ੩੨੮ਵਾਂ ਖ਼ਾਲਸਾ ਸਾਜਨਾ ਦਿਵਸ',
+    shortLabelEn: 'Vaisakhi · Khalsa Sajna',
+    shortLabelPa: 'ਵੈਸਾਖੀ · ਖ਼ਾਲਸਾ ਸਾਜਨਾ',
+    tithiRuleEn: '1 Vaisakh, Sambat 2084 (Mesha Sankranti)',
+    tithiRulePa: '੧ ਵੈਸਾਖ, ਸੰਮਤ ੨੦੮੪ (ਮੇਖ ਸੰਕ੍ਰਾਂਤੀ)',
+    summaryEn: 'Creation of the Khalsa Panth and Khande-ki-Pahul by Sri Guru Gobind Singh Ji at Takht Sri Kesgarh Sahib on 1 Vaisakh, 1756 Bikrami.',
+    summaryPa: '੧ ਵੈਸਾਖ ਸੰਮਤ ੧੭੫੬ ਨੂੰ ਤਖ਼ਤ ਸ੍ਰੀ ਕੇਸਗੜ੍ਹ ਸਾਹਿਬ ਵਿਖੇ ਦਸਮੇਸ਼ ਪਿਤਾ ਜੀ ਵੱਲੋਂ ਪੰਜ ਪਿਆਰਿਆਂ ਨੂੰ ਅੰਮ੍ਰਿਤ ਛਕਾ ਕੇ ਖ਼ਾਲਸਾ ਪੰਥ ਦੀ ਸਾਜਨਾ।',
+    historicalContextEn:
+      'On 1 Vaisakh, Sambat 1756 Bikrami (1699 CE), Sri Guru Gobind Singh Ji called for five heads at Sri Anandpur Sahib, initiated the Panj Piare with Khande-ki-Pahul, and then humbly knelt to receive Amrit from them — establishing the sovereign Guru Khalsa Panth.',
+    historicalContextPa:
+      '੧ ਵੈਸਾਖ ਸੰਮਤ ੧੭੫੬ ਬਿਕ੍ਰਮੀ ਨੂੰ ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ ਵਿਖੇ ਦਸਮੇਸ਼ ਪਿਤਾ ਜੀ ਨੇ ਪੰਜ ਪਿਆਰਿਆਂ ਦੀ ਚੋਣ ਕਰਕੇ ਖੰਡੇ-ਬਾਟੇ ਦੀ ਪਾਹੁਲ ਬਖ਼ਸ਼ੀ ਅਤੇ ਆਪ ਪੰਜ ਪਿਆਰਿਆਂ ਪਾਸੋਂ ਅੰਮ੍ਰਿਤ ਛਕ ਕੇ "ਆਪੇ ਗੁਰ ਚੇਲਾ" ਦੀ ਅਦੁੱਤੀ ਮਿਸਾਲ ਕਾਇਮ ਕੀਤੀ।',
+    citations: [
+      {
+        sourceEn: 'Sri Gur Sobha (Kavi Sainapati)',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰ ਸੋਭਾ (ਕਵੀ ਸੈਨਾਪਤਿ)',
+        referenceEn: 'Adhyay 5 · Vaisakh Sangrand 1756 Bikrami Khalsa Prakat',
+        referencePa: 'ਅਧਿਆਇ ੫ · ਵੈਸਾਖ ਸੰਗਰਾਂਦ ੧੭੫੬ ਖ਼ਾਲਸਾ ਪ੍ਰਗਟ',
+      },
+      {
+        sourceEn: 'Sri Dasam Granth Sahib Ji (Khalsa Mehma)',
+        sourcePa: 'ਸ੍ਰੀ ਦਸਮ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ (ਖ਼ਾਲਸਾ ਮਹਿਮਾ)',
+        referenceEn: '33 Swaiye & Khalsa Mehma · Sovereign Identity of the Khalsa',
+        referencePa: '੩੩ ਸਵਈਏ ਅਤੇ ਖ਼ਾਲਸਾ ਮਹਿਮਾ · ਜੁਧ ਜਿਤੇ ਇਨ ਹੀ ਕੇ ਪ੍ਰਸਾਦਿ',
+        excerptPa: 'ਇਨ ਹੀ ਕੀ ਕ੍ਰਿਪਾ ਕੇ ਸਜੇ ਹਮ ਹੈਂ ਨਹੀ ਮੋ ਸੇ ਗਰੀਬ ਕਰੋਰ ਪਰੇ ॥',
+        excerptTranslit: 'In hee kee kripaa ke saje ham hain, nahee mo se gareeb karor pare.',
+      },
+    ],
+    featured: true,
+  },
+  {
+    id: '2084-parkash-guru-tegh-bahadur',
+    date: '2027-04-25',
+    sambat: 2084,
+    category: 'gurpurab',
+    titleEn: 'Parkash Purab — Sri Guru Tegh Bahadur Ji',
+    titlePa: 'ਪ੍ਰਕਾਸ਼ ਪੁਰਬ — ਸ੍ਰੀ ਗੁਰੂ ਤੇਗ਼ ਬਹਾਦਰ ਜੀ',
+    shortLabelEn: 'Parkash Guru Tegh Bahadur Ji',
+    shortLabelPa: 'ਪ੍ਰਕਾਸ਼ ਗੁਰੂ ਤੇਗ਼ ਬਹਾਦਰ ਜੀ',
+    tithiRuleEn: 'Vaisakh Vadhi 5 (12 Vaisakh, Sambat 2084)',
+    tithiRulePa: 'ਵੈਸਾਖ ਵਦੀ ੫ (੧੨ ਵੈਸਾਖ, ਸੰਮਤ ੨੦੮੪)',
+    summaryEn: 'Parkash Purab of the Ninth Patshah at Guru Ke Mahal, Sri Amritsar Sahib (Vaisakh Vadhi 5, 1678 Bikrami).',
+    summaryPa: 'ਗੁਰੂ ਕੇ ਮਹਿਲ, ਸ੍ਰੀ ਅੰਮ੍ਰਿਤਸਰ ਸਾਹਿਬ ਵਿਖੇ ਨੌਵੇਂ ਪਾਤਸ਼ਾਹ ਸ੍ਰੀ ਗੁਰੂ ਤੇਗ਼ ਬਹਾਦਰ ਜੀ ਦਾ ਪ੍ਰਕਾਸ਼ ਪੁਰਬ (ਵੈਸਾਖ ਵਦੀ ੫, ਸੰਮਤ ੧੬੭੮)।',
+    historicalContextEn:
+      'Born on Vaisakh Vadhi 5, Sambat 1678 Bikrami (1621 CE) to Sri Guru Hargobind Sahib Ji and Mata Nanaki Ji at Guru Ke Mahal in Sri Amritsar Sahib.',
+    historicalContextPa:
+      'ਵੈਸਾਖ ਵਦੀ ੫, ਸੰਮਤ ੧੬੭੮ ਬਿਕ੍ਰਮੀ ਨੂੰ ਸ੍ਰੀ ਗੁਰੂ ਹਰਿਗੋਬਿੰਦ ਸਾਹਿਬ ਜੀ ਅਤੇ ਮਾਤਾ ਨਾਨਕੀ ਜੀ ਦੇ ਗ੍ਰਹਿ ਸ੍ਰੀ ਅੰਮ੍ਰਿਤਸਰ ਸਾਹਿਬ ਵਿਖੇ ਨੌਵੇਂ ਪਾਤਸ਼ਾਹ ਜੀ ਦਾ ਪ੍ਰਕਾਸ਼ ਹੋਇਆ।',
+    citations: [
+      {
+        sourceEn: 'Bhatt Vahi Purbi Dakhani',
+        sourcePa: 'ਭੱਟ ਵਹੀ ਪੂਰਬੀ ਦੱਖਣੀ',
+        referenceEn: 'Vaisakh Vadhi 5, Sambat 1678 · Birth Record at Chak Ramdaspur (Amritsar)',
+        referencePa: 'ਵੈਸਾਖ ਵਦੀ ੫, ਸੰਮਤ ੧੬੭੮ · ਚੱਕ ਰਾਮਦਾਸਪੁਰ (ਅੰਮ੍ਰਿਤਸਰ) ਪ੍ਰਕਾਸ਼ ਲੇਖ',
+      },
+    ],
+  },
+  {
+    id: '2084-parkash-guru-angad-dev',
+    date: '2027-05-07',
+    sambat: 2084,
+    category: 'gurpurab',
+    titleEn: 'Parkash Purab — Sri Guru Angad Dev Ji',
+    titlePa: 'ਪ੍ਰਕਾਸ਼ ਪੁਰਬ — ਸ੍ਰੀ ਗੁਰੂ ਅੰਗਦ ਦੇਵ ਜੀ',
+    shortLabelEn: 'Parkash Guru Angad Dev Ji',
+    shortLabelPa: 'ਪ੍ਰਕਾਸ਼ ਗੁਰੂ ਅੰਗਦ ਦੇਵ ਜੀ',
+    tithiRuleEn: 'Vaisakh Sudhi 1 (24 Vaisakh, Sambat 2084)',
+    tithiRulePa: 'ਵੈਸਾਖ ਸੁਦੀ ੧ (੨੪ ਵੈਸਾਖ, ਸੰਮਤ ੨੦੮੪)',
+    summaryEn: 'Parkash Purab of Second Patshah Sri Guru Angad Dev Ji, consolidator of Gurmukhi script and Khadur Sahib.',
+    summaryPa: 'ਦੂਜੇ ਪਾਤਸ਼ਾਹ ਸ੍ਰੀ ਗੁਰੂ ਅੰਗਦ ਦੇਵ ਜੀ ਦਾ ਪਾਵਨ ਪ੍ਰਕਾਸ਼ ਪੁਰਬ — ਗੁਰਮੁਖੀ ਲਿਪੀ ਅਤੇ ਮੱਲ-ਅਖਾੜਿਆਂ ਦੇ ਪ੍ਰਸਾਰਕ।',
+    historicalContextEn:
+      'Born at Matte di Sarai (Nange di Sarai) in Vaisakh, Sambat 1561 Bikrami (1504 CE). Sri Guru Angad Dev Ji standardized Gurmukhi pedagogy, expanded Guru ka Langar with Mata Khivi Ji, and nurtured physical fitness through Mal Akharas at Sri Khadur Sahib.',
+    historicalContextPa:
+      'ਵੈਸਾਖ ਸੰਮਤ ੧੫੬੧ ਬਿਕ੍ਰਮੀ ਨੂੰ ਮੱਤੇ ਦੀ ਸਰਾਂ ਵਿਖੇ ਪ੍ਰਕਾਸ਼ ਧਾਰਨ ਵਾਲੇ ਸ੍ਰੀ ਗੁਰੂ ਅੰਗਦ ਦੇਵ ਜੀ ਨੇ ਸ੍ਰੀ ਖਡੂਰ ਸਾਹਿਬ ਵਿਖੇ ਗੁਰਮੁਖੀ ਵਿੱਦਿਆ, ਮਾਤਾ ਖੀਵੀ ਜੀ ਦੇ ਲੰਗਰ ਅਤੇ ਮੱਲ-ਅਖਾੜਿਆਂ ਦੀ ਪਰੰਪਰਾ ਨੂੰ ਪ੍ਰਫੁੱਲਤ ਕੀਤਾ।',
+    citations: [
+      {
+        sourceEn: 'Sri Guru Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ang 966 · Ramkali Ki Vaar Rai Balwand Tatha Satta Doom',
+        referencePa: 'ਅੰਗ ੯੬੬ · ਰਾਮਕਲੀ ਕੀ ਵਾਰ ਰਾਇ ਬਲਵੰਡਿ ਤਥਾ ਸਤੈ ਡੂਮਿ ਆਖੀ',
+      },
+    ],
+  },
+  {
+    id: '2084-parkash-guru-amar-das',
+    date: '2027-05-19',
+    sambat: 2084,
+    category: 'gurpurab',
+    titleEn: 'Parkash Purab — Sri Guru Amar Das Ji',
+    titlePa: 'ਪ੍ਰਕਾਸ਼ ਪੁਰਬ — ਸ੍ਰੀ ਗੁਰੂ ਅਮਰਦਾਸ ਜੀ',
+    shortLabelEn: 'Parkash Guru Amar Das Ji',
+    shortLabelPa: 'ਪ੍ਰਕਾਸ਼ ਗੁਰੂ ਅਮਰਦਾਸ ਜੀ',
+    tithiRuleEn: 'Vaisakh Sudhi 14 (5 Jeth, Sambat 2084)',
+    tithiRulePa: 'ਵੈਸਾਖ ਸੁਦੀ ੧੪ (੫ ਜੇਠ, ਸੰਮਤ ੨੦੮੪)',
+    summaryEn: 'Parkash Purab of Third Patshah Sri Guru Amar Das Ji, founder of Sri Goindwal Sahib, Manji system, and author of Anand Sahib.',
+    summaryPa: 'ਤੀਜੇ ਪਾਤਸ਼ਾਹ ਸ੍ਰੀ ਗੁਰੂ ਅਮਰਦਾਸ ਜੀ ਦਾ ਪਾਵਨ ਪ੍ਰਕਾਸ਼ ਪੁਰਬ — ਸ੍ਰੀ ਗੋਇੰਦਵਾਲ ਸਾਹਿਬ, ਬਾਈ ਮੰਜੀਆਂ ਅਤੇ ਅਨੰਦ ਸਾਹਿਬ ਦੇ ਰਚੇਤਾ।',
+    historicalContextEn:
+      'Born on Vaisakh Sudhi 14, Sambat 1536 Bikrami (1479 CE) at Basarke Gillan. Sri Guru Amar Das Ji institutionalized Pehle Pangat Pache Sangat, established twenty-two Manjis including women preachers, and compiled the Goindwal Pothis.',
+    historicalContextPa:
+      'ਵੈਸਾਖ ਸੁਦੀ ੧੪, ਸੰਮਤ ੧੫੩੬ ਬਿਕ੍ਰਮੀ ਨੂੰ ਬਾਸਰਕੇ ਗਿੱਲਾਂ ਵਿਖੇ ਪ੍ਰਕਾਸ਼ ਧਾਰਨ ਵਾਲੇ ਸ੍ਰੀ ਗੁਰੂ ਅਮਰਦਾਸ ਜੀ ਨੇ ਪੰਗਤ-ਸੰਗਤ, ਬਾਈ ਮੰਜੀਆਂ ਅਤੇ ਗੋਇੰਦਵਾਲ ਪੋਥੀਆਂ ਦੀ ਮਹਾਨ ਪਰੰਪਰਾ ਕਾਇਮ ਕੀਤੀ।',
+    citations: [
+      {
+        sourceEn: 'Sri Guru Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ang 917 · Raag Ramkali Mahalla 3 Anand Sahib',
+        referencePa: 'ਅੰਗ ੯੧੭ · ਰਾਗੁ ਰਾਮਕਲੀ ਮਹਲਾ ੩ ਅਨੰਦੁ',
+      },
+      {
+        sourceEn: 'Mehma Prakash (Sarup Das Bhalla)',
+        sourcePa: 'ਮਹਿਮਾ ਪ੍ਰਕਾਸ਼ (ਸਰੂਪ ਦਾਸ ਭੱਲਾ)',
+        referenceEn: 'Sakhi Sri Guru Amar Das Ji · Vaisakh Sudhi 14 Colophon',
+        referencePa: 'ਸਾਖੀ ਸ੍ਰੀ ਗੁਰੂ ਅਮਰਦਾਸ ਜੀ · ਵੈਸਾਖ ਸੁਦੀ ੧੪ ਹਵਾਲਾ',
+      },
+    ],
+  },
+  {
+    id: '2084-shaheedi-guru-arjan-dev',
+    date: '2027-06-08',
+    sambat: 2084,
+    category: 'shaheedi',
+    titleEn: 'Shaheedi Divas — Sri Guru Arjan Dev Ji (Shaheedan De Sartaj)',
+    titlePa: 'ਸ਼ਹੀਦੀ ਦਿਵਸ — ਸ੍ਰੀ ਗੁਰੂ ਅਰਜਨ ਦੇਵ ਜੀ (ਸ਼ਹੀਦਾਂ ਦੇ ਸਰਤਾਜ)',
+    shortLabelEn: 'Shaheedi Guru Arjan Dev Ji',
+    shortLabelPa: 'ਸ਼ਹੀਦੀ ਸ੍ਰੀ ਗੁਰੂ ਅਰਜਨ ਦੇਵ ਜੀ',
+    tithiRuleEn: 'Jeth Sudhi 4 (25 Jeth, Sambat 2084)',
+    tithiRulePa: 'ਜੇਠ ਸੁਦੀ ੪ (੨੫ ਜੇਠ, ਸੰਮਤ ੨੦੮੪)',
+    summaryEn: 'Martyrdom of the Fifth Patshah at Lahore on Jeth Sudhi 4, Sambat 1663 Bikrami — serene acceptance of Hukam ("Tera Kiya Meetha Laage").',
+    summaryPa: 'ਜੇਠ ਸੁਦੀ ੪, ਸੰਮਤ ੧੬੬੩ ਬਿਕ੍ਰਮੀ ਨੂੰ ਲਾਹੌਰ ਵਿਖੇ ਪੰਜਵੇਂ ਪਾਤਸ਼ਾਹ ਸ੍ਰੀ ਗੁਰੂ ਅਰਜਨ ਦੇਵ ਜੀ ਦੀ ਲਾਸਾਨੀ ਸ਼ਹਾਦਤ ("ਤੇਰਾ ਕੀਆ ਮੀਠਾ ਲਾਗੈ")।',
+    historicalContextEn:
+      'On Jeth Sudhi 4, Sambat 1663 Bikrami (1606 CE), Fifth Patshah Sri Guru Arjan Dev Ji — compiler of Adi Sri Guru Granth Sahib Ji and builder of Sri Harmandir Sahib — endured the burning iron plate and hot sand in Lahore before entering the Ravi, inaugurating the Sikh tradition of fearless Shaheedi.',
+    historicalContextPa:
+      'ਜੇਠ ਸੁਦੀ ੪, ਸੰਮਤ ੧੬੬੩ ਬਿਕ੍ਰਮੀ ਨੂੰ ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ ਦੇ ਸੰਪਾਦਕ ਅਤੇ ਸ੍ਰੀ ਹਰਿਮੰਦਰ ਸਾਹਿਬ ਦੇ ਸਿਰਜਣਹਾਰ ਪੰਜਵੇਂ ਪਾਤਸ਼ਾਹ ਜੀ ਨੇ ਲਾਹੌਰ ਵਿੱਚ ਤੱਤੀ ਤਵੀ ’ਤੇ ਬੈਠ ਕੇ "ਤੇਰਾ ਕੀਆ ਮੀਠਾ ਲਾਗੈ" ਉਚਾਰਦਿਆਂ ਸ਼ਹਾਦਤ ਪ੍ਰਾਪਤ ਕੀਤੀ।',
+    citations: [
+      {
+        sourceEn: 'Sri Guru Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ang 394 · Raag Aasa Mahalla 5',
+        referencePa: 'ਅੰਗ ੩੯੪ · ਰਾਗੁ ਆਸਾ ਮਹਲਾ ੫',
+        excerptPa: 'ਤੇਰਾ ਕੀਆ ਮੀਠਾ ਲਾਗੈ ॥ ਹਰਿ ਨਾਮੁ ਪਦਾਰਥੁ ਨਾਨਕੁ ਮਾਂਗੈ ॥',
+        excerptTranslit: 'Teraa keeaa meethaa laagai, Har naam padaarath Naanak maangai.',
+      },
+      {
+        sourceEn: 'Tuzuk-e-Jahangiri & Bhai Gurdas Vaar 24',
+        sourcePa: 'ਤੁਜ਼ਕ-ਏ-ਜਹਾਂਗੀਰੀ ਅਤੇ ਭਾਈ ਗੁਰਦਾਸ ਵਾਰ ੨੪',
+        referenceEn: 'Vaar 24, Pauri 23 · Gur Arjan Viton Kurbani',
+        referencePa: 'ਵਾਰ ੨੪, ਪਉੜੀ ੨੩ · ਰਹਿੰਦੇ ਗੁਰੂ ਦਰਿਆਉ ਵਿਚਿ ਮੀਨ ਕੁਲੀਨ ਹੇਤੁ ਨਿਰਬਾਣੀ',
+      },
+    ],
+    featured: true,
+  },
+  {
+    id: '2084-parkash-guru-hargobind',
+    date: '2027-06-25',
+    sambat: 2084,
+    category: 'gurpurab',
+    titleEn: 'Parkash Purab — Sri Guru Hargobind Sahib Ji',
+    titlePa: 'ਪ੍ਰਕਾਸ਼ ਪੁਰਬ — ਸ੍ਰੀ ਗੁਰੂ ਹਰਿਗੋਬਿੰਦ ਸਾਹਿਬ ਜੀ',
+    shortLabelEn: 'Parkash Guru Hargobind Ji',
+    shortLabelPa: 'ਪ੍ਰਕਾਸ਼ ਗੁਰੂ ਹਰਿਗੋਬਿੰਦ ਜੀ',
+    tithiRuleEn: 'Harh Vadhi 6 (11 Harh, Sambat 2084)',
+    tithiRulePa: 'ਹਾੜ੍ਹ ਵਦੀ ੬ (੧੧ ਹਾੜ੍ਹ, ਸੰਮਤ ੨੦੮੪)',
+    summaryEn: 'Parkash Purab of Sixth Patshah, Master of Miri-Piri and founder of Sri Akal Takht Sahib (Guru Ki Wadali, 1652 Bikrami).',
+    summaryPa: 'ਮੀਰੀ-ਪੀਰੀ ਦੇ ਮਾਲਕ ਅਤੇ ਸ੍ਰੀ ਅਕਾਲ ਤਖ਼ਤ ਸਾਹਿਬ ਦੇ ਸਿਰਜਣਹਾਰ ਛੇਵੇਂ ਪਾਤਸ਼ਾਹ ਜੀ ਦਾ ਪ੍ਰਕਾਸ਼ ਪੁਰਬ (ਗੁਰੂ ਕੀ ਵਡਾਲੀ, ਸੰਮਤ ੧੬੫੨)।',
+    historicalContextEn:
+      'Born at Guru Ki Wadali (Sri Amritsar) on Harh Vadhi 6, Sambat 1652 Bikrami (1595 CE). Sri Guru Hargobind Sahib Ji wore the two swords of Miri and Piri and established Sri Akal Takht Sahib facing Sri Harmandir Sahib.',
+    historicalContextPa:
+      'ਹਾੜ੍ਹ ਵਦੀ ੬, ਸੰਮਤ ੧੬੫੨ ਬਿਕ੍ਰਮੀ ਨੂੰ ਗੁਰੂ ਕੀ ਵਡਾਲੀ ਵਿਖੇ ਪ੍ਰਕਾਸ਼ ਧਾਰਨ ਵਾਲੇ ਛੇਵੇਂ ਪਾਤਸ਼ਾਹ ਜੀ ਨੇ ਮੀਰੀ-ਪੀਰੀ ਦੀਆਂ ਦੋ ਤਲਵਾਰਾਂ ਧਾਰਨ ਕੀਤੀਆਂ ਅਤੇ ਸ੍ਰੀ ਅਕਾਲ ਤਖ਼ਤ ਸਾਹਿਬ ਦੀ ਸਿਰਜਣਾ ਕੀਤੀ।',
+    citations: [
+      {
+        sourceEn: 'Sri Guru Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ang 396 · Raag Aasa Mahalla 5 (Satgur Saache Diya Bhej)',
+        referencePa: 'ਅੰਗ ੩੯੬ · ਰਾਗੁ ਆਸਾ ਮਹਲਾ ੫ (ਸਤਿਗੁਰ ਸਾਚੈ ਦੀਆ ਭੇਜਿ)',
+      },
+      {
+        sourceEn: 'Gurbilas Patshahi 6',
+        sourcePa: 'ਗੁਰਬਿਲਾਸ ਪਾਤਸ਼ਾਹੀ ੬',
+        referenceEn: 'Adhyay 1 · Wadali Parkash & Miri-Piri',
+        referencePa: 'ਅਧਿਆਇ ੧ · ਵਡਾਲੀ ਪ੍ਰਕਾਸ਼ ਅਤੇ ਮੀਰੀ-ਪੀਰੀ',
+      },
+    ],
+  },
+  {
+    id: '2084-parkash-guru-harkrishan',
+    date: '2027-07-28',
+    sambat: 2084,
+    category: 'gurpurab',
+    titleEn: 'Parkash Purab — Sri Guru Harkrishan Sahib Ji',
+    titlePa: 'ਪ੍ਰਕਾਸ਼ ਪੁਰਬ — ਸ੍ਰੀ ਗੁਰੂ ਹਰਿਕ੍ਰਿਸ਼ਨ ਸਾਹਿਬ ਜੀ',
+    shortLabelEn: 'Parkash Guru Harkrishan Ji',
+    shortLabelPa: 'ਪ੍ਰਕਾਸ਼ ਗੁਰੂ ਹਰਿਕ੍ਰਿਸ਼ਨ ਜੀ',
+    tithiRuleEn: 'Sawan Vadhi 9 (12 Sawan, Sambat 2084)',
+    tithiRulePa: 'ਸਾਵਣ ਵਦੀ ੯ (੧੨ ਸਾਵਣ, ਸੰਮਤ ੨੦੮੪)',
+    summaryEn: 'Parkash Purab of the Eighth Patshah, Bala Pritam Sri Guru Harkrishan Sahib Ji (Kiratpur Sahib, 1713 Bikrami).',
+    summaryPa: 'ਅੱਠਵੇਂ ਪਾਤਸ਼ਾਹ ਬਾਲਾ ਪ੍ਰੀਤਮ ਸ੍ਰੀ ਗੁਰੂ ਹਰਿਕ੍ਰਿਸ਼ਨ ਸਾਹਿਬ ਜੀ ਦਾ ਪਾਵਨ ਪ੍ਰਕਾਸ਼ ਪੁਰਬ (ਸ੍ਰੀ ਕੀਰਤਪੁਰ ਸਾਹਿਬ, ਸੰਮਤ ੧੭੧੩)।',
+    historicalContextEn:
+      'Born at Kiratpur Sahib on Sawan Vadhi 9, Sambat 1713 Bikrami (1656 CE), Sri Guru Harkrishan Sahib Ji served the smallpox-afflicted population of Delhi with selfless compassion at Bangla Sahib.',
+    historicalContextPa:
+      'ਸਾਵਣ ਵਦੀ ੯, ਸੰਮਤ ੧੭੧੩ ਬਿਕ੍ਰਮੀ ਨੂੰ ਸ੍ਰੀ ਕੀਰਤਪੁਰ ਸਾਹਿਬ ਵਿਖੇ ਪ੍ਰਕਾਸ਼ ਧਾਰਨ ਵਾਲੇ ਅੱਠਵੇਂ ਪਾਤਸ਼ਾਹ ਜੀ ਨੇ ਦਿੱਲੀ ਵਿਖੇ ਚੇਚਕ ਪੀੜਤਾਂ ਦੀ ਨਿਰਸਵਾਰਥ ਸੇਵਾ ਕੀਤੀ।',
+    citations: [
+      {
+        sourceEn: 'Sri Dasam Granth Sahib Ji (Chandi di Vaar / Ardas)',
+        sourcePa: 'ਸ੍ਰੀ ਦਸਮ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ (ਵਾਰ ਸ੍ਰੀ ਭਗੌਤੀ ਜੀ ਕੀ)',
+        referenceEn: 'Pauri 1 · Sri Harkrishan Dhiyaiye Jis Dithe Sabh Dukh Jaye',
+        referencePa: 'ਪਉੜੀ ੧ · ਸ੍ਰੀ ਹਰਿਕ੍ਰਿਸ਼ਨ ਧਿਆਈਐ ਜਿਸ ਡਿਠੇ ਸਭਿ ਦੁਖਿ ਜਾਇ',
+        excerptPa: 'ਸ੍ਰੀ ਹਰਿਕ੍ਰਿਸ਼ਨ ਧਿਆਈਐ ਜਿਸ ਡਿਠੇ ਸਭਿ ਦੁਖਿ ਜਾਇ ॥',
+        excerptTranslit: 'Sree Harikrishan dhiaaeeai jis dithe sabh dukh jaae.',
+      },
+    ],
+  },
+  {
+    id: '2084-pehla-parkash-sggs',
+    date: '2027-09-01',
+    sambat: 2084,
+    category: 'gurpurab',
+    titleEn: 'Pehla Parkash Purab — Sri Guru Granth Sahib Ji',
+    titlePa: 'ਪਹਿਲਾ ਪ੍ਰਕਾਸ਼ ਪੁਰਬ — ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+    shortLabelEn: 'Pehla Parkash SGGS Ji',
+    shortLabelPa: 'ਪਹਿਲਾ ਪ੍ਰਕਾਸ਼ ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+    tithiRuleEn: 'Bhadon Sudhi 1 (16 Bhadon, Sambat 2084)',
+    tithiRulePa: 'ਭਾਦੋਂ ਸੁਦੀ ੧ (੧੬ ਭਾਦੋਂ, ਸੰਮਤ ੨੦੮੪)',
+    summaryEn: 'First installation of Adi Sri Guru Granth Sahib Ji at Sachkhand Sri Harmandir Sahib by Sri Guru Arjan Dev Ji (Bhadon Sudhi 1, 1661 Bikrami).',
+    summaryPa: 'ਭਾਦੋਂ ਸੁਦੀ ੧, ਸੰਮਤ ੧੬੬੧ ਬਿਕ੍ਰਮੀ ਨੂੰ ਸ੍ਰੀ ਗੁਰੂ ਅਰਜਨ ਦੇਵ ਜੀ ਵੱਲੋਂ ਸੱਚਖੰਡ ਸ੍ਰੀ ਹਰਿਮੰਦਰ ਸਾਹਿਬ ਵਿਖੇ ਆਦਿ ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ ਦਾ ਪਹਿਲਾ ਪ੍ਰਕਾਸ਼।',
+    historicalContextEn:
+      'Completed at Ramsar Sahib with Bhai Gurdas Ji as scribe, the Adi Bir of Sri Guru Granth Sahib Ji was carried in procession and installed at Sri Harmandir Sahib on Bhadon Sudhi 1, Sambat 1661 Bikrami (1604 CE), with Baba Buddha Ji appointed first Granthi.',
+    historicalContextPa:
+      'ਭਾਈ ਗੁਰਦਾਸ ਜੀ ਦੀ ਲਿਖਾਈ ਵਿੱਚ ਰਾਮਸਰ ਸਾਹਿਬ ਵਿਖੇ ਸੰਪੂਰਨ ਹੋਈ ਆਦਿ ਬੀੜ ਦਾ ਭਾਦੋਂ ਸੁਦੀ ੧, ਸੰਮਤ ੧੬੬੧ ਬਿਕ੍ਰਮੀ ਨੂੰ ਸ੍ਰੀ ਹਰਿਮੰਦਰ ਸਾਹਿਬ ਵਿਖੇ ਪਹਿਲਾ ਪ੍ਰਕਾਸ਼ ਕੀਤਾ ਗਿਆ ਅਤੇ ਬਾਬਾ ਬੁੱਢਾ ਜੀ ਪਹਿਲੇ ਗ੍ਰੰਥੀ ਥਾਪੇ ਗਏ।',
+    citations: [
+      {
+        sourceEn: 'Kartarpur Bir Colophon (Tatkara)',
+        sourcePa: 'ਕਰਤਾਰਪੁਰੀ ਬੀੜ ਤਤਕਰਾ (ਸੰਮਤ ੧੬੬੧)',
+        referenceEn: 'Sambat 1661 Miti Bhadon Vadi 1 (Completion) & Sudhi 1 (Installation)',
+        referencePa: 'ਸੰਮਤ ੧੬੬੧ ਮਿਤੀ ਭਾਦੋਂ ਵਦੀ ੧ (ਸੰਪੂਰਨਤਾ) ਅਤੇ ਸੁਦੀ ੧ (ਪਹਿਲਾ ਪ੍ਰਕਾਸ਼)',
+      },
+      {
+        sourceEn: 'Sri Gur Pratap Suraj Granth',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰ ਪ੍ਰਤਾਪ ਸੂਰਜ ਗ੍ਰੰਥ',
+        referenceEn: 'Raas 3, Ansu 48–50 · First Hukamnama (Suhee Mahalla 5)',
+        referencePa: 'ਰਾਸਿ ੩, ਅੰਸੂ ੪੮–੫੦ · ਪਹਿਲਾ ਹੁਕਮਨਾਮਾ (ਸੂਹੀ ਮਹਲਾ ੫)',
+        excerptPa: 'ਸੰਤਾ ਕੇ ਕਾਰਜਿ ਆਪਿ ਖਲੋਇਆ ਹਰਿ ਕੰਮੁ ਕਰਾਵਣਿ ਆਇਆ ਰਾਮ ॥',
+        excerptTranslit: 'Santaa ke kaaraj aap khaloiaa Har kamm karaavan aaiaa Raam.',
+      },
+    ],
+    featured: true,
+  },
+  {
+    id: '2084-joti-jot-guru-nanak',
+    date: '2027-09-25',
+    sambat: 2084,
+    category: 'gurpurab',
+    titleEn: 'Joti Jot Divas — Sri Guru Nanak Dev Ji (Sri Kartarpur Sahib)',
+    titlePa: 'ਜੋਤੀ ਜੋਤ ਦਿਵਸ — ਸ੍ਰੀ ਗੁਰੂ ਨਾਨਕ ਦੇਵ ਜੀ (ਸ੍ਰੀ ਕਰਤਾਰਪੁਰ ਸਾਹਿਬ)',
+    shortLabelEn: 'Joti Jot Guru Nanak Dev Ji',
+    shortLabelPa: 'ਜੋਤੀ ਜੋਤ ਗੁਰੂ ਨਾਨਕ ਦੇਵ ਜੀ',
+    tithiRuleEn: 'Assu Vadhi 10 (9 Assu, Sambat 2084)',
+    tithiRulePa: 'ਅੱਸੂ ਵਦੀ ੧੦ (੯ ਅੱਸੂ, ਸੰਮਤ ੨੦੮੪)',
+    summaryEn: 'Sri Guru Nanak Dev Ji merged into the Eternal Light at Sri Kartarpur Sahib on Assu Vadhi 10, Sambat 1596 Bikrami.',
+    summaryPa: 'ਅੱਸੂ ਵਦੀ ੧੦, ਸੰਮਤ ੧੫੯੬ ਬਿਕ੍ਰਮੀ ਨੂੰ ਸ੍ਰੀ ਕਰਤਾਰਪੁਰ ਸਾਹਿਬ ਵਿਖੇ ਸ੍ਰੀ ਗੁਰੂ ਨਾਨਕ ਦੇਵ ਜੀ ਜੋਤੀ ਜੋਤ ਸਮਾਏ।',
+    historicalContextEn:
+      'Having installed Bhai Lehna Ji as Sri Guru Angad Dev Ji, Sri Guru Nanak Dev Ji merged into the Supreme Light at Kartarpur on the banks of the Ravi on Assu Vadhi 10, Sambat 1596 Bikrami (1539 CE).',
+    historicalContextPa:
+      'ਭਾਈ ਲਹਿਣਾ ਜੀ ਨੂੰ ਸ੍ਰੀ ਗੁਰੂ ਅੰਗਦ ਦੇਵ ਜੀ ਦੇ ਰੂਪ ਵਿੱਚ ਗੁਰਿਆਈ ਸੌਂਪਣ ਉਪਰੰਤ ਅੱਸੂ ਵਦੀ ੧੦, ਸੰਮਤ ੧੫੯੬ ਬਿਕ੍ਰਮੀ ਨੂੰ ਰਾਵੀ ਕੰਢੇ ਸ੍ਰੀ ਕਰਤਾਰਪੁਰ ਸਾਹਿਬ ਵਿਖੇ ਗੁਰੂ ਨਾਨਕ ਦੇਵ ਜੀ ਜੋਤੀ ਜੋਤ ਸਮਾਏ।',
+    citations: [
+      {
+        sourceEn: 'Puratan Janamsakhi (Colebrooke / Walayatwali)',
+        sourcePa: 'ਪੁਰਾਤਨ ਜਨਮਸਾਖੀ',
+        referenceEn: 'Colophon of Sambat 1596 Assu Vadi 10 · Kartarpur Sahib',
+        referencePa: 'ਸੰਮਤ ੧੫੯੬ ਅੱਸੂ ਵਦੀ ੧੦ · ਸ੍ਰੀ ਕਰਤਾਰਪੁਰ ਸਾਹਿਬ ਹਵਾਲਾ',
+      },
+    ],
+  },
+  {
+    id: '2084-parkash-guru-ram-das',
+    date: '2027-10-17',
+    sambat: 2084,
+    category: 'gurpurab',
+    titleEn: 'Parkash Purab — Sri Guru Ram Das Ji',
+    titlePa: 'ਪ੍ਰਕਾਸ਼ ਪੁਰਬ — ਸ੍ਰੀ ਗੁਰੂ ਰਾਮਦਾਸ ਜੀ',
+    shortLabelEn: 'Parkash Guru Ram Das Ji',
+    shortLabelPa: 'ਪ੍ਰਕਾਸ਼ ਗੁਰੂ ਰਾਮਦਾਸ ਜੀ',
+    tithiRuleEn: 'Katak Vadhi 2 (31 Assu, Sambat 2084)',
+    tithiRulePa: 'ਕੱਤਕ ਵਦੀ ੨ (੩੧ ਅੱਸੂ, ਸੰਮਤ ੨੦੮੪)',
+    summaryEn: 'Parkash Purab of Fourth Patshah Sri Guru Ram Das Ji, founder of Sri Amritsar Sahib (Chuna Mandi, Lahore, 1591 Bikrami).',
+    summaryPa: 'ਸ੍ਰੀ ਅੰਮ੍ਰਿਤਸਰ ਸਾਹਿਬ ਦੇ ਬਾਨੀ ਚੌਥੇ ਪਾਤਸ਼ਾਹ ਸ੍ਰੀ ਗੁਰੂ ਰਾਮਦਾਸ ਜੀ ਦਾ ਪਾਵਨ ਪ੍ਰਕਾਸ਼ ਪੁਰਬ (ਕੱਤਕ ਵਦੀ ੨, ਸੰਮਤ ੧੫੯੧)।',
+    historicalContextEn:
+      'Born on Katak Vadhi 2, Sambat 1591 Bikrami (1534 CE) in Chuna Mandi, Lahore, Sri Guru Ram Das Ji excavated the sacred Amrit Sarovar, founded Chak Ramdaspur (Sri Amritsar Sahib), and composed the Lavan of Anand Karaj.',
+    historicalContextPa:
+      'ਕੱਤਕ ਵਦੀ ੨, ਸੰਮਤ ੧੫੯੧ ਬਿਕ੍ਰਮੀ ਨੂੰ ਚੂਨਾ ਮੰਡੀ ਲਾਹੌਰ ਵਿਖੇ ਪ੍ਰਕਾਸ਼ ਧਾਰਨ ਵਾਲੇ ਸ੍ਰੀ ਗੁਰੂ ਰਾਮਦਾਸ ਜੀ ਨੇ ਸ੍ਰੀ ਅੰਮ੍ਰਿਤਸਰ ਸਰੋਵਰ ਅਤੇ ਨਗਰ ਦੀ ਸਥਾਪਨਾ ਕੀਤੀ ਅਤੇ ਲਾਵਾਂ ਦੀ ਬਾਣੀ ਉਚਾਰੀ।',
+    citations: [
+      {
+        sourceEn: 'Sri Guru Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ang 1396–1406 · Swaiye Mahalle Chauthe Ke',
+        referencePa: 'ਅੰਗ ੧੩੯੬–੧੪੦੬ · ਸਵਈਏ ਮਹਲੇ ਚਉਥੇ ਕੇ',
+        excerptPa: 'ਧੰਨੁ ਧੰਨੁ ਰਾਮਦਾਸ ਗੁਰੁ ਜਿਨਿ ਸਿਰਿਆ ਤਿਨੈ ਸਵਾਰਿਆ ॥',
+        excerptTranslit: 'Dhann dhann Raamdaas Gur jin siriaa tinai savaariaa.',
+      },
+    ],
+    featured: true,
+  },
+  {
+    id: '2084-bandi-chhor-divas',
+    date: '2027-10-29',
+    sambat: 2084,
+    category: 'khalsa',
+    titleEn: 'Bandi Chhor Divas (Sri Guru Hargobind Sahib Ji)',
+    titlePa: 'ਬੰਦੀ ਛੋੜ ਦਿਵਸ (ਸ੍ਰੀ ਗੁਰੂ ਹਰਿਗੋਬਿੰਦ ਸਾਹਿਬ ਜੀ)',
+    shortLabelEn: 'Bandi Chhor Divas',
+    shortLabelPa: 'ਬੰਦੀ ਛੋੜ ਦਿਵਸ',
+    tithiRuleEn: 'Katak Masya (12 Katak, Sambat 2084)',
+    tithiRulePa: 'ਕੱਤਕ ਮੱਸਿਆ (੧੨ ਕੱਤਕ, ਸੰਮਤ ੨੦੮੪)',
+    summaryEn: 'Commemoration of the release of 52 princes from Gwalior Fort and Deepmala at Sri Harmandir Sahib on Katak Masya.',
+    summaryPa: 'ਗਵਾਲੀਅਰ ਦੇ ਕਿਲ੍ਹੇ ਤੋਂ ੫੨ ਰਾਜਿਆਂ ਦੀ ਰਿਹਾਈ ਅਤੇ ਸ੍ਰੀ ਹਰਿਮੰਦਰ ਸਾਹਿਬ ਵਿਖੇ ਬੰਦੀ ਛੋੜ ਦਿਵਸ ਦੀਪਮਾਲਾ।',
+    historicalContextEn:
+      'Observed on Katak Masya in Sambat 2084 (Friday, 29 October 2027 / 12 Katak), celebrating the compassion and sovereignty of Sri Guru Hargobind Sahib Ji.',
+    historicalContextPa:
+      'ਸੰਮਤ ੨੦੮੪ ਦੀ ਕੱਤਕ ਮੱਸਿਆ (੧੨ ਕੱਤਕ, ੨੯ ਅਕਤੂਬਰ ੨੦੨੭) ਨੂੰ ਸ੍ਰੀ ਗੁਰੂ ਹਰਿਗੋਬਿੰਦ ਸਾਹਿਬ ਜੀ ਦੇ ਬੰਦੀ ਛੋੜ ਦਿਵਸ ਵਜੋਂ ਸ੍ਰੀ ਅੰਮ੍ਰਿਤਸਰ ਸਾਹਿਬ ਸਮੇਤ ਸਮੁੱਚੇ ਜਗਤ ਵਿੱਚ ਦੀਪਮਾਲਾ ਕੀਤੀ ਜਾਂਦੀ ਹੈ।',
+    citations: [
+      {
+        sourceEn: 'Sri Gur Pratap Suraj Granth',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰ ਪ੍ਰਤਾਪ ਸੂਰਜ ਗ੍ਰੰਥ',
+        referenceEn: 'Raas 5, Ansu 26–32 · Bandi Chhor & Deepmala',
+        referencePa: 'ਰਾਸਿ ੫, ਅੰਸੂ ੨੬–੩੨ · ਬੰਦੀ ਛੋੜ ਅਤੇ ਦੀਪਮਾਲਾ',
+      },
+    ],
+  },
+  {
+    id: '2084-gurgaddi-sggs',
+    date: '2027-11-02',
+    sambat: 2084,
+    category: 'gurpurab',
+    titleEn: 'Gurgaddi Divas — Sri Guru Granth Sahib Ji',
+    titlePa: 'ਗੁਰਗੱਦੀ ਦਿਵਸ — ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+    shortLabelEn: 'Gurgaddi SGGS Ji',
+    shortLabelPa: 'ਗੁਰਗੱਦੀ ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+    tithiRuleEn: 'Katak Sudhi 4 (16 Katak, Sambat 2084)',
+    tithiRulePa: 'ਕੱਤਕ ਸੁਦੀ ੪ (੧੬ ਕੱਤਕ, ਸੰਮਤ ੨੦੮੪)',
+    summaryEn: 'Bestowal of eternal Guruship upon Sri Guru Granth Sahib Ji at Sri Hazur Sahib, Nanded.',
+    summaryPa: 'ਸ੍ਰੀ ਹਜ਼ੂਰ ਸਾਹਿਬ ਨਾਂਦੇੜ ਵਿਖੇ ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ ਨੂੰ ਸਦੀਵੀ ਗੁਰਿਆਈ ਬਖ਼ਸ਼ਣ ਦਾ ਦਿਹਾੜਾ।',
+    historicalContextEn:
+      'Observed on Katak Sudhi 4 (16 Katak, Sambat 2084), remembering Dashmesh Pita’s eternal decree establishing Sri Guru Granth Sahib Ji as the manifest Guru of the Khalsa.',
+    historicalContextPa:
+      'ਕੱਤਕ ਸੁਦੀ ੪ (੧੬ ਕੱਤਕ, ਸੰਮਤ ੨੦੮੪) ਨੂੰ ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ ਦਾ ਗੁਰਗੱਦੀ ਦਿਵਸ ਮਨਾਇਆ ਜਾਂਦਾ ਹੈ।',
+    citations: [
+      {
+        sourceEn: 'Bhatt Vahi Talauda',
+        sourcePa: 'ਭੱਟ ਵਹੀ ਤਲੌਡਾ',
+        referenceEn: 'Katak Sudhi 4, Sambat 1765 · Nanded Colophon',
+        referencePa: 'ਕੱਤਕ ਸੁਦੀ ੪, ਸੰਮਤ ੧੭੬੫ · ਨਾਂਦੇੜ ਸਾਖੀ',
+      },
+    ],
+  },
+  {
+    id: '2084-joti-jot-guru-gobind-singh',
+    date: '2027-11-03',
+    sambat: 2084,
+    category: 'gurpurab',
+    titleEn: 'Joti Jot Divas — Sri Guru Gobind Singh Ji',
+    titlePa: 'ਜੋਤੀ ਜੋਤ ਦਿਵਸ — ਸ੍ਰੀ ਗੁਰੂ ਗੋਬਿੰਦ ਸਿੰਘ ਜੀ',
+    shortLabelEn: 'Joti Jot Guru Gobind Singh Ji',
+    shortLabelPa: 'ਜੋਤੀ ਜੋਤ ਗੁਰੂ ਗੋਬਿੰਦ ਸਿੰਘ ਜੀ',
+    tithiRuleEn: 'Katak Sudhi 5 (17 Katak, Sambat 2084)',
+    tithiRulePa: 'ਕੱਤਕ ਸੁਦੀ ੫ (੧੭ ਕੱਤਕ, ਸੰਮਤ ੨੦੮੪)',
+    summaryEn: 'Commemoration of Dashmesh Pita merging into the Eternal Light at Sri Hazur Sahib (Katak Sudhi 5).',
+    summaryPa: 'ਕੱਤਕ ਸੁਦੀ ੫ ਨੂੰ ਸੱਚਖੰਡ ਸ੍ਰੀ ਹਜ਼ੂਰ ਸਾਹਿਬ ਵਿਖੇ ਦਸਮੇਸ਼ ਪਿਤਾ ਜੀ ਦਾ ਜੋਤੀ ਜੋਤ ਦਿਵਸ।',
+    historicalContextEn:
+      'Observed on Katak Sudhi 5 in Sambat 2084 (17 Katak / 3 November 2027).',
+    historicalContextPa:
+      'ਸੰਮਤ ੨੦੮੪ ਵਿੱਚ ਕੱਤਕ ਸੁਦੀ ੫ (੧੭ ਕੱਤਕ / ੩ ਨਵੰਬਰ ੨੦੨੭) ਨੂੰ ਦਸਮੇਸ਼ ਪਿਤਾ ਜੀ ਦਾ ਜੋਤੀ ਜੋਤ ਦਿਹਾੜਾ ਮਨਾਇਆ ਜਾਂਦਾ ਹੈ।',
+    citations: [
+      {
+        sourceEn: 'Sri Gur Sobha (Kavi Sainapati)',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰ ਸੋਭਾ (ਕਵੀ ਸੈਨਾਪਤਿ)',
+        referenceEn: 'Adhyay 18 · Katak Sudhi Panchmi 1765',
+        referencePa: 'ਅਧਿਆਇ ੧੮ · ਕੱਤਕ ਸੁਦੀ ਪੰਚਮੀ ੧੭੬੫',
+      },
+    ],
+  },
+  {
+    id: '2084-parkash-guru-nanak-dev-ji',
+    date: '2027-11-14',
+    sambat: 2084,
+    category: 'gurpurab',
+    titleEn: '558th Parkash Purab — Sri Guru Nanak Dev Ji',
+    titlePa: '੫੫੮ਵਾਂ ਪ੍ਰਕਾਸ਼ ਪੁਰਬ — ਸ੍ਰੀ ਗੁਰੂ ਨਾਨਕ ਦੇਵ ਜੀ',
+    shortLabelEn: '558th Parkash Sri Guru Nanak Dev Ji',
+    shortLabelPa: '੫੫੮ਵਾਂ ਪ੍ਰਕਾਸ਼ ਸ੍ਰੀ ਗੁਰੂ ਨਾਨਕ ਦੇਵ ਜੀ',
+    tithiRuleEn: 'Katak Puranmashi (28 Katak, Sambat 2084)',
+    tithiRulePa: 'ਕੱਤਕ ਪੂਰਨਮਾਸ਼ੀ (੨੮ ਕੱਤਕ, ਸੰਮਤ ੨੦੮੪)',
+    summaryEn: '558th Parkash Purab of Sri Guru Nanak Dev Ji on Katak Puranmashi (28 Katak, Sambat 2084 / Sunday, 14 November 2027).',
+    summaryPa: 'ਜਗਤ ਗੁਰੂ ਸ੍ਰੀ ਗੁਰੂ ਨਾਨਕ ਦੇਵ ਜੀ ਦਾ ੫੫੮ਵਾਂ ਪਾਵਨ ਪ੍ਰਕਾਸ਼ ਪੁਰਬ — ਕੱਤਕ ਪੂਰਨਮਾਸ਼ੀ, ੨੮ ਕੱਤਕ ਸੰਮਤ ੨੦੮੪।',
+    historicalContextEn:
+      'In Sambat 2084, Katak Puranmashi occurs on Sunday, 14 November 2027 (28 Katak) — illustrating how true lunar Katak Puranmashi naturally shifts by ~11 days relative to the solar calendar each year.',
+    historicalContextPa:
+      'ਸੰਮਤ ੨੦੮੪ ਵਿੱਚ ਕੱਤਕ ਪੂਰਨਮਾਸ਼ੀ ਐਤਵਾਰ ੧੪ ਨਵੰਬਰ ੨੦੨੭ (੨੮ ਕੱਤਕ) ਨੂੰ ਆਉਂਦੀ ਹੈ — ਜੋ ਪੁਰਾਤਨ ਚੰਦਰ-ਸੂਰਜੀ ਜੰਤਰੀ ਦੀ ਅਸਲ ਗਤੀ ਨੂੰ ਪ੍ਰਗਟ ਕਰਦੀ ਹੈ।',
+    citations: [
+      {
+        sourceEn: 'Bhai Gurdas Ji — Vaaran',
+        sourcePa: 'ਭਾਈ ਗੁਰਦਾਸ ਜੀ — ਵਾਰਾਂ',
+        referenceEn: 'Vaar 1, Pauri 27 · Satgur Nanak Pragatia',
+        referencePa: 'ਵਾਰ ੧, ਪਉੜੀ ੨੭ · ਸਤਿਗੁਰ ਨਾਨਕ ਪ੍ਰਗਟਿਆ',
+      },
+    ],
+    featured: true,
+  },
+  {
+    id: '2084-shaheedi-guru-tegh-bahadur',
+    date: '2027-12-03',
+    sambat: 2084,
+    category: 'shaheedi',
+    titleEn: 'Shaheedi Divas — Sri Guru Tegh Bahadur Ji',
+    titlePa: 'ਸ਼ਹੀਦੀ ਦਿਵਸ — ਸ੍ਰੀ ਗੁਰੂ ਤੇਗ਼ ਬਹਾਦਰ ਜੀ',
+    shortLabelEn: 'Shaheedi Guru Tegh Bahadur Ji',
+    shortLabelPa: 'ਸ਼ਹੀਦੀ ਸ੍ਰੀ ਗੁਰੂ ਤੇਗ਼ ਬਹਾਦਰ ਜੀ',
+    tithiRuleEn: 'Maghar Sudhi 5 (17 Maghar, Sambat 2084)',
+    tithiRulePa: 'ਮੱਘਰ ਸੁਦੀ ੫ (੧੭ ਮੱਘਰ, ਸੰਮਤ ੨੦੮੪)',
+    summaryEn: 'Martyrdom of the Ninth Patshah at Chandni Chowk, Delhi on Maghar Sudhi 5 (17 Maghar, Sambat 2084).',
+    summaryPa: 'ਮੱਘਰ ਸੁਦੀ ੫ (੧੭ ਮੱਘਰ, ਸੰਮਤ ੨੦੮੪) ਨੂੰ ਨੌਵੇਂ ਪਾਤਸ਼ਾਹ ਸ੍ਰੀ ਗੁਰੂ ਤੇਗ਼ ਬਹਾਦਰ ਜੀ ਦਾ ਸ਼ਹੀਦੀ ਦਿਹਾੜਾ।',
+    historicalContextEn:
+      'Observed on Maghar Sudhi 5 in Sambat 2084 (Friday, 3 December 2027 / 17 Maghar), honoring the Ninth Patshah, Bhai Mati Das Ji, Bhai Sati Das Ji, and Bhai Dayala Ji.',
+    historicalContextPa:
+      'ਸੰਮਤ ੨੦੮੪ ਵਿੱਚ ਮੱਘਰ ਸੁਦੀ ੫ ਸ਼ੁੱਕਰਵਾਰ, ੩ ਦਸੰਬਰ ੨੦੨੭ (੧੭ ਮੱਘਰ) ਨੂੰ ਨੌਵੇਂ ਪਾਤਸ਼ਾਹ ਅਤੇ ਤਿੰਨ ਪਿਆਰੇ ਸ਼ਹੀਦ ਸਿੰਘਾਂ ਦੀ ਯਾਦ ਮਨਾਈ ਜਾਂਦੀ ਹੈ।',
+    citations: [
+      {
+        sourceEn: 'Sri Dasam Granth Sahib Ji (Bachitar Natak)',
+        sourcePa: 'ਸ੍ਰੀ ਦਸਮ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ (ਬਚਿਤ੍ਰ ਨਾਟਕ)',
+        referenceEn: 'Adhyay 5, Chhand 13–15 · Tilak Janju Rakha',
+        referencePa: 'ਅਧਿਆਇ ੫, ਛੰਦ ੧੩–੧੫ · ਤਿਲਕ ਜੰਞੂ ਰਾਖਾ ਪ੍ਰਭ ਤਾਕਾ',
+      },
+    ],
+  },
+  {
+    id: '2084-vadde-sahibzade',
+    date: '2027-12-23',
+    sambat: 2084,
+    category: 'shaheedi',
+    titleEn: 'Shaheedi Divas — Vadde Sahibzade (Sri Chamkaur Sahib)',
+    titlePa: 'ਸ਼ਹੀਦੀ ਦਿਵਸ — ਵੱਡੇ ਸਾਹਿਬਜ਼ਾਦੇ (ਸ੍ਰੀ ਚਮਕੌਰ ਸਾਹਿਬ)',
+    shortLabelEn: 'Shaheedi Vadde Sahibzade',
+    shortLabelPa: 'ਸ਼ਹੀਦੀ ਵੱਡੇ ਸਾਹਿਬਜ਼ਾਦੇ',
+    tithiRuleEn: '8 Poh, Sambat 2084',
+    tithiRulePa: '੮ ਪੋਹ, ਸੰਮਤ ੨੦੮੪',
+    summaryEn: 'Annual commemoration of Baba Ajit Singh Ji, Baba Jujhar Singh Ji, and the Singhs of Chamkaur Sahib on 8 Poh.',
+    summaryPa: '੮ ਪੋਹ ਨੂੰ ਸ੍ਰੀ ਚਮਕੌਰ ਸਾਹਿਬ ਵਿਖੇ ਵੱਡੇ ਸਾਹਿਬਜ਼ਾਦਿਆਂ ਅਤੇ ਸ਼ਹੀਦ ਸਿੰਘਾਂ ਦਾ ਸ਼ਹੀਦੀ ਦਿਹਾੜਾ।',
+    historicalContextEn:
+      'Observed on 8 Poh (23 December 2027) in Sambat 2084.',
+    historicalContextPa:
+      'ਸੰਮਤ ੨੦੮੪ ਵਿੱਚ ੮ ਪੋਹ (੨੩ ਦਸੰਬਰ ੨੦੨੭) ਨੂੰ ਗੜ੍ਹੀ ਚਮਕੌਰ ਦੇ ਸ਼ਹੀਦਾਂ ਦੀ ਯਾਦ ਮਨਾਈ ਜਾਂਦੀ ਹੈ।',
+    citations: [
+      {
+        sourceEn: 'Prachin Panth Prakash (Rattan Singh Bhangu)',
+        sourcePa: 'ਪ੍ਰਾਚੀਨ ਪੰਥ ਪ੍ਰਕਾਸ਼ (ਰਤਨ ਸਿੰਘ ਭੰਗੂ)',
+        referenceEn: 'Sakhi Garhi Chamkaur · 8 Poh 1761',
+        referencePa: 'ਸਾਖੀ ਗੜ੍ਹੀ ਚਮਕੌਰ · ੮ ਪੋਹ ੧੭੬੧',
+      },
+    ],
+  },
+  {
+    id: '2084-chhote-sahibzade',
+    date: '2027-12-28',
+    sambat: 2084,
+    category: 'shaheedi',
+    titleEn: 'Shaheedi Divas — Chhote Sahibzade & Mata Gujri Ji',
+    titlePa: 'ਸ਼ਹੀਦੀ ਦਿਵਸ — ਛੋਟੇ ਸਾਹਿਬਜ਼ਾਦੇ ਅਤੇ ਮਾਤਾ ਗੁਜਰੀ ਜੀ',
+    shortLabelEn: 'Shaheedi Chhote Sahibzade',
+    shortLabelPa: 'ਸ਼ਹੀਦੀ ਛੋਟੇ ਸਾਹਿਬਜ਼ਾਦੇ',
+    tithiRuleEn: '13 Poh, Sambat 2084',
+    tithiRulePa: '੧੩ ਪੋਹ, ਸੰਮਤ ੨੦੮੪',
+    summaryEn: 'Annual commemoration of Baba Zorawar Singh Ji, Baba Fateh Singh Ji, and Mata Gujri Ji at Sri Fatehgarh Sahib on 13 Poh.',
+    summaryPa: '੧੩ ਪੋਹ ਨੂੰ ਸ੍ਰੀ ਫ਼ਤਹਿਗੜ੍ਹ ਸਾਹਿਬ ਵਿਖੇ ਛੋਟੇ ਸਾਹਿਬਜ਼ਾਦਿਆਂ ਅਤੇ ਮਾਤਾ ਗੁਜਰੀ ਜੀ ਦਾ ਸ਼ਹੀਦੀ ਦਿਹਾੜਾ।',
+    historicalContextEn:
+      'Observed on 13 Poh (28 December 2027) in Sambat 2084.',
+    historicalContextPa:
+      'ਸੰਮਤ ੨੦੮੪ ਵਿੱਚ ੧੩ ਪੋਹ (੨੮ ਦਸੰਬਰ ੨੦੨੭) ਨੂੰ ਸਰਹਿੰਦ ਦੇ ਅਦੁੱਤੀ ਸ਼ਹੀਦਾਂ ਦੀ ਯਾਦ ਮਨਾਈ ਜਾਂਦੀ ਹੈ।',
+    citations: [
+      {
+        sourceEn: 'Bhatt Vahi Talauda',
+        sourcePa: 'ਭੱਟ ਵਹੀ ਤਲੌਡਾ',
+        referenceEn: '13 Poh, Sambat 1761 · Sirhind Colophon',
+        referencePa: '੧੩ ਪੋਹ, ਸੰਮਤ ੧੭੬੧ · ਸਰਹਿੰਦ ਸਾਖੀ',
+      },
+    ],
+  },
+  {
+    id: '2084-parkash-guru-gobind-singh',
+    date: '2028-01-04',
+    sambat: 2084,
+    category: 'gurpurab',
+    titleEn: 'Parkash Purab — Sri Guru Gobind Singh Ji',
+    titlePa: 'ਪ੍ਰਕਾਸ਼ ਪੁਰਬ — ਸ੍ਰੀ ਗੁਰੂ ਗੋਬਿੰਦ ਸਿੰਘ ਜੀ',
+    shortLabelEn: 'Parkash Guru Gobind Singh Ji',
+    shortLabelPa: 'ਪ੍ਰਕਾਸ਼ ਸ੍ਰੀ ਗੁਰੂ ਗੋਬਿੰਦ ਸਿੰਘ ਜੀ',
+    tithiRuleEn: 'Poh Sudhi 7 (20 Poh, Sambat 2084)',
+    tithiRulePa: 'ਪੋਹ ਸੁਦੀ ੭ (੨੦ ਪੋਹ, ਸੰਮਤ ੨੦੮੪)',
+    summaryEn: 'Parkash Purab of Dashmesh Pita Sri Guru Gobind Singh Ji on Poh Sudhi 7 (20 Poh, Sambat 2084 / Tuesday, 4 January 2028).',
+    summaryPa: 'ਦਸਮੇਸ਼ ਪਿਤਾ ਸ੍ਰੀ ਗੁਰੂ ਗੋਬਿੰਦ ਸਿੰਘ ਜੀ ਦਾ ਪ੍ਰਕਾਸ਼ ਪੁਰਬ — ਪੋਹ ਸੁਦੀ ੭ (੨੦ ਪੋਹ, ਸੰਮਤ ੨੦੮੪)।',
+    historicalContextEn:
+      'In Sambat 2084, Poh Sudhi 7 arrives on Tuesday, 4 January 2028 (20 Poh), celebrated across Takht Sri Patna Sahib and the global Khalsa Panth.',
+    historicalContextPa:
+      'ਸੰਮਤ ੨੦੮੪ ਵਿੱਚ ਪੋਹ ਸੁਦੀ ੭ ਮੰਗਲਵਾਰ ੪ ਜਨਵਰੀ ੨੦੨੮ (੨੦ ਪੋਹ) ਨੂੰ ਆਉਂਦੀ ਹੈ।',
+    citations: [
+      {
+        sourceEn: 'Sri Dasam Granth Sahib Ji (Bachitar Natak)',
+        sourcePa: 'ਸ੍ਰੀ ਦਸਮ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ (ਬਚਿਤ੍ਰ ਨਾਟਕ)',
+        referenceEn: 'Adhyay 7 · Patna Sahib Parkash',
+        referencePa: 'ਅਧਿਆਇ ੭ · ਪਟਨਾ ਸਾਹਿਬ ਪ੍ਰਕਾਸ਼',
+      },
+    ],
+    featured: true,
+  },
+  {
+    id: '2084-maghi-chali-mukte',
+    date: '2028-01-15',
+    sambat: 2084,
+    category: 'shaheedi',
+    titleEn: 'Maghi — Shaheedi Divas of Chali Mukte',
+    titlePa: 'ਮਾਘੀ — ਚਾਲੀ ਮੁਕਤਿਆਂ ਦਾ ਸ਼ਹੀਦੀ ਦਿਹਾੜਾ',
+    shortLabelEn: 'Maghi · 40 Mukte',
+    shortLabelPa: 'ਮਾਘੀ · ਚਾਲੀ ਮੁਕਤੇ',
+    tithiRuleEn: '1 Magh, Sambat 2084 (Magh Sangrand)',
+    tithiRulePa: '੧ ਮਾਘ, ਸੰਮਤ ੨੦੮੪ (ਮਾਘ ਸੰਗਰਾਂਦ)',
+    summaryEn: 'Annual Maghi commemoration of the Forty Mukte at Sri Muktsar Sahib on 1 Magh, Sambat 2084.',
+    summaryPa: '੧ ਮਾਘ, ਸੰਮਤ ੨੦੮੪ ਨੂੰ ਸ੍ਰੀ ਮੁਕਤਸਰ ਸਾਹਿਬ ਵਿਖੇ ਚਾਲੀ ਮੁਕਤਿਆਂ ਦੀ ਯਾਦਗਾਰ।',
+    historicalContextEn:
+      'In Sambat 2084, Makara Sankranti falls late evening on 14 Jan IST, so Udaya Sangrand 1 Magh is observed on Saturday, 15 January 2028.',
+    historicalContextPa:
+      'ਸੰਮਤ ੨੦੮੪ ਵਿੱਚ ਮਕਰ ਸੰਕ੍ਰਾਂਤੀ ੧੪ ਜਨਵਰੀ ਸ਼ਾਮ ਨੂੰ ਹੋਣ ਕਾਰਨ ਉਦੈ ਸੰਗਰਾਂਦ ੧ ਮਾਘ ਸ਼ਨਿੱਚਰਵਾਰ ੧੫ ਜਨਵਰੀ ੨੦੨੮ ਨੂੰ ਮਨਾਈ ਜਾਂਦੀ ਹੈ।',
+    citations: [
+      {
+        sourceEn: 'Sri Gur Pratap Suraj Granth',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰ ਪ੍ਰਤਾਪ ਸੂਰਜ ਗ੍ਰੰਥ',
+        referenceEn: 'Ayan 1, Ansu 44–49 · Khidrane di Dhab',
+        referencePa: 'ਅਯਨ ੧, ਅੰਸੂ ੪੪–੪੯ · ਖਿਦਰਾਣੇ ਦੀ ਢਾਬ',
+      },
+    ],
+  },
+  {
+    id: '2084-parkash-guru-har-rai',
+    date: '2028-02-08',
+    sambat: 2084,
+    category: 'gurpurab',
+    titleEn: 'Parkash Purab — Sri Guru Har Rai Sahib Ji',
+    titlePa: 'ਪ੍ਰਕਾਸ਼ ਪੁਰਬ — ਸ੍ਰੀ ਗੁਰੂ ਹਰਿ ਰਾਇ ਸਾਹਿਬ ਜੀ',
+    shortLabelEn: 'Parkash Guru Har Rai Ji',
+    shortLabelPa: 'ਪ੍ਰਕਾਸ਼ ਗੁਰੂ ਹਰਿ ਰਾਇ ਜੀ',
+    tithiRuleEn: 'Magh Sudhi 13 (25 Magh, Sambat 2084)',
+    tithiRulePa: 'ਮਾਘ ਸੁਦੀ ੧੩ (੨੫ ਮਾਘ, ਸੰਮਤ ੨੦੮੪)',
+    summaryEn: 'Parkash Purab of Seventh Patshah Sri Guru Har Rai Sahib Ji on Magh Sudhi 13 (25 Magh, Sambat 2084).',
+    summaryPa: 'ਮਾਘ ਸੁਦੀ ੧੩ (੨੫ ਮਾਘ, ਸੰਮਤ ੨੦੮੪) ਨੂੰ ਸੱਤਵੇਂ ਪਾਤਸ਼ਾਹ ਸ੍ਰੀ ਗੁਰੂ ਹਰਿ ਰਾਇ ਸਾਹਿਬ ਜੀ ਦਾ ਪ੍ਰਕਾਸ਼ ਪੁਰਬ।',
+    historicalContextEn:
+      'Observed on Magh Sudhi 13 (Tuesday, 8 February 2028 / 25 Magh) in Sambat 2084.',
+    historicalContextPa:
+      'ਸੰਮਤ ੨੦੮੪ ਵਿੱਚ ਮਾਘ ਸੁਦੀ ੧੩ ਮੰਗਲਵਾਰ ੮ ਫ਼ਰਵਰੀ ੨੦੨੮ (੨੫ ਮਾਘ) ਨੂੰ ਮਨਾਈ ਜਾਂਦੀ ਹੈ।',
+    citations: [
+      {
+        sourceEn: 'Sri Gur Pratap Suraj Granth',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰ ਪ੍ਰਤਾਪ ਸੂਰਜ ਗ੍ਰੰਥ',
+        referenceEn: 'Raas 9, Ansu 1 · Kiratpur Sahib',
+        referencePa: 'ਰਾਸਿ ੯, ਅੰਸੂ ੧ · ਸ੍ਰੀ ਕੀਰਤਪੁਰ ਸਾਹਿਬ',
+      },
+    ],
+  },
+  {
+    id: '2084-holla-mohalla',
+    date: '2028-03-11',
+    sambat: 2084,
+    category: 'khalsa',
+    titleEn: 'Holla Mohalla (Sri Anandpur Sahib)',
+    titlePa: 'ਹੋਲਾ ਮਹੱਲਾ (ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ)',
+    shortLabelEn: 'Holla Mohalla',
+    shortLabelPa: 'ਹੋਲਾ ਮਹੱਲਾ',
+    tithiRuleEn: 'Chet Vadhi 1 (28 Phagun, Sambat 2084)',
+    tithiRulePa: 'ਚੇਤ ਵਦੀ ੧ (੨੮ ਫੱਗਣ, ਸੰਮਤ ੨੦੮੪)',
+    summaryEn: 'Khalsa martial gathering at Sri Anandpur Sahib on Chet Vadhi 1 (28 Phagun, Sambat 2084).',
+    summaryPa: 'ਚੇਤ ਵਦੀ ੧ (੨੮ ਫੱਗਣ, ਸੰਮਤ ੨੦੮੪) ਨੂੰ ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ ਵਿਖੇ ਖ਼ਾਲਸਾਈ ਹੋਲਾ ਮਹੱਲਾ।',
+    historicalContextEn:
+      'Because lunar Chet Vadhi 1 precedes solar 1 Chet in 2028, Holla Mohalla falls on Saturday, 11 March 2028 (28 Phagun 2084), three days before Chet Sangrand 2085.',
+    historicalContextPa:
+      'ਸੰਮਤ ੨੦੮੪ ਵਿੱਚ ਚੰਦਰ ਚੇਤ ਵਦੀ ੧ ਸੂਰਜੀ ਚੇਤ ਸੰਗਰਾਂਦ ਤੋਂ ਪਹਿਲਾਂ ੨੮ ਫੱਗਣ (੧੧ ਮਾਰਚ ੨੦੨੮) ਨੂੰ ਆਉਂਦੀ ਹੈ।',
+    citations: [
+      {
+        sourceEn: 'Sri Gur Pratap Suraj Granth',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰ ਪ੍ਰਤਾਪ ਸੂਰਜ ਗ੍ਰੰਥ',
+        referenceEn: 'Rut 4, Ansu 20–24 · Holgarh Fort',
+        referencePa: 'ਰੁੱਤ ੪, ਅੰਸੂ ੨੦–੨੪ · ਕਿਲ੍ਹਾ ਹੋਲਗੜ੍ਹ',
+      },
+    ],
+  },
+] as const;
+
+/** Index events by ISO date for O(1) lookup. */
+export const EVENTS_BY_DATE: ReadonlyMap<string, HistoricalEvent[]> = (() => {
+  const map = new Map<string, HistoricalEvent[]>();
+  for (const ev of HISTORICAL_EVENTS) {
+    const existing = map.get(ev.date);
+    if (existing) {
+      existing.push(ev);
+    } else {
+      map.set(ev.date, [ev]);
+    }
+  }
+  return map;
+})();

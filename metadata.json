@@ -1,0 +1,6 @@
+{
+  "name": "Tatkhalsa Puratan Jantri",
+  "description": "Authentic Puratan Bikrami Sambat calendar by Tatkhalsa Foundation tracking Punjabi solar months, Sangrands, Sudhi/Vadhi lunar tithis, Gurpurabs, and scriptural colophons.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

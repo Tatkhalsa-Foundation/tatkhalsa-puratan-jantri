@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Cormorant Garamond", "Noto Sans Gurmukhi", Georgia, serif;
+  --font-serif: "Source Serif 4", "Noto Sans Gurmukhi", Georgia, serif;
+  --font-gurmukhi: "Noto Sans Gurmukhi", "Source Serif 4", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --color-parchment: #FAF6EE;
+  --color-parchment-deep: #F3ECE0;
+  --color-parchment-hover: #EDE4D3;
+  --color-hairline: #DDD3C0;
+  --color-ink: #1C1917;
+  --color-ink-muted: #57534E;
+  --color-kesri: #D97706;
+  --color-kesri-deep: #B45309;
+  --color-neela: #1E3A8A;
+  --color-neela-deep: #172554;
+  --color-shaheedi: #991B1B;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-serif);
+    background-color: #FAF6EE;
+    color: #1C1917;
+    scroll-behavior: smooth;
+    overflow-x: clip;
+  }
+
+  body {
+    background-color: #FAF6EE;
+    color: #1C1917;
+    overflow-x: clip;
+  }
+
+  .lang-pa {
+    font-family: var(--font-gurmukhi);
+  }
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-gurmukhi {
+  font-family: var(--font-gurmukhi);
+}
+
+.font-mono-tabular {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Subtle archival paper grain texture without obscuring legibility */
+.parchment-surface {
+  background-color: #FAF6EE;
+  background-image: radial-gradient(rgba(120, 113, 108, 0.055) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Clean Print-Ready A4 Jantri Broadsheet Rules */
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 10mm;
+  }
+
+  html,
+  body {
+    background: #FFFFFF !important;
+    color: #1C1917 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-sheet {
+    box-shadow: none !important;
+    border: 1px solid #A8A29E !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    background: #FFFFFF !important;
+  }
+}
