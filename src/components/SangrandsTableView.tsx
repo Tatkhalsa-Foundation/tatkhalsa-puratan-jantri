@@ -2,7 +2,12 @@ import {ArrowUpRight} from 'lucide-react';
 import React, {useState} from 'react';
 import {getBikramiMonthMeta, SOLAR_MONTH_SPANS} from '../data/sambatData';
 import type {LanguageMode} from '../data/types';
-import {formatDualTime, formatGregorianDate, formatNum} from '../utils/bikramiEngine';
+import {
+  formatDualTime,
+  formatGregorianDate,
+  formatNum,
+  toGurmukhiNumerals,
+} from '../utils/bikramiEngine';
 
 interface SangrandsTableViewProps {
   lang: LanguageMode;
@@ -17,7 +22,7 @@ export const SangrandsTableView: React.FC<SangrandsTableViewProps> = ({lang, onS
 
   return (
     <section aria-labelledby="sangrands-heading" className="no-print space-y-6">
-      <div className="flex flex-col gap-4 border-b border-[#DDD3C0] pb-5 sm:flex-row sm:items-end sm:justify-between">
+      <div className="flex flex-col gap-4 border-b border-[#DDD2BE] pb-5 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-xs text-[#78716C]">
             {isPa
@@ -26,7 +31,7 @@ export const SangrandsTableView: React.FC<SangrandsTableViewProps> = ({lang, onS
           </p>
           <h1
             id="sangrands-heading"
-            className="mt-1 font-display text-3xl sm:text-4xl font-semibold text-[#1C1917]"
+            className="mt-1 font-display text-3xl sm:text-4xl font-semibold text-[#1B263B]"
           >
             {isPa ? 'ਪੁਰਾਤਨ ਸੰਗਰਾਂਦਾਂ ਅਤੇ ਦੇਸੀ ਮਹੀਨੇ' : 'Puratan Sangrands & Solar Months'}
           </h1>
@@ -37,13 +42,14 @@ export const SangrandsTableView: React.FC<SangrandsTableViewProps> = ({lang, onS
           </p>
         </div>
 
-        <div className="inline-flex items-center rounded-md border border-[#DDD3C0] bg-[#F3ECE0] p-1 self-start sm:self-auto">
+        <div className="inline-flex items-center rounded-md border border-[#DDD2BE] bg-[#F3ECE0] p-1 self-start sm:self-auto">
           <button
             type="button"
             onClick={() => setSelectedSambat(2083)}
+            aria-pressed={selectedSambat === 2083}
             className={`min-h-[38px] px-3.5 text-xs font-medium rounded-sm transition-colors whitespace-nowrap cursor-pointer ${
               selectedSambat === 2083
-                ? 'bg-[#FAF6EE] text-[#1C1917] shadow-xs'
+                ? 'bg-[#FAF6EE] text-[#1B263B] shadow-xs'
                 : 'text-[#57534E] hover:text-[#1C1917]'
             }`}
           >
@@ -52,9 +58,10 @@ export const SangrandsTableView: React.FC<SangrandsTableViewProps> = ({lang, onS
           <button
             type="button"
             onClick={() => setSelectedSambat(2084)}
+            aria-pressed={selectedSambat === 2084}
             className={`min-h-[38px] px-3.5 text-xs font-medium rounded-sm transition-colors whitespace-nowrap cursor-pointer ${
               selectedSambat === 2084
-                ? 'bg-[#FAF6EE] text-[#1C1917] shadow-xs'
+                ? 'bg-[#FAF6EE] text-[#1B263B] shadow-xs'
                 : 'text-[#57534E] hover:text-[#1C1917]'
             }`}
           >
@@ -63,11 +70,10 @@ export const SangrandsTableView: React.FC<SangrandsTableViewProps> = ({lang, onS
         </div>
       </div>
 
-      {/* Responsive Table (Desktop) / Cards (Mobile) */}
-      <div className="overflow-x-auto rounded-xl border border-[#DDD3C0] bg-[#FAF6EE]">
+      <div className="overflow-x-auto rounded-xl border border-[#DDD2BE] bg-[#FAF6EE]">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="border-b border-[#DDD3C0] bg-[#F3ECE0] text-xs font-semibold text-[#44403C]">
+            <tr className="border-b border-[#DDD2BE] bg-[#1B263B] text-xs font-medium text-[#FAF6EE]">
               <th className="py-3 px-4">{isPa ? 'ਦੇਸੀ ਮਹੀਨਾ' : 'Solar Month'}</th>
               <th className="py-3 px-4">{isPa ? 'ਸੰਗਰਾਂਦ (੧ ਤਾਰੀਖ਼)' : 'Sangrand Date'}</th>
               <th className="py-3 px-4">{isPa ? 'ਦਿਨ' : 'Days'}</th>
@@ -76,21 +82,21 @@ export const SangrandsTableView: React.FC<SangrandsTableViewProps> = ({lang, onS
               <th className="py-3 px-4 text-right">{isPa ? 'ਬਾਰਹ ਮਾਹਾ' : 'Barah Maha'}</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#E5DCCB] text-sm">
+          <tbody className="divide-y divide-[#E3D9C6] text-sm">
             {spans.map((span) => {
               const meta = getBikramiMonthMeta(span.monthId);
               const dual = formatDualTime(span.sankrantiUtc);
               return (
-                <tr key={`${span.sambat}-${span.monthId}`} className="hover:bg-[#F3ECE0]/50 transition-colors">
+                <tr key={`${span.sambat}-${span.monthId}`} className="hover:bg-[#F3ECE0]/55 transition-colors">
                   <td className="py-3.5 px-4">
                     <button
                       type="button"
                       onClick={() => onSelectDate(span.startDate)}
                       className="text-left group cursor-pointer"
                     >
-                      <span className="font-semibold text-[#1C1917] group-hover:text-[#1E3A8A] underline-offset-4 group-hover:underline">
+                      <span className="font-semibold text-[#1B263B] group-hover:text-[#9E4F00] underline-offset-4 group-hover:underline">
                         {isPa
-                          ? `${formatNum(meta.id, 'pa')}. ${meta.namePa}`
+                          ? `${toGurmukhiNumerals(meta.id)}. ${meta.namePa}`
                           : `${meta.id}. ${meta.nameEn} (${meta.namePa})`}
                       </span>
                       <span className="block text-xs text-[#78716C]">
@@ -98,7 +104,7 @@ export const SangrandsTableView: React.FC<SangrandsTableViewProps> = ({lang, onS
                       </span>
                     </button>
                   </td>
-                  <td className="py-3.5 px-4 font-medium text-[#B45309] whitespace-nowrap">
+                  <td className="py-3.5 px-4 font-medium text-[#9E4F00] whitespace-nowrap">
                     {formatGregorianDate(span.startDate, lang, false)}
                   </td>
                   <td className="py-3.5 px-4 font-mono-tabular text-[#1C1917] whitespace-nowrap">
@@ -119,7 +125,7 @@ export const SangrandsTableView: React.FC<SangrandsTableViewProps> = ({lang, onS
                       href={meta.pothiUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-xs font-medium text-[#1E3A8A] hover:text-[#172554] underline underline-offset-4"
+                      className="inline-flex items-center gap-1 text-xs font-medium text-[#1B263B] hover:text-[#9E4F00] underline underline-offset-4"
                     >
                       <span>{isPa ? 'ਪੜ੍ਹੋ' : 'Read'}</span>
                       <ArrowUpRight className="w-3.5 h-3.5" aria-hidden="true" />

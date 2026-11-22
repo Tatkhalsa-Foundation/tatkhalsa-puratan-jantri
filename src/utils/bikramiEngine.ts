@@ -1,4 +1,4 @@
-import {EVENTS_BY_DATE} from '../data/eventsData';
+import {EVENTS_BY_DATE, HISTORICAL_EVENTS} from '../data/eventsData';
 import {
   BIKRAMI_MONTHS,
   getBikramiMonthMeta,
@@ -8,10 +8,12 @@ import {
 } from '../data/sambatData';
 import type {
   BikramiSolarDate,
+  DirectoryObservance,
   DualTimeDisplay,
   JantriDay,
   LanguageMode,
   LunarInfo,
+  SolarMonthSpan,
   UpcomingMilestone,
 } from '../data/types';
 import {computeLunarInfoForDate} from './astronomy';
@@ -26,7 +28,16 @@ const GURMUKHI_DIGITS = ['੦', '੧', '੨', '੩', '੪', '੫', '੬', '੭',
 export const SUPPORTED_MIN_MONTH = {year: 2026, monthIndex0: 10}; // November 2026
 export const SUPPORTED_MAX_MONTH = {year: 2028, monthIndex0: 2}; // March 2028
 
+/** All browseable Punjabi solar months covering Sambat 2083 (Katak–Phagun) & full Sambat 2084 (Chet–Phagun). */
+export const BROWSEABLE_SOLAR_SPANS: readonly SolarMonthSpan[] = SOLAR_MONTH_SPANS.filter(
+  (s) => s.sambat === 2083 || s.sambat === 2084,
+);
+
+export const LOOKUP_MIN_ISO = SOLAR_MONTH_SPANS[0].startDate; // 2026-10-17
+export const LOOKUP_MAX_ISO = SOLAR_MONTH_SPANS[SOLAR_MONTH_SPANS.length - 1].endDate; // 2028-04-12
+
 const lunarCache = new Map<string, LunarInfo>();
+let cachedDirectoryObservances: readonly DirectoryObservance[] | null = null;
 
 /** Convert Arabic digits in a number or string to Gurmukhi numerals (0-9 -> ੦-੯). */
 export function toGurmukhiNumerals(value: number | string): string {
@@ -143,6 +154,68 @@ export function getJantriDay(isoDate: string, inCurrentGridMonth = true): Jantri
   };
 }
 
+/** Find index inside BROWSEABLE_SOLAR_SPANS for a given ISO date (clamped to valid range). */
+export function getSolarMonthSpanIndexForDate(isoDate: string): number {
+  for (let i = 0; i < BROWSEABLE_SOLAR_SPANS.length; i++) {
+    const span = BROWSEABLE_SOLAR_SPANS[i];
+    if (isoDate >= span.startDate && isoDate <= span.endDate) {
+      return i;
+    }
+  }
+  if (isoDate < BROWSEABLE_SOLAR_SPANS[0].startDate) return 0;
+  return BROWSEABLE_SOLAR_SPANS.length - 1;
+}
+
+/**
+ * Generate a 7-column calendar grid (Sunday to Saturday) organized by a Punjabi Solar Month
+ * (1st Sangrand through 29/30/31/32 solar days, with leading/trailing days dimmed).
+ */
+export function getSolarMonthCalendarGrid(spanIndex: number): JantriDay[] {
+  const clamped = Math.max(0, Math.min(BROWSEABLE_SOLAR_SPANS.length - 1, spanIndex));
+  const span = BROWSEABLE_SOLAR_SPANS[clamped];
+  const [startY, startM, startD] = span.startDate.split('-').map(Number);
+  const startWeekday = new Date(Date.UTC(startY, startM - 1, startD)).getUTCDay(); // 0 = Sun
+  const totalCells = startWeekday + span.days > 35 ? 42 : 35;
+
+  const gridStartIso = addDaysIso(span.startDate, -startWeekday);
+  const cells: JantriDay[] = [];
+  for (let i = 0; i < totalCells; i++) {
+    const iso = addDaysIso(gridStartIso, i);
+    const inCurrentGridMonth = i >= startWeekday && i < startWeekday + span.days;
+    cells.push(getJantriDay(iso, inCurrentGridMonth));
+  }
+  return cells;
+}
+
+/** Describe the Gregorian date span covered by a Punjabi Solar Month (e.g. "16 Nov – 15 Dec 2026"). */
+export function getGregorianHeaderForSolarSpan(span: SolarMonthSpan, lang: LanguageMode): string {
+  const [sy, sm, sd] = span.startDate.split('-').map(Number);
+  const [ey, em, ed] = span.endDate.split('-').map(Number);
+  const sMonth = GREGORIAN_MONTHS[sm - 1];
+  const eMonth = GREGORIAN_MONTHS[em - 1];
+
+  if (lang === 'pa') {
+    if (sy === ey) {
+      return `${toGurmukhiNumerals(sd)} ${sMonth.pa} – ${toGurmukhiNumerals(ed)} ${eMonth.pa} ${toGurmukhiNumerals(ey)}`;
+    }
+    return `${toGurmukhiNumerals(sd)} ${sMonth.pa} ${toGurmukhiNumerals(sy)} – ${toGurmukhiNumerals(ed)} ${eMonth.pa} ${toGurmukhiNumerals(ey)}`;
+  }
+
+  if (sy === ey) {
+    return `${sd} ${sMonth.shortEn} – ${ed} ${eMonth.shortEn} ${ey}`;
+  }
+  return `${sd} ${sMonth.shortEn} ${sy} – ${ed} ${eMonth.shortEn} ${ey}`;
+}
+
+/** Format a compact Gregorian sub-label for a calendar cell (e.g., "24 Nov" or "੨੪ ਨਵੰ"). */
+export function formatShortGregorian(day: JantriDay, lang: LanguageMode): string {
+  const gm = GREGORIAN_MONTHS[day.gregorianMonth - 1];
+  if (lang === 'pa') {
+    return `${toGurmukhiNumerals(day.gregorianDay)} ${gm.shortPa}`;
+  }
+  return `${day.gregorianDay} ${gm.shortEn}`;
+}
+
 /**
  * Generate a clean 7-column calendar grid (Sunday to Saturday) for a Gregorian month.
  * Returns 35 or 42 JantriDay entries depending on month span.
@@ -195,6 +268,152 @@ export function getBikramiHeaderForGregorianMonth(
     return `${firstSolar.monthMeta.nameEn} – ${lastSolar.monthMeta.nameEn} · Sambat ${firstSolar.sambat}`;
   }
   return `${firstSolar.monthMeta.nameEn} ${firstSolar.sambat} – ${lastSolar.monthMeta.nameEn} ${lastSolar.sambat}`;
+}
+
+/** Validate and convert any Gregorian ISO date into a verified Puratan Bikrami JantriDay. */
+export function lookupGregorianToBikrami(
+  isoDate: string,
+): {ok: true; day: JantriDay} | {ok: false; errorEn: string; errorPa: string} {
+  const trimmed = isoDate.trim();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+    return {
+      ok: false,
+      errorEn: 'Enter a valid date in YYYY-MM-DD format.',
+      errorPa: 'ਕਿਰਪਾ ਕਰਕੇ YYYY-MM-DD ਫਾਰਮੈਟ ਵਿੱਚ ਸਹੀ ਤਾਰੀਖ਼ ਦਰਜ ਕਰੋ।',
+    };
+  }
+  const [y, m, d] = trimmed.split('-').map(Number);
+  const check = new Date(Date.UTC(y, m - 1, d));
+  if (
+    check.getUTCFullYear() !== y ||
+    check.getUTCMonth() + 1 !== m ||
+    check.getUTCDate() !== d
+  ) {
+    return {
+      ok: false,
+      errorEn: 'That calendar date does not exist.',
+      errorPa: 'ਇਹ ਕੈਲੰਡਰ ਤਾਰੀਖ਼ ਮੌਜੂਦ ਨਹੀਂ ਹੈ।',
+    };
+  }
+  if (trimmed < LOOKUP_MIN_ISO || trimmed > LOOKUP_MAX_ISO) {
+    return {
+      ok: false,
+      errorEn: 'Verified Puratan Sambat 2083–2084 data covers 17 Oct 2026 to 12 Apr 2028.',
+      errorPa: 'ਪ੍ਰਮਾਣਿਕ ਸੰਮਤ ੨੦੮੩–੨੦੮੪ ਡਾਟਾ ੧੭ ਅਕਤੂਬਰ ੨੦੨੬ ਤੋਂ ੧੨ ਅਪ੍ਰੈਲ ੨੦੨੮ ਤੱਕ ਉਪਲਬਧ ਹੈ।',
+    };
+  }
+  return {ok: true, day: getJantriDay(trimmed, true)};
+}
+
+/**
+ * Build a unified, chronologically sorted directory of all Gurpurabs, Shaheedi Divases,
+ * Khalsa/Colophon dates, Sangrands, Puranmashis, and Masyas across Sambat 2083–2084.
+ */
+export function getAllDirectoryObservances(): readonly DirectoryObservance[] {
+  if (cachedDirectoryObservances) {
+    return cachedDirectoryObservances;
+  }
+
+  const items: DirectoryObservance[] = [];
+
+  // 1. Historical Gurpurabs, Shaheedi Divases, Khalsa & Manuscript Colophons
+  for (const ev of HISTORICAL_EVENTS) {
+    items.push({
+      id: ev.id,
+      date: ev.date,
+      sambat: ev.sambat,
+      category: ev.category,
+      titleEn: ev.titleEn,
+      titlePa: ev.titlePa,
+      ruleEn: ev.tithiRuleEn,
+      rulePa: ev.tithiRulePa,
+      summaryEn: ev.summaryEn,
+      summaryPa: ev.summaryPa,
+      citationCount: ev.citations.length,
+      sourceSearchText: ev.citations
+        .map((c) => `${c.sourceEn} ${c.sourcePa} ${c.referenceEn} ${c.referencePa}`)
+        .join(' '),
+      pothiUrl: ev.pothiUrl ?? ev.citations.find((c) => c.pothiUrl)?.pothiUrl,
+    });
+  }
+
+  // 2. All Verified Sangrands (Sambat 2083 & 2084)
+  for (const span of BROWSEABLE_SOLAR_SPANS) {
+    const meta = getBikramiMonthMeta(span.monthId);
+    items.push({
+      id: `dir-sangrand-${span.sambat}-${meta.key}`,
+      date: span.startDate,
+      sambat: span.sambat,
+      category: 'sangrand',
+      titleEn: `${meta.nameEn} Sangrand — 1 ${meta.nameEn}, Sambat ${span.sambat}`,
+      titlePa: `${meta.namePa} ਸੰਗਰਾਂਦ — ੧ ${meta.namePa}, ਸੰਮਤ ${toGurmukhiNumerals(span.sambat)}`,
+      ruleEn: `Solar Ingress · ${span.days} days (${meta.seasonEn})`,
+      rulePa: `ਸੂਰਜੀ ਸੰਕ੍ਰਾਂਤੀ · ${toGurmukhiNumerals(span.days)} ਦਿਨ (${meta.seasonPa})`,
+      summaryEn: `${meta.barahMahaRefEn} — "${meta.barahMahaOpeningTranslit}"`,
+      summaryPa: `${meta.barahMahaRefPa} — "${meta.barahMahaOpeningPa}"`,
+      citationCount: 1,
+      sourceSearchText: `${meta.nameEn} ${meta.namePa} Sangrand Barah Maha ${meta.barahMahaRefEn}`,
+      pothiUrl: meta.pothiUrl,
+    });
+  }
+
+  // 3. All Puranmashi and Masya dates across Sambat 2083–2084 (Nov 2026 – Mar 13, 2028)
+  let cursor = '2026-11-01';
+  const endDate = '2028-03-13';
+  while (cursor <= endDate) {
+    const solar = getBikramiSolarDate(cursor);
+    const lunar = getLunarInfoCached(cursor);
+    if (lunar.isPuranmashi) {
+      items.push({
+        id: `dir-puranmashi-${cursor}`,
+        date: cursor,
+        sambat: solar.sambat,
+        category: 'puranmashi',
+        titleEn: `${lunar.lunarMonthEn} Puranmashi (Full Moon)`,
+        titlePa: `${lunar.lunarMonthPa} ਪੂਰਨਮਾਸ਼ੀ`,
+        ruleEn: `${lunar.lunarMonthEn} Sudhi 15 · ${solar.day} ${solar.monthMeta.nameEn}`,
+        rulePa: `${lunar.lunarMonthPa} ਸੁਦੀ ੧੫ · ${toGurmukhiNumerals(solar.day)} ${solar.monthMeta.namePa}`,
+        summaryEn: `Full moon observance of the ${lunar.lunarMonthEn} Purnimanta lunar month in Sambat ${solar.sambat}.`,
+        summaryPa: `ਸੰਮਤ ${toGurmukhiNumerals(solar.sambat)} ਦੇ ${lunar.lunarMonthPa} ਚੰਦਰ ਮਹੀਨੇ ਦੀ ਪੂਰਨਮਾਸ਼ੀ (ਸੁਦੀ ੧੫)।`,
+        citationCount: 0,
+        sourceSearchText: `${lunar.lunarMonthEn} ${lunar.lunarMonthPa} Puranmashi full moon Sudhi 15`,
+      });
+    } else if (lunar.isMasya) {
+      items.push({
+        id: `dir-masya-${cursor}`,
+        date: cursor,
+        sambat: solar.sambat,
+        category: 'masya',
+        titleEn: `${lunar.lunarMonthEn} Masya (New Moon)`,
+        titlePa: `${lunar.lunarMonthPa} ਮੱਸਿਆ`,
+        ruleEn: `${lunar.lunarMonthEn} Vadhi 15 · ${solar.day} ${solar.monthMeta.nameEn}`,
+        rulePa: `${lunar.lunarMonthPa} ਵਦੀ ੧੫ · ${toGurmukhiNumerals(solar.day)} ${solar.monthMeta.namePa}`,
+        summaryEn: `Amavasya / Masya new moon observance of ${lunar.lunarMonthEn} lunar month in Sambat ${solar.sambat}.`,
+        summaryPa: `ਸੰਮਤ ${toGurmukhiNumerals(solar.sambat)} ਦੇ ${lunar.lunarMonthPa} ਚੰਦਰ ਮਹੀਨੇ ਦੀ ਮੱਸਿਆ (ਵਦੀ ੧੫)।`,
+        citationCount: 0,
+        sourceSearchText: `${lunar.lunarMonthEn} ${lunar.lunarMonthPa} Masya Amavasya new moon Vadhi 15`,
+      });
+    }
+    cursor = addDaysIso(cursor, 1);
+  }
+
+  const categoryPriority: Record<DirectoryObservance['category'], number> = {
+    gurpurab: 1,
+    shaheedi: 2,
+    khalsa: 3,
+    sangrand: 4,
+    puranmashi: 5,
+    masya: 6,
+  };
+
+  items.sort((a, b) => {
+    const cmp = a.date.localeCompare(b.date);
+    if (cmp !== 0) return cmp;
+    return categoryPriority[a.category] - categoryPriority[b.category];
+  });
+
+  cachedDirectoryObservances = items;
+  return items;
 }
 
 /** Find next upcoming Sangrand, Puranmashi, and Masya from a given ISO date (inclusive if today is the milestone). */
@@ -306,7 +525,9 @@ export function formatDualTime(utcIso: string, localTimeZone?: string): DualTime
     }).formatToParts(date);
     const tzPart = parts.find((p) => p.type === 'timeZoneName')?.value;
     if (tzPart) {
-      localTimeZoneName = `${resolvedLocalTz.split('/').pop()?.replace(/_/g, ' ') || resolvedLocalTz} (${tzPart})`;
+      const city = resolvedLocalTz.split('/').pop()?.replace(/_/g, ' ') || resolvedLocalTz;
+      localTimeZoneName =
+        city.toUpperCase() === tzPart.toUpperCase() ? tzPart : `${city} (${tzPart})`;
     }
   } catch {
     localTimeZoneName = resolvedLocalTz;
@@ -324,7 +545,7 @@ export function formatDualTime(utcIso: string, localTimeZone?: string): DualTime
   };
 }
 
-/** Format a Gregorian ISO date cleanly in English or Gurmukhi. */
+/** Format a Gregorian ISO date cleanly in English, Gurmukhi, or Bilingual. */
 export function formatGregorianDate(isoDate: string, lang: LanguageMode, includeWeekday = true): string {
   const [y, m, d] = isoDate.split('-').map(Number);
   const weekdayIndex = new Date(Date.UTC(y, m - 1, d)).getUTCDay();
@@ -336,6 +557,9 @@ export function formatGregorianDate(isoDate: string, lang: LanguageMode, include
     return includeWeekday ? `${wd.fullPa}, ${core}` : core;
   }
   const core = `${d} ${gm.en} ${y}`;
+  if (lang === 'bi' && includeWeekday) {
+    return `${wd.fullEn} (${wd.fullPa}), ${core}`;
+  }
   return includeWeekday ? `${wd.fullEn}, ${core}` : core;
 }
 

@@ -330,18 +330,18 @@ export const WEEKDAYS = [
 ] as const;
 
 export const GREGORIAN_MONTHS = [
-  {en: 'January', pa: 'ਜਨਵਰੀ'},
-  {en: 'February', pa: 'ਫ਼ਰਵਰੀ'},
-  {en: 'March', pa: 'ਮਾਰਚ'},
-  {en: 'April', pa: 'ਅਪ੍ਰੈਲ'},
-  {en: 'May', pa: 'ਮਈ'},
-  {en: 'June', pa: 'ਜੂਨ'},
-  {en: 'July', pa: 'ਜੁਲਾਈ'},
-  {en: 'August', pa: 'ਅਗਸਤ'},
-  {en: 'September', pa: 'ਸਤੰਬਰ'},
-  {en: 'October', pa: 'ਅਕਤੂਬਰ'},
-  {en: 'November', pa: 'ਨਵੰਬਰ'},
-  {en: 'December', pa: 'ਦਸੰਬਰ'},
+  {en: 'January', shortEn: 'Jan', pa: 'ਜਨਵਰੀ', shortPa: 'ਜਨ'},
+  {en: 'February', shortEn: 'Feb', pa: 'ਫ਼ਰਵਰੀ', shortPa: 'ਫ਼ਰ'},
+  {en: 'March', shortEn: 'Mar', pa: 'ਮਾਰਚ', shortPa: 'ਮਾਰ'},
+  {en: 'April', shortEn: 'Apr', pa: 'ਅਪ੍ਰੈਲ', shortPa: 'ਅਪ੍ਰੈ'},
+  {en: 'May', shortEn: 'May', pa: 'ਮਈ', shortPa: 'ਮਈ'},
+  {en: 'June', shortEn: 'Jun', pa: 'ਜੂਨ', shortPa: 'ਜੂਨ'},
+  {en: 'July', shortEn: 'Jul', pa: 'ਜੁਲਾਈ', shortPa: 'ਜੁਲਾ'},
+  {en: 'August', shortEn: 'Aug', pa: 'ਅਗਸਤ', shortPa: 'ਅਗ'},
+  {en: 'September', shortEn: 'Sep', pa: 'ਸਤੰਬਰ', shortPa: 'ਸਤੰ'},
+  {en: 'October', shortEn: 'Oct', pa: 'ਅਕਤੂਬਰ', shortPa: 'ਅਕਤੂ'},
+  {en: 'November', shortEn: 'Nov', pa: 'ਨਵੰਬਰ', shortPa: 'ਨਵੰ'},
+  {en: 'December', shortEn: 'Dec', pa: 'ਦਸੰਬਰ', shortPa: 'ਦਸੰ'},
 ] as const;
 
 export const TITHI_NAMES: readonly {
@@ -358,10 +358,10 @@ export const TITHI_NAMES: readonly {
   {pakshDay: 5, en: 'Panchmi', pa: 'ਪੰਚਮੀ', shortEn: '5 · Panchmi', shortPa: '੫ · ਪੰਚਮੀ'},
   {pakshDay: 6, en: 'Chhat (Shashthi)', pa: 'ਛਠ', shortEn: '6', shortPa: '੬'},
   {pakshDay: 7, en: 'Saptami', pa: 'ਸਪਤਮੀ', shortEn: '7', shortPa: '੭'},
-  {pakshDay: 8, en: 'Ashtami', pa: 'ਅਸ਼ਟਮੀ', shortEn: '8', shortPa: '੮'},
+  {pakshDay: 8, en: 'Ashtami', pa: 'ਅਸ਼ਟਮੀ', shortEn: '8 · Ashtami', shortPa: '੮ · ਅਸ਼ਟਮੀ'},
   {pakshDay: 9, en: 'Naumi (Navami)', pa: 'ਨੌਮੀ', shortEn: '9', shortPa: '੯'},
   {pakshDay: 10, en: 'Dasmi (Dashami)', pa: 'ਦਸਮੀ', shortEn: '10', shortPa: '੧੦'},
-  {pakshDay: 11, en: 'Ikadashi', pa: 'ਇਕਾਦਸ਼ੀ', shortEn: '11 · Ikadashi', shortPa: '੧੧ · ਇਕਾਦਸ਼ੀ'},
+  {pakshDay: 11, en: 'Ekadashi', pa: 'ਇਕਾਦਸ਼ੀ', shortEn: '11 · Ekadashi', shortPa: '੧੧ · ਇਕਾਦਸ਼ੀ'},
   {pakshDay: 12, en: 'Dwadashi', pa: 'ਦੁਆਦਸ਼ੀ', shortEn: '12', shortPa: '੧੨'},
   {pakshDay: 13, en: 'Teras (Trayodashi)', pa: 'ਤੇਰਸ', shortEn: '13', shortPa: '੧੩'},
   {pakshDay: 14, en: 'Chaudas (Chaturdashi)', pa: 'ਚੌਦਸ', shortEn: '14', shortPa: '੧੪'},

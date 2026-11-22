@@ -195,7 +195,7 @@ export const IcsExportModal: React.FC<IcsExportModalProps> = ({isOpen, lang, onC
                   type="checkbox"
                   checked={t.checked}
                   onChange={(e) => t.onChange(e.target.checked)}
-                  className="h-4 w-4 accent-[#1E3A8A] rounded-xs cursor-pointer"
+                  className="h-4 w-4 accent-[#1B263B] rounded-xs cursor-pointer"
                 />
                 <span className="text-sm text-[#1C1917]">{isPa ? t.labelPa : t.labelEn}</span>
               </label>
@@ -205,7 +205,7 @@ export const IcsExportModal: React.FC<IcsExportModalProps> = ({isOpen, lang, onC
           {downloadedCount !== null && (
             <div
               role="status"
-              className="flex items-center gap-2 rounded-md border border-[#1E3A8A]/25 bg-[#1E3A8A]/8 px-3.5 py-2.5 text-xs font-medium text-[#1E3A8A]"
+              className="flex items-center gap-2 rounded-md border border-[#1B263B]/25 bg-[#1B263B]/8 px-3.5 py-2.5 text-xs font-medium text-[#1B263B]"
             >
               <CalendarCheck className="w-4 h-4 shrink-0" aria-hidden="true" />
               <span>
@@ -216,7 +216,7 @@ export const IcsExportModal: React.FC<IcsExportModalProps> = ({isOpen, lang, onC
             </div>
           )}
 
-          <div className="flex items-center justify-between gap-4 pt-3 border-t border-[#DDD3C0]">
+          <div className="flex items-center justify-between gap-4 pt-3 border-t border-[#DDD2BE]">
             <p className="text-xs font-mono-tabular text-[#57534E]">
               {isPa
                 ? `ਕੁੱਲ ${formatNum(preview.eventCount, 'pa')} ਦਿਹਾੜੇ ਚੁਣੇ ਗਏ`
@@ -226,7 +226,7 @@ export const IcsExportModal: React.FC<IcsExportModalProps> = ({isOpen, lang, onC
               type="button"
               onClick={handleDownload}
               disabled={preview.eventCount === 0}
-              className="inline-flex items-center gap-2 min-h-[44px] px-5 py-2.5 text-sm font-medium rounded-md bg-[#1E3A8A] text-[#FAF6EE] hover:bg-[#172554] disabled:opacity-45 disabled:cursor-not-allowed transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+              className="inline-flex items-center gap-2 min-h-[44px] px-5 py-2.5 text-sm font-medium rounded-md bg-[#1B263B] text-[#FAF6EE] hover:bg-[#111A2B] disabled:opacity-45 disabled:cursor-not-allowed transition-colors whitespace-nowrap shrink-0 cursor-pointer"
             >
               <Download className="w-4 h-4" aria-hidden="true" />
               <span>{isPa ? '.ics ਫ਼ਾਈਲ ਡਾਊਨਲੋਡ' : 'Download .ics'}</span>

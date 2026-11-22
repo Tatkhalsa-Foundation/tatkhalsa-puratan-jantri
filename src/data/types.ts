@@ -1,8 +1,18 @@
-export type LanguageMode = 'en' | 'pa';
+export type LanguageMode = 'en' | 'pa' | 'bi';
+
+export type CalendarGridMode = 'solar' | 'gregorian';
 
 export type LunarPaksh = 'Sudhi' | 'Vadhi';
 
 export type EventCategory = 'gurpurab' | 'shaheedi' | 'khalsa' | 'sangrand' | 'lunar';
+
+export type DirectoryCategory =
+  | 'gurpurab'
+  | 'shaheedi'
+  | 'khalsa'
+  | 'sangrand'
+  | 'puranmashi'
+  | 'masya';
 
 export interface BilingualText {
   en: string;
@@ -52,6 +62,9 @@ export interface ColophonCitation {
   referencePa: string;
   excerptPa?: string;
   excerptTranslit?: string;
+  pothiUrl?: string;
+  pothiLabelEn?: string;
+  pothiLabelPa?: string;
 }
 
 export interface HistoricalEvent {
@@ -70,7 +83,26 @@ export interface HistoricalEvent {
   historicalContextEn: string;
   historicalContextPa: string;
   citations: ColophonCitation[];
+  pothiUrl?: string;
+  pothiLabelEn?: string;
+  pothiLabelPa?: string;
   featured?: boolean;
+}
+
+export interface DirectoryObservance {
+  id: string;
+  date: string; // YYYY-MM-DD
+  sambat: number;
+  category: DirectoryCategory;
+  titleEn: string;
+  titlePa: string;
+  ruleEn: string;
+  rulePa: string;
+  summaryEn: string;
+  summaryPa: string;
+  citationCount: number;
+  sourceSearchText: string;
+  pothiUrl?: string;
 }
 
 export interface LunarInfo {
@@ -87,7 +119,8 @@ export interface LunarInfo {
   lunarMonthPa: string;
   isPuranmashi: boolean;
   isMasya: boolean;
-  isIkadashi: boolean;
+  isEkadashi: boolean;
+  isAshtami: boolean;
   isPanchmi: boolean;
   isSpecialLunar: boolean;
   elongationDeg: number; // 0..360

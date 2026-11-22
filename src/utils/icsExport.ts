@@ -72,6 +72,7 @@ export function generateJantriIcs(options: IcsExportOptions, now: Date = new Dat
   const dtStamp = formatUtcStamp(now);
   const records: IcsRecord[] = [];
   const isPa = options.language === 'pa';
+  const isBi = options.language === 'bi';
 
   // 1. Sangrands (Solar Month Transitions)
   if (options.includeSangrands) {
@@ -82,9 +83,11 @@ export function generateJantriIcs(options: IcsExportOptions, now: Date = new Dat
       records.push({
         uid: `sangrand-${span.sambat}-${meta.key}-${span.startDate}`,
         date: span.startDate,
-        summary: isPa
-          ? `${meta.namePa} ਸੰਗਰਾਂਦ · ੧ ${meta.namePa} ਸੰਮਤ ${toGurmukhiNumerals(span.sambat)}`
-          : `${meta.nameEn} Sangrand · 1 ${meta.nameEn}, Sambat ${span.sambat}`,
+        summary: isBi
+          ? `${meta.nameEn} Sangrand / ${meta.namePa} ਸੰਗਰਾਂਦ · 1 ${meta.nameEn}, Sambat ${span.sambat}`
+          : isPa
+            ? `${meta.namePa} ਸੰਗਰਾਂਦ · ੧ ${meta.namePa} ਸੰਮਤ ${toGurmukhiNumerals(span.sambat)}`
+            : `${meta.nameEn} Sangrand · 1 ${meta.nameEn}, Sambat ${span.sambat}`,
         description: isPa
           ? `ਪੁਰਾਤਨ ਬਿਕ੍ਰਮੀ ਸੰਗਰਾਂਦ (${meta.barahMahaRefPa})। ਬਾਰਹ ਮਾਹਾ: ${meta.pothiUrl}`
           : `Puratan Bikrami Sangrand (${meta.barahMahaRefEn}). Read Barah Maha: ${meta.pothiUrl}`,
@@ -105,9 +108,11 @@ export function generateJantriIcs(options: IcsExportOptions, now: Date = new Dat
           records.push({
             uid: `puranmashi-${cursor}`,
             date: cursor,
-            summary: isPa
-              ? `${lunar.lunarMonthPa} ਪੂਰਨਮਾਸ਼ੀ (${toGurmukhiNumerals(solar.day)} ${solar.monthMeta.namePa})`
-              : `${lunar.lunarMonthEn} Puranmashi (${solar.day} ${solar.monthMeta.nameEn})`,
+            summary: isBi
+              ? `${lunar.lunarMonthEn} Puranmashi / ${lunar.lunarMonthPa} ਪੂਰਨਮਾਸ਼ੀ (${solar.day} ${solar.monthMeta.nameEn})`
+              : isPa
+                ? `${lunar.lunarMonthPa} ਪੂਰਨਮਾਸ਼ੀ (${toGurmukhiNumerals(solar.day)} ${solar.monthMeta.namePa})`
+                : `${lunar.lunarMonthEn} Puranmashi (${solar.day} ${solar.monthMeta.nameEn})`,
             description: isPa
               ? `ਪੁਰਾਤਨ ਬਿਕ੍ਰਮੀ ਚੰਦਰ ਤਿਥੀ: ${lunar.lunarMonthPa} ਸੁਦੀ ੧੫ (ਪੂਰਨਮਾਸ਼ੀ)। ਸੂਰਜੀ ਤਾਰੀਖ਼: ${toGurmukhiNumerals(solar.day)} ${solar.monthMeta.namePa}, ਸੰਮਤ ${toGurmukhiNumerals(solar.sambat)}।`
               : `Puratan Bikrami Lunar Tithi: ${lunar.lunarMonthEn} Sudhi 15 (Puranmashi). Solar Date: ${solar.day} ${solar.monthMeta.nameEn}, Sambat ${solar.sambat}.`,
@@ -118,9 +123,11 @@ export function generateJantriIcs(options: IcsExportOptions, now: Date = new Dat
           records.push({
             uid: `masya-${cursor}`,
             date: cursor,
-            summary: isPa
-              ? `${lunar.lunarMonthPa} ਮੱਸਿਆ (${toGurmukhiNumerals(solar.day)} ${solar.monthMeta.namePa})`
-              : `${lunar.lunarMonthEn} Masya (${solar.day} ${solar.monthMeta.nameEn})`,
+            summary: isBi
+              ? `${lunar.lunarMonthEn} Masya / ${lunar.lunarMonthPa} ਮੱਸਿਆ (${solar.day} ${solar.monthMeta.nameEn})`
+              : isPa
+                ? `${lunar.lunarMonthPa} ਮੱਸਿਆ (${toGurmukhiNumerals(solar.day)} ${solar.monthMeta.namePa})`
+                : `${lunar.lunarMonthEn} Masya (${solar.day} ${solar.monthMeta.nameEn})`,
             description: isPa
               ? `ਪੁਰਾਤਨ ਬਿਕ੍ਰਮੀ ਚੰਦਰ ਤਿਥੀ: ${lunar.lunarMonthPa} ਵਦੀ ੧੫ (ਮੱਸਿਆ)। ਸੂਰਜੀ ਤਾਰੀਖ਼: ${toGurmukhiNumerals(solar.day)} ${solar.monthMeta.namePa}, ਸੰਮਤ ${toGurmukhiNumerals(solar.sambat)}।`
               : `Puratan Bikrami Lunar Tithi: ${lunar.lunarMonthEn} Vadhi 15 (Masya). Solar Date: ${solar.day} ${solar.monthMeta.nameEn}, Sambat ${solar.sambat}.`,
@@ -146,7 +153,7 @@ export function generateJantriIcs(options: IcsExportOptions, now: Date = new Dat
     records.push({
       uid: `event-${ev.id}`,
       date: ev.date,
-      summary: isPa ? ev.titlePa : ev.titleEn,
+      summary: isBi ? `${ev.titleEn} · ${ev.titlePa}` : isPa ? ev.titlePa : ev.titleEn,
       description: isPa
         ? `${ev.tithiRulePa}\n${ev.summaryPa}\nਹਵਾਲੇ: ${citationsLine}\nhttps://calendar.tatkhalsa.in`
         : `${ev.tithiRuleEn}\n${ev.summaryEn}\nSources: ${citationsLine}\nhttps://calendar.tatkhalsa.in`,

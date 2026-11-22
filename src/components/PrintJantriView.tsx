@@ -1,17 +1,22 @@
 import {ArrowLeft, ChevronLeft, ChevronRight, Printer} from 'lucide-react';
 import React from 'react';
-import {GREGORIAN_MONTHS, WEEKDAYS} from '../data/sambatData';
-import type {JantriDay, LanguageMode} from '../data/types';
+import {getBikramiMonthMeta, GREGORIAN_MONTHS, WEEKDAYS} from '../data/sambatData';
+import type {CalendarGridMode, JantriDay, LanguageMode} from '../data/types';
 import {
+  BROWSEABLE_SOLAR_SPANS,
   formatGregorianDate,
-  formatNum,
+  formatShortGregorian,
   getBikramiHeaderForGregorianMonth,
+  getGregorianHeaderForSolarSpan,
   SUPPORTED_MAX_MONTH,
   SUPPORTED_MIN_MONTH,
+  toGurmukhiNumerals,
 } from '../utils/bikramiEngine';
 import {MoonPhaseIcon} from './MoonPhaseIcon';
 
 interface PrintJantriViewProps {
+  gridMode: CalendarGridMode;
+  solarSpanIndex: number;
   year: number;
   monthIndex0: number;
   days: JantriDay[];
@@ -22,6 +27,8 @@ interface PrintJantriViewProps {
 }
 
 export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
+  gridMode,
+  solarSpanIndex,
   year,
   monthIndex0,
   days,
@@ -31,15 +38,21 @@ export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
   onBackToInteractive,
 }) => {
   const isPa = lang === 'pa';
+  const isSolarMode = gridMode === 'solar';
+  const currentSolarSpan = BROWSEABLE_SOLAR_SPANS[solarSpanIndex];
+  const currentSolarMeta = getBikramiMonthMeta(currentSolarSpan.monthId);
+
   const bikramiEn = getBikramiHeaderForGregorianMonth(year, monthIndex0, 'en');
   const bikramiPa = getBikramiHeaderForGregorianMonth(year, monthIndex0, 'pa');
 
-  const canGoPrev =
-    year > SUPPORTED_MIN_MONTH.year ||
-    (year === SUPPORTED_MIN_MONTH.year && monthIndex0 > SUPPORTED_MIN_MONTH.monthIndex0);
-  const canGoNext =
-    year < SUPPORTED_MAX_MONTH.year ||
-    (year === SUPPORTED_MAX_MONTH.year && monthIndex0 < SUPPORTED_MAX_MONTH.monthIndex0);
+  const canGoPrev = isSolarMode
+    ? solarSpanIndex > 0
+    : year > SUPPORTED_MIN_MONTH.year ||
+      (year === SUPPORTED_MIN_MONTH.year && monthIndex0 > SUPPORTED_MIN_MONTH.monthIndex0);
+  const canGoNext = isSolarMode
+    ? solarSpanIndex < BROWSEABLE_SOLAR_SPANS.length - 1
+    : year < SUPPORTED_MAX_MONTH.year ||
+      (year === SUPPORTED_MAX_MONTH.year && monthIndex0 < SUPPORTED_MAX_MONTH.monthIndex0);
 
   const monthNotes = days.filter(
     (d) =>
@@ -50,12 +63,12 @@ export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
   return (
     <section aria-labelledby="print-sheet-heading" className="space-y-5">
       {/* Screen-only Print Controls */}
-      <div className="no-print flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[#DDD3C0] bg-[#F3ECE0] p-4">
+      <div className="no-print flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[#DDD2BE] bg-[#F3ECE0] p-4">
         <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={onBackToInteractive}
-            className="inline-flex items-center gap-1.5 min-h-[40px] px-3.5 text-xs font-medium rounded-md border border-[#C6B9A3] bg-[#FAF6EE] text-[#1C1917] hover:bg-[#EDE4D3] cursor-pointer"
+            className="inline-flex items-center gap-1.5 min-h-[40px] px-3.5 text-xs font-medium rounded-md border border-[#C6B9A3] bg-[#FAF6EE] text-[#1C1917] hover:bg-[#EBE2D2] cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" aria-hidden="true" />
             <span>{isPa ? 'ਜੰਤਰੀ ’ਤੇ ਵਾਪਸ' : 'Back to Jantri'}</span>
@@ -84,7 +97,7 @@ export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
         <button
           type="button"
           onClick={() => window.print()}
-          className="inline-flex items-center gap-2 min-h-[44px] px-5 py-2.5 text-sm font-medium rounded-md bg-[#1E3A8A] text-[#FAF6EE] hover:bg-[#172554] transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+          className="inline-flex items-center gap-2 min-h-[44px] px-5 py-2.5 text-sm font-medium rounded-md bg-[#1B263B] text-[#FAF6EE] hover:bg-[#111A2B] transition-colors whitespace-nowrap shrink-0 cursor-pointer"
         >
           <Printer className="w-4 h-4" aria-hidden="true" />
           <span>{isPa ? 'A4 ਜੰਤਰੀ ਪ੍ਰਿੰਟ ਕਰੋ' : 'Print A4 Jantri Sheet'}</span>
@@ -94,22 +107,36 @@ export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
       {/* Archival A4 Landscape Broadsheet */}
       <div className="print-sheet mx-auto max-w-[1120px] rounded-xl border border-[#C6B9A3] bg-white p-6 sm:p-8 shadow-sm text-[#1C1917]">
         {/* Dual-Script Broadsheet Header */}
-        <header className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b-2 border-[#1C1917] pb-3.5">
+        <header className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b-2 border-[#1B263B] pb-3.5">
           <div>
             <p className="text-[11px] tracking-widest uppercase text-[#57534E]">
               Tatkhalsa Foundation · calendar.tatkhalsa.in · Puratan Bikrami
             </p>
             <h1
               id="print-sheet-heading"
-              className="mt-1 font-display text-2xl sm:text-3xl font-bold text-[#1C1917]"
+              className="mt-1 font-display text-2xl sm:text-3xl font-bold text-[#1B263B]"
             >
-              {GREGORIAN_MONTHS[monthIndex0].en} {year} · {GREGORIAN_MONTHS[monthIndex0].pa}{' '}
-              {formatNum(year, 'pa')}
+              {isSolarMode
+                ? `${currentSolarMeta.nameEn} · ${currentSolarMeta.namePa} · Sambat ${currentSolarSpan.sambat}`
+                : `${GREGORIAN_MONTHS[monthIndex0].en} ${year} · ${GREGORIAN_MONTHS[monthIndex0].pa} ${toGurmukhiNumerals(year)}`}
             </h1>
           </div>
           <div className="sm:text-right">
-            <p className="font-gurmukhi text-base font-semibold text-[#B45309]">{bikramiPa}</p>
-            <p className="text-xs font-medium text-[#44403C]">{bikramiEn}</p>
+            {isSolarMode ? (
+              <>
+                <p className="font-gurmukhi text-base font-semibold text-[#9E4F00]">
+                  ਸੰਮਤ {toGurmukhiNumerals(currentSolarSpan.sambat)} · {toGurmukhiNumerals(currentSolarSpan.days)} ਦਿਨ
+                </p>
+                <p className="text-xs font-medium text-[#44403C]">
+                  {getGregorianHeaderForSolarSpan(currentSolarSpan, 'en')}
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="font-gurmukhi text-base font-semibold text-[#9E4F00]">{bikramiPa}</p>
+                <p className="text-xs font-medium text-[#44403C]">{bikramiEn}</p>
+              </>
+            )}
           </div>
         </header>
 
@@ -119,7 +146,7 @@ export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
             {WEEKDAYS.map((wd) => (
               <div
                 key={wd.index}
-                className="py-1.5 px-2 text-center text-[11px] font-semibold text-[#1C1917] border-r last:border-r-0 border-[#D6D3D1]"
+                className="py-1.5 px-2 text-center text-[11px] font-semibold text-[#1B263B] border-r last:border-r-0 border-[#D6D3D1]"
               >
                 {wd.shortEn} · {wd.shortPa}
               </div>
@@ -135,15 +162,23 @@ export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
                 }`}
               >
                 <div className="flex items-start justify-between gap-1">
-                  <span className="font-mono-tabular text-sm font-bold leading-none">
-                    {day.gregorianDay}
+                  <span
+                    className={`font-mono-tabular text-sm font-bold leading-none ${
+                      isSolarMode && day.solar.isSangrand && day.inCurrentGridMonth
+                        ? 'text-[#C86400]'
+                        : ''
+                    }`}
+                  >
+                    {isSolarMode ? day.solar.day : day.gregorianDay}
                   </span>
                   <span
                     className={`text-[10px] leading-tight text-right ${
-                      day.solar.isSangrand ? 'font-bold text-[#B45309]' : 'text-[#44403C]'
+                      !isSolarMode && day.solar.isSangrand ? 'font-bold text-[#9E4F00]' : 'text-[#44403C]'
                     }`}
                   >
-                    {day.solar.day} {day.solar.monthMeta.nameEn}
+                    {isSolarMode
+                      ? formatShortGregorian(day, 'en')
+                      : `${day.solar.day} ${day.solar.monthMeta.nameEn}`}
                   </span>
                 </div>
 
@@ -158,7 +193,7 @@ export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
 
                 <div className="mt-1 space-y-0.5">
                   {day.solar.isSangrand && (
-                    <p className="text-[9px] font-bold text-[#B45309] leading-tight truncate">
+                    <p className="text-[9px] font-bold text-[#9E4F00] leading-tight truncate">
                       Sangrand · ਸੰਗਰਾਂਦ
                     </p>
                   )}
@@ -167,10 +202,10 @@ export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
                       key={ev.id}
                       className={`text-[9px] font-semibold leading-tight truncate ${
                         ev.category === 'shaheedi'
-                          ? 'text-[#991B1B]'
+                          ? 'text-[#8F1D1D]'
                           : ev.category === 'khalsa'
-                            ? 'text-[#1E3A8A]'
-                            : 'text-[#B45309]'
+                            ? 'text-[#1B263B]'
+                            : 'text-[#9E4F00]'
                       }`}
                     >
                       {isPa ? ev.shortLabelPa : ev.shortLabelEn}
@@ -209,9 +244,9 @@ export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
                 return (
                   <p key={d.isoDate} className="truncate">
                     <span className="font-mono-tabular font-semibold">
-                      {formatGregorianDate(d.isoDate, lang, false)}
+                      {d.solar.day} {d.solar.monthMeta.nameEn}
                     </span>{' '}
-                    ({d.solar.day} {d.solar.monthMeta.nameEn}) — {label}
+                    ({formatGregorianDate(d.isoDate, lang, false)}) — {label}
                   </p>
                 );
               })}

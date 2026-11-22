@@ -8,15 +8,17 @@
 
   --color-parchment: #FAF6EE;
   --color-parchment-deep: #F3ECE0;
-  --color-parchment-hover: #EDE4D3;
-  --color-hairline: #DDD3C0;
+  --color-parchment-hover: #EBE2D2;
+  --color-hairline: #DDD2BE;
   --color-ink: #1C1917;
   --color-ink-muted: #57534E;
-  --color-kesri: #D97706;
-  --color-kesri-deep: #B45309;
-  --color-neela: #1E3A8A;
-  --color-neela-deep: #172554;
-  --color-shaheedi: #991B1B;
+  --color-kesri: #C86400;
+  --color-kesri-deep: #9E4F00;
+  --color-surmai: #1B263B;
+  --color-surmai-deep: #111A2B;
+  --color-gold: #B8860B;
+  --color-gold-deep: #8A6305;
+  --color-shaheedi: #8F1D1D;
 }
 
 @layer base {

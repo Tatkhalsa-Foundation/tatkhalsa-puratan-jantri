@@ -280,9 +280,10 @@ export function computeLunarInfoForDate(isoDate: string): LunarInfo {
   const pakshPa = isSudhi ? 'ਸੁਦੀ' : 'ਵਦੀ';
   const pakshDay = isSudhi ? tithiNumber : tithiNumber - 15; // 1..15
 
-  const isIkadashi = pakshDay === 11;
+  const isEkadashi = pakshDay === 11;
+  const isAshtami = pakshDay === 8;
   const isPanchmi = pakshDay === 5;
-  const isSpecialLunar = isPuranmashi || isMasya || isIkadashi || isPanchmi;
+  const isSpecialLunar = isPuranmashi || isMasya || isEkadashi || isAshtami || isPanchmi;
 
   const tithiMeta = TITHI_NAMES[pakshDay - 1];
   let tithiNameEn = tithiMeta.en;
@@ -310,9 +311,12 @@ export function computeLunarInfoForDate(isoDate: string): LunarInfo {
     tithiNamePa = 'ਚੌਦਸ / ਮੱਸਿਆ ਆਰੰਭ';
     shortTithiEn = 'Vadhi 14–15';
     shortTithiPa = 'ਵਦੀ ੧੪-੧੫';
-  } else if (isIkadashi) {
-    shortTithiEn = `${paksh} 11 · Ikadashi`;
+  } else if (isEkadashi) {
+    shortTithiEn = `${paksh} 11 · Ekadashi`;
     shortTithiPa = `${pakshPa} ੧੧ · ਇਕਾਦਸ਼ੀ`;
+  } else if (isAshtami) {
+    shortTithiEn = `${paksh} 8 · Ashtami`;
+    shortTithiPa = `${pakshPa} ੮ · ਅਸ਼ਟਮੀ`;
   } else if (isPanchmi) {
     shortTithiEn = `${paksh} 5 · Panchmi`;
     shortTithiPa = `${pakshPa} ੫ · ਪੰਚਮੀ`;
@@ -341,7 +345,8 @@ export function computeLunarInfoForDate(isoDate: string): LunarInfo {
     lunarMonthPa: lunarMonthMeta.namePa,
     isPuranmashi,
     isMasya,
-    isIkadashi,
+    isEkadashi,
+    isAshtami,
     isPanchmi,
     isSpecialLunar,
     elongationDeg,
