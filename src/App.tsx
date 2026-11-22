@@ -28,8 +28,13 @@ import {
   SUPPORTED_MAX_MONTH,
   SUPPORTED_MIN_MONTH,
 } from './utils/bikramiEngine';
-
-const LANG_STORAGE_KEY = 'tatkhalsa_jantri_lang';
+import {
+  createDefaultPersistedState,
+  loadPersistedState,
+  savePersistedState,
+  type DirectoryFilterState,
+  type DirectorySambatState,
+} from './utils/statePersistence';
 
 export default function App() {
   const liveClock = useLiveClock();
@@ -37,34 +42,82 @@ export default function App() {
   const [todayYear, todayMonth1] = useMemo(() => todayIso.split('-').map(Number), [todayIso]);
   const todaySolarIndex = useMemo(() => getSolarMonthSpanIndexForDate(todayIso), [todayIso]);
 
-  const [lang, setLang] = useState<LanguageMode>(() => {
-    try {
-      const saved = window.localStorage.getItem(LANG_STORAGE_KEY);
-      if (saved === 'pa' || saved === 'en' || saved === 'bi') return saved;
-    } catch {
-      // Ignore storage access restrictions
-    }
-    return 'en';
-  });
+  const initialPersisted = useMemo(() => {
+    const defaults = createDefaultPersistedState(
+      todayIso,
+      todaySolarIndex,
+      todayYear,
+      todayMonth1 - 1,
+    );
+    return loadPersistedState(defaults);
+    // Intentionally read persisted state once on initial mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const [activeView, setActiveView] = useState<AppView>('jantri');
-  const [gridMode, setGridMode] = useState<CalendarGridMode>('solar');
-  const [solarSpanIndex, setSolarSpanIndex] = useState<number>(todaySolarIndex);
-  const [viewYear, setViewYear] = useState<number>(todayYear);
-  const [viewMonth0, setViewMonth0] = useState<number>(todayMonth1 - 1);
-  const [selectedIso, setSelectedIso] = useState<string>(todayIso);
-  const [drawerDay, setDrawerDay] = useState<JantriDay | null>(null);
-  const [activeFilter, setActiveFilter] = useState<CalendarFilter>('all');
+  const [lang, setLang] = useState<LanguageMode>(initialPersisted.lang);
+  const [activeView, setActiveView] = useState<AppView>(initialPersisted.activeView);
+  const [gridMode, setGridMode] = useState<CalendarGridMode>(initialPersisted.gridMode);
+  const [solarSpanIndex, setSolarSpanIndex] = useState<number>(initialPersisted.solarSpanIndex);
+  const [viewYear, setViewYear] = useState<number>(initialPersisted.viewYear);
+  const [viewMonth0, setViewMonth0] = useState<number>(initialPersisted.viewMonth0);
+  const [selectedIso, setSelectedIso] = useState<string>(initialPersisted.selectedIso);
+  const [drawerDateIso, setDrawerDateIso] = useState<string | null>(
+    initialPersisted.drawerDateIso,
+  );
+  const [activeFilter, setActiveFilter] = useState<CalendarFilter>(initialPersisted.activeFilter);
+  const [sangrandYear, setSangrandYear] = useState<2083 | 2084>(initialPersisted.sangrandYear);
+  const [directoryQuery, setDirectoryQuery] = useState<string>(initialPersisted.directoryQuery);
+  const [directoryCategory, setDirectoryCategory] = useState<DirectoryFilterState>(
+    initialPersisted.directoryCategory,
+  );
+  const [directorySambat, setDirectorySambat] = useState<DirectorySambatState>(
+    initialPersisted.directorySambat,
+  );
+  const [directoryUpcomingOnly, setDirectoryUpcomingOnly] = useState<boolean>(
+    initialPersisted.directoryUpcomingOnly,
+  );
+  const [lookupInput, setLookupInput] = useState<string>(initialPersisted.lookupInput);
   const [isIcsOpen, setIsIcsOpen] = useState<boolean>(false);
 
   useEffect(() => {
     document.documentElement.lang = lang === 'pa' ? 'pa' : 'en';
-    try {
-      window.localStorage.setItem(LANG_STORAGE_KEY, lang);
-    } catch {
-      // Ignore storage errors
-    }
   }, [lang]);
+
+  useEffect(() => {
+    savePersistedState({
+      activeView,
+      lang,
+      gridMode,
+      solarSpanIndex,
+      viewYear,
+      viewMonth0,
+      selectedIso,
+      drawerDateIso,
+      activeFilter,
+      sangrandYear,
+      directoryQuery,
+      directoryCategory,
+      directorySambat,
+      directoryUpcomingOnly,
+      lookupInput,
+    });
+  }, [
+    activeView,
+    lang,
+    gridMode,
+    solarSpanIndex,
+    viewYear,
+    viewMonth0,
+    selectedIso,
+    drawerDateIso,
+    activeFilter,
+    sangrandYear,
+    directoryQuery,
+    directoryCategory,
+    directorySambat,
+    directoryUpcomingOnly,
+    lookupInput,
+  ]);
 
   useEffect(() => {
     window.scrollTo({top: 0, behavior: 'auto'});
@@ -72,6 +125,10 @@ export default function App() {
 
   const todayRecord = useMemo(() => getJantriDay(todayIso, true), [todayIso]);
   const milestones = useMemo(() => getNextMilestones(todayIso), [todayIso]);
+  const drawerDay = useMemo(
+    () => (drawerDateIso ? getJantriDay(drawerDateIso, true) : null),
+    [drawerDateIso],
+  );
   const monthGrid = useMemo(
     () =>
       gridMode === 'solar'
@@ -85,7 +142,8 @@ export default function App() {
       const span = BROWSEABLE_SOLAR_SPANS[solarSpanIndex];
       return getBikramiMonthMeta(span.monthId).key;
     }
-    const midDay = monthGrid.find((d) => d.inCurrentGridMonth && d.gregorianDay === 15) ?? monthGrid[15];
+    const midDay =
+      monthGrid.find((d) => d.inCurrentGridMonth && d.gregorianDay === 15) ?? monthGrid[15];
     return midDay ? midDay.solar.monthMeta.key : todayRecord.solar.monthMeta.key;
   }, [gridMode, solarSpanIndex, monthGrid, todayRecord]);
 
@@ -140,7 +198,6 @@ export default function App() {
 
   const handleJumpSambat = (sambat: 2083 | 2084) => {
     if (sambat === 2083) {
-      // Jump to Maghar 2083 (Nov 2026 — 557th Parkash Purab of Sri Guru Nanak Dev Ji)
       const magharIdx = BROWSEABLE_SOLAR_SPANS.findIndex(
         (s) => s.sambat === 2083 && s.monthId === 9,
       );
@@ -148,7 +205,6 @@ export default function App() {
       setViewYear(2026);
       setViewMonth0(10);
     } else {
-      // Jump to Chet 2084 (Sambat 2084 New Year)
       const chetIdx = BROWSEABLE_SOLAR_SPANS.findIndex(
         (s) => s.sambat === 2084 && s.monthId === 1,
       );
@@ -160,7 +216,7 @@ export default function App() {
 
   const handleSelectDay = (day: JantriDay) => {
     setSelectedIso(day.isoDate);
-    setDrawerDay(day);
+    setDrawerDateIso(day.isoDate);
   };
 
   const handleJumpToDateAndOpen = (isoDate: string) => {
@@ -169,7 +225,7 @@ export default function App() {
     setViewYear(y);
     setViewMonth0(m - 1);
     setSelectedIso(isoDate);
-    setDrawerDay(getJantriDay(isoDate, true));
+    setDrawerDateIso(isoDate);
   };
 
   const handleJumpToGridDate = (isoDate: string) => {
@@ -235,13 +291,28 @@ export default function App() {
           <EventsDirectoryView
             todayIso={todayIso}
             lang={lang}
+            query={directoryQuery}
+            onQueryChange={setDirectoryQuery}
+            category={directoryCategory}
+            onCategoryChange={setDirectoryCategory}
+            sambat={directorySambat}
+            onSambatChange={setDirectorySambat}
+            upcomingOnly={directoryUpcomingOnly}
+            onUpcomingOnlyChange={setDirectoryUpcomingOnly}
+            lookupInput={lookupInput}
+            onLookupInputChange={setLookupInput}
             onSelectDate={handleJumpToDateAndOpen}
             onJumpToGridDate={handleJumpToGridDate}
           />
         )}
 
         {activeView === 'sangrands' && (
-          <SangrandsTableView lang={lang} onSelectDate={handleJumpToDateAndOpen} />
+          <SangrandsTableView
+            lang={lang}
+            selectedSambat={sangrandYear}
+            onSelectSambat={setSangrandYear}
+            onSelectDate={handleJumpToDateAndOpen}
+          />
         )}
 
         {activeView === 'print' && (
@@ -299,7 +370,7 @@ export default function App() {
         day={drawerDay}
         liveClock={liveClock}
         lang={lang}
-        onClose={() => setDrawerDay(null)}
+        onClose={() => setDrawerDateIso(null)}
       />
       <IcsExportModal isOpen={isIcsOpen} lang={lang} onClose={() => setIsIcsOpen(false)} />
       <OfflineIndicator lang={lang} />

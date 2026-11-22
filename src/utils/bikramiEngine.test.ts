@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {BARAH_MAHA_PAURIS} from '../data/barahMahaData';
+import {resolveCitationReader} from '../data/citationSourcesData';
 import {HISTORICAL_EVENTS} from '../data/eventsData';
 import {MONTHLY_HERITAGE} from '../data/heritageData';
 import {BIKRAMI_MONTHS, POTHI_BARAH_MAHA_URL, POTHI_BASE_URL, SOLAR_MONTH_SPANS} from '../data/sambatData';
@@ -21,6 +22,7 @@ import {
   toGurmukhiNumerals,
 } from './bikramiEngine';
 import {generateJantriIcs, generateSingleDayIcs} from './icsExport';
+import {createDefaultPersistedState, parsePersistedState} from './statePersistence';
 
 test('Tuesday Nov 24, 2026 resolves to 9 Maghar, Sambat 2083, Katak Puranmashi & 557th Parkash Purab of Sri Guru Nanak Dev Ji', () => {
   const day = getJantriDay('2026-11-24');
@@ -331,3 +333,93 @@ test('Expanded Sambat 2083 Purabs, Shaheedi Divases, and Barsis resolve on verif
   const sakaNankana = getJantriDay('2027-02-21');
   assert.ok(sakaNankana.events.some((e) => e.id === '2083-saka-sri-nankana-sahib'));
 });
+
+test('App state persistence defaults Sangrands to Sambat 2083, round-trips all fields, and recovers cleanly from corrupt JSON', () => {
+  const defaults = createDefaultPersistedState('2026-11-22', 1, 2026, 10);
+  assert.equal(defaults.sangrandYear, 2083);
+  assert.equal(defaults.activeView, 'jantri');
+  assert.equal(defaults.drawerDateIso, null);
+
+  const saved = JSON.stringify({
+    activeView: 'sangrands',
+    lang: 'pa',
+    gridMode: 'gregorian',
+    solarSpanIndex: 6,
+    viewYear: 2027,
+    viewMonth0: 3,
+    selectedIso: '2027-04-14',
+    drawerDateIso: '2026-11-24',
+    activeFilter: 'barsi',
+    sangrandYear: 2084,
+    directoryQuery: 'Nanak',
+    directoryCategory: 'gurpurab',
+    directorySambat: '2083',
+    directoryUpcomingOnly: true,
+    lookupInput: '2027-04-14',
+  });
+  const restored = parsePersistedState(saved, defaults);
+  assert.equal(restored.activeView, 'sangrands');
+  assert.equal(restored.lang, 'pa');
+  assert.equal(restored.gridMode, 'gregorian');
+  assert.equal(restored.solarSpanIndex, 6);
+  assert.equal(restored.drawerDateIso, '2026-11-24');
+  assert.equal(restored.sangrandYear, 2084);
+  assert.equal(restored.directoryQuery, 'Nanak');
+  assert.equal(restored.directoryCategory, 'gurpurab');
+  assert.equal(restored.directorySambat, '2083');
+  assert.equal(restored.directoryUpcomingOnly, true);
+  assert.equal(restored.lookupInput, '2027-04-14');
+
+  // Corrupt JSON and invalid ranges fall back safely to defaults (preserving legacy lang if valid)
+  const recovered = parsePersistedState('{broken json', defaults, 'bi');
+  assert.equal(recovered.lang, 'bi');
+  assert.equal(recovered.activeView, 'jantri');
+  assert.equal(recovered.sangrandYear, 2083);
+
+  const sanitized = parsePersistedState(
+    JSON.stringify({
+      activeView: 'unknown',
+      sangrandYear: 1999,
+      solarSpanIndex: 999,
+      drawerDateIso: '2099-01-01',
+    }),
+    defaults,
+  );
+  assert.equal(sanitized.activeView, 'jantri');
+  assert.equal(sanitized.sangrandYear, 2083);
+  assert.equal(sanitized.solarSpanIndex, 1);
+  assert.equal(sanitized.drawerDateIso, null);
+});
+
+test('Every historical citation across Sambat 2083–2084 resolves to full Gurmukhi text, English translation, and exact Granth deep link', () => {
+  let totalChecked = 0;
+  for (const ev of HISTORICAL_EVENTS) {
+    assert.ok(ev.citations.length > 0, `Event ${ev.id} has no citations`);
+    for (const cit of ev.citations) {
+      const reader = resolveCitationReader(cit, ev);
+      totalChecked++;
+      assert.ok(reader.headingEn.length > 5, `Empty headingEn for ${ev.id}`);
+      assert.ok(reader.gurmukhiLines.length >= 1, `Missing Gurmukhi lines for ${ev.id}`);
+      assert.ok(reader.translationEn.length > 25, `Missing English translation for ${ev.id}`);
+      assert.ok(
+        reader.exactGranthUrl.startsWith('https://'),
+        `Invalid exactGranthUrl for ${ev.id}: ${reader.exactGranthUrl}`,
+      );
+    }
+  }
+  assert.ok(totalChecked >= 90, `Expected >= 90 citations verified, got ${totalChecked}`);
+
+  // Spot-check Bandi Chhor citations (Suraj Prakash Raas 5 + Bhai Gurdas Vaar 19 Pauri 6)
+  const bandiChhor = HISTORICAL_EVENTS.find((e) => e.id === '2083-bandi-chhor-divas')!;
+  const surajReader = resolveCitationReader(bandiChhor.citations[0], bandiChhor);
+  assert.match(surajReader.headingEn, /Raas 5, Ansu 26–32/i);
+  assert.ok(surajReader.gurmukhiLines.length >= 4);
+
+  const gurdasReader = resolveCitationReader(bandiChhor.citations[1], bandiChhor);
+  assert.equal(
+    gurdasReader.exactGranthUrl,
+    'https://www.searchgurbani.com/bhai-gurdas-vaaran/vaar/19/pauri/6',
+  );
+  assert.ok(gurdasReader.gurmukhiLines.length >= 6);
+});
+

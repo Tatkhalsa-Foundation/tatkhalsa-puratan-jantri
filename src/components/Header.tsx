@@ -56,19 +56,13 @@ export const Header: React.FC<HeaderProps> = ({
               isPa ? 'ਤੱਤਖ਼ਾਲਸਾ ਪੁਰਾਤਨ ਜੰਤਰੀ — ਮੁੱਖ ਪੰਨਾ' : 'Tatkhalsa Puratan Jantri — Home'
             }
           >
-            <svg
-              width="26"
-              height="26"
-              viewBox="0 0 40 40"
-              fill="none"
-              aria-hidden="true"
-              className="shrink-0"
-            >
-              <circle cx="20" cy="20" r="18" stroke="#1B263B" strokeWidth="1.75" />
-              <circle cx="20" cy="20" r="13.5" stroke="#B8860B" strokeWidth="1.2" strokeDasharray="2 2" />
-              <circle cx="20" cy="20" r="7.5" fill="#C86400" />
-              <path d="M23 13A7.5 7.5 0 1 0 23 27A5.6 5.6 0 1 1 23 13Z" fill="#FAF6EE" />
-            </svg>
+            <img
+              src="./logo.png"
+              alt={isPa ? 'ਤੱਤਖ਼ਾਲਸਾ ਪੁਰਾਤਨ ਜੰਤਰੀ ਮੋਹਰ' : 'Tatkhalsa Puratan Jantri Logo'}
+              width={40}
+              height={40}
+              className="w-10 h-10 rounded-lg border border-[#B8860B] object-cover shrink-0 shadow-xs bg-[#FAF6EE]"
+            />
             <span
               className={`font-display text-lg font-semibold tracking-tight text-[#1B263B] sm:text-xl ${
                 isPa ? 'font-gurmukhi text-base sm:text-lg' : ''

@@ -1,5 +1,5 @@
 import {ArrowRight, BookMarked, CalendarSearch, Search} from 'lucide-react';
-import React, {useMemo, useState} from 'react';
+import React, {useMemo} from 'react';
 import {WEEKDAYS} from '../data/sambatData';
 import type {DirectoryCategory, DirectoryObservance, LanguageMode} from '../data/types';
 import {
@@ -11,16 +11,27 @@ import {
   lookupGregorianToBikrami,
   toGurmukhiNumerals,
 } from '../utils/bikramiEngine';
+import type {DirectoryFilterState, DirectorySambatState} from '../utils/statePersistence';
 import {MoonPhaseIcon} from './MoonPhaseIcon';
 
 interface EventsDirectoryViewProps {
   todayIso: string;
   lang: LanguageMode;
+  query: string;
+  onQueryChange: (q: string) => void;
+  category: DirectoryFilterState;
+  onCategoryChange: (cat: DirectoryFilterState) => void;
+  sambat: DirectorySambatState;
+  onSambatChange: (s: DirectorySambatState) => void;
+  upcomingOnly: boolean;
+  onUpcomingOnlyChange: (val: boolean) => void;
+  lookupInput: string;
+  onLookupInputChange: (iso: string) => void;
   onSelectDate: (isoDate: string) => void;
   onJumpToGridDate: (isoDate: string) => void;
 }
 
-type DirectoryFilter = 'all' | DirectoryCategory;
+type DirectoryFilter = DirectoryFilterState;
 
 const CATEGORY_TABS: readonly {id: DirectoryFilter; en: string; pa: string}[] = [
   {id: 'all', en: 'All', pa: 'ਸਭ'},
@@ -38,6 +49,12 @@ const QUICK_LOOKUPS: readonly {iso: string; en: string; pa: string}[] = [
   {iso: '2027-04-14', en: '14 Apr 2027 · Vaisakhi 2084', pa: '੧੪ ਅਪ੍ਰੈ ੨੦੨੭ · ਵੈਸਾਖੀ ੨੦੮੪'},
   {iso: '2027-09-08', en: '8 Sep 2027 · Chaupai Colophon', pa: '੮ ਸਤੰ ੨੦੨੭ · ਚੌਪਈ ਹਵਾਲਾ'},
 ];
+
+function formatUsSlashDate(iso: string): string {
+  const parts = iso.split('-');
+  if (parts.length !== 3) return iso;
+  return `${parts[1]}/${parts[2]}/${parts[0]}`;
+}
 
 function categoryLabel(cat: DirectoryCategory, isPa: boolean): string {
   switch (cat) {
@@ -69,16 +86,21 @@ function categoryColor(cat: DirectoryObservance['category']): string {
 export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
   todayIso,
   lang,
+  query,
+  onQueryChange,
+  category,
+  onCategoryChange,
+  sambat,
+  onSambatChange,
+  upcomingOnly,
+  onUpcomingOnlyChange,
+  lookupInput,
+  onLookupInputChange,
   onSelectDate,
   onJumpToGridDate,
 }) => {
   const isPa = lang === 'pa';
   const isBi = lang === 'bi';
-  const [query, setQuery] = useState('');
-  const [category, setCategory] = useState<DirectoryFilter>('all');
-  const [sambat, setSambat] = useState<'all' | '2083' | '2084'>('all');
-  const [upcomingOnly, setUpcomingOnly] = useState(false);
-  const [lookupInput, setLookupInput] = useState<string>(todayIso);
 
   const allObservances = useMemo(() => getAllDirectoryObservances(), []);
   const lookupResult = useMemo(() => lookupGregorianToBikrami(lookupInput), [lookupInput]);
@@ -127,24 +149,39 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
             </h2>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
-            <label htmlFor="gregorian-lookup-input" className="text-xs font-medium text-[#44403C]">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 w-full lg:w-auto">
+            <label
+              htmlFor="gregorian-lookup-input"
+              className="text-xs font-medium text-[#44403C] whitespace-nowrap"
+            >
               {isPa ? 'ਅੰਗਰੇਜ਼ੀ ਤਾਰੀਖ਼:' : 'Gregorian Date:'}
             </label>
-            <div className="relative inline-flex items-center">
-              <CalendarSearch
-                className="w-4 h-4 text-[#1B263B] absolute left-3 pointer-events-none"
-                aria-hidden="true"
-              />
-              <input
-                id="gregorian-lookup-input"
-                type="date"
-                min={LOOKUP_MIN_ISO}
-                max={LOOKUP_MAX_ISO}
-                value={lookupInput}
-                onChange={(e) => setLookupInput(e.target.value)}
-                className="min-h-[42px] pl-9 pr-3 py-1.5 text-sm font-mono-tabular rounded-md border border-[#C6B9A3] bg-[#FAF6EE] text-[#1C1917] focus:outline-2 focus:outline-[#1B263B]"
-              />
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 w-full sm:w-auto">
+              <div className="relative flex items-center w-full sm:w-auto min-w-[205px]">
+                <CalendarSearch
+                  className="w-4 h-4 text-[#1B263B] absolute left-3.5 pointer-events-none shrink-0"
+                  aria-hidden="true"
+                />
+                <input
+                  id="gregorian-lookup-input"
+                  type="date"
+                  min={LOOKUP_MIN_ISO}
+                  max={LOOKUP_MAX_ISO}
+                  value={lookupInput}
+                  onChange={(e) => onLookupInputChange(e.target.value)}
+                  className="w-full sm:w-auto min-w-[205px] min-h-[44px] pl-10 pr-3.5 py-2 text-sm font-mono-tabular rounded-md border border-[#C6B9A3] bg-[#FAF6EE] text-[#1C1917] focus:outline-2 focus:outline-[#1B263B]"
+                />
+              </div>
+              {lookupResult.ok && (
+                <span
+                  data-testid="lookup-formatted-date"
+                  className="inline-flex items-center px-2.5 py-1 rounded-md border border-[#DDD2BE] bg-[#FAF6EE] text-xs font-mono-tabular font-medium text-[#1B263B] whitespace-nowrap self-start sm:self-auto"
+                >
+                  {isPa
+                    ? formatGregorianDate(lookupResult.day.isoDate, 'pa', false)
+                    : `${formatGregorianDate(lookupResult.day.isoDate, 'en', false)} (${formatUsSlashDate(lookupResult.day.isoDate)})`}
+                </span>
+              )}
             </div>
           </div>
         </div>
@@ -156,7 +193,7 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
             <button
               key={preset.iso}
               type="button"
-              onClick={() => setLookupInput(preset.iso)}
+              onClick={() => onLookupInputChange(preset.iso)}
               className={`min-h-[32px] px-2.5 py-1 rounded-sm border transition-colors whitespace-nowrap cursor-pointer ${
                 lookupInput === preset.iso
                   ? 'border-[#1B263B] bg-[#1B263B] text-[#FAF6EE]'
@@ -281,7 +318,7 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
                 id="event-search-input"
                 type="search"
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={(e) => onQueryChange(e.target.value)}
                 placeholder={
                   isPa
                     ? 'ਗੁਰਪੁਰਬ, ਪੂਰਨਮਾਸ਼ੀ, ਤਿਥੀ ਜਾਂ ਗ੍ਰੰਥ ਖੋਜੋ...'
@@ -307,7 +344,7 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
                   <button
                     key={opt.id}
                     type="button"
-                    onClick={() => setSambat(opt.id)}
+                    onClick={() => onSambatChange(opt.id)}
                     aria-pressed={sambat === opt.id}
                     className={`min-h-[36px] px-3 text-xs font-medium rounded-sm transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
                       sambat === opt.id
@@ -322,7 +359,7 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
 
               <button
                 type="button"
-                onClick={() => setUpcomingOnly((prev) => !prev)}
+                onClick={() => onUpcomingOnlyChange(!upcomingOnly)}
                 aria-pressed={upcomingOnly}
                 className={`min-h-[42px] px-3.5 text-xs font-medium rounded-md border transition-colors whitespace-nowrap cursor-pointer ${
                   upcomingOnly
@@ -345,7 +382,7 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
               <button
                 key={opt.id}
                 type="button"
-                onClick={() => setCategory(opt.id)}
+                onClick={() => onCategoryChange(opt.id)}
                 aria-pressed={category === opt.id}
                 className={`min-h-[36px] px-3 text-xs font-medium rounded-sm transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
                   category === opt.id

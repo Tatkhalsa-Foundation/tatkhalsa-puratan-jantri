@@ -1,6 +1,17 @@
-import {ArrowUpRight, BookMarked, BookOpen, CalendarPlus, Clock, X} from 'lucide-react';
-import React, {useEffect} from 'react';
+import {
+  ArrowUpRight,
+  BookMarked,
+  BookOpen,
+  CalendarPlus,
+  ChevronDown,
+  ChevronUp,
+  Clock,
+  ScrollText,
+  X,
+} from 'lucide-react';
+import React, {useEffect, useState} from 'react';
 import {BARAH_MAHA_PAURIS} from '../data/barahMahaData';
+import {resolveCitationReader} from '../data/citationSourcesData';
 import {POTHI_BARAH_MAHA_URL} from '../data/sambatData';
 import type {JantriDay, LanguageMode} from '../data/types';
 import type {LiveClockSnapshot} from '../hooks/useLiveClock';
@@ -27,6 +38,11 @@ export const EventColophonDrawer: React.FC<EventColophonDrawerProps> = ({
 }) => {
   const isPa = lang === 'pa';
   const isBi = lang === 'bi';
+  const [expandedCitations, setExpandedCitations] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    setExpandedCitations({});
+  }, [day?.isoDate]);
 
   useEffect(() => {
     if (!day) return;
@@ -38,6 +54,10 @@ export const EventColophonDrawer: React.FC<EventColophonDrawerProps> = ({
   }, [day, onClose]);
 
   if (!day) return null;
+
+  const toggleCitation = (key: string) => {
+    setExpandedCitations((prev) => ({...prev, [key]: !prev[key]}));
+  };
 
   const tithiDual = formatDualTime(day.lunar.tithiEndsAtUtc);
   const sankrantiDual = day.solar.isSangrand ? formatDualTime(day.solar.sankrantiUtc) : null;
@@ -315,58 +335,147 @@ export const EventColophonDrawer: React.FC<EventColophonDrawerProps> = ({
                     </p>
                   )}
 
-                  {/* Purab Shabad & Itihaas Citations */}
+                  {/* Primary Scriptural & Colophon Citations (Interactive Reader + Exact Page Links) */}
                   <div className="space-y-3 pt-3 border-t border-[#DDD2BE]">
                     <div className="flex items-center gap-2 text-xs font-semibold text-[#1B263B]">
                       <BookMarked className="w-4 h-4 text-[#B8860B]" aria-hidden="true" />
                       <span>
                         {isPa
-                          ? 'ਪੁਰਬ ਸ਼ਬਦ ਅਤੇ ਇਤਿਹਾਸ (ਪ੍ਰਮਾਣਿਕ ਗ੍ਰੰਥ ਹਵਾਲੇ)'
-                          : 'Purab Shabad & Itihaas (Gurbani & Suraj Prakash Citations)'}
+                          ? 'ਪ੍ਰਮਾਣਿਕ ਗ੍ਰੰਥ ਅਤੇ ਕਾਲ-ਲੇਖ ਹਵਾਲੇ (ਪੁਰਬ ਸ਼ਬਦ ਅਤੇ ਇਤਿਹਾਸ)'
+                          : 'Primary Scriptural & Colophon Citations (Purab Shabad & Itihaas)'}
                       </span>
                     </div>
 
-                    <dl className="divide-y divide-[#DDD2BE]/80 rounded-lg border border-[#DDD2BE] bg-[#FAF6EE]">
-                      {ev.citations.map((cit, idx) => (
-                        <div key={idx} className="p-3.5 space-y-1.5">
-                          <dt className="text-xs font-semibold text-[#1B263B]">
-                            {isPa ? cit.sourcePa : cit.sourceEn}
-                          </dt>
-                          <dd className="text-xs text-[#57534E]">
-                            {isPa ? cit.referencePa : cit.referenceEn}
-                          </dd>
-                          {cit.excerptPa && (
-                            <blockquote className="pt-1.5 space-y-0.5">
-                              <p className="font-gurmukhi text-sm text-[#1C1917]">
-                                {cit.excerptPa}
-                              </p>
-                              {!isPa && cit.excerptTranslit && (
-                                <p className="text-xs italic text-[#57534E]">
-                                  {cit.excerptTranslit}
-                                </p>
-                              )}
-                            </blockquote>
-                          )}
-                          {cit.pothiUrl && (
-                            <div className="pt-1">
-                              <a
-                                href={cit.pothiUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1 text-xs font-medium text-[#9E4F00] hover:text-[#7C3D00] underline underline-offset-4"
-                              >
-                                <span>
-                                  {isPa
-                                    ? cit.pothiLabelPa || 'ਪੋਥੀ ਸਾਹਿਬ ’ਤੇ ਪੜ੍ਹੋ'
-                                    : cit.pothiLabelEn || 'Read on pothi.tatkhalsa.in'}
+                    <div className="space-y-2.5">
+                      {ev.citations.map((cit, idx) => {
+                        const citKey = `${ev.id}-${idx}`;
+                        const isExpanded = !!expandedCitations[citKey];
+                        const reader = resolveCitationReader(cit, ev);
+                        return (
+                          <div
+                            key={citKey}
+                            data-testid={`citation-card-${citKey}`}
+                            className="rounded-lg border border-[#DDD2BE] bg-[#FAF6EE] overflow-hidden transition-colors hover:border-[#B8860B]/70"
+                          >
+                            <div className="p-3.5 space-y-2">
+                              <div className="flex items-start justify-between gap-2">
+                                <div className="min-w-0">
+                                  <p className="text-xs font-semibold text-[#1B263B]">
+                                    {isPa ? cit.sourcePa : cit.sourceEn}
+                                  </p>
+                                  <p className="mt-0.5 text-xs text-[#57534E]">
+                                    {isPa ? cit.referencePa : cit.referenceEn}
+                                  </p>
+                                </div>
+                                <span className="shrink-0 rounded-sm border border-[#E3D9C6] bg-[#F3ECE0] px-1.5 py-0.5 text-[10px] font-medium text-[#78716C]">
+                                  {isPa ? reader.granthTypeLabelPa : reader.granthTypeLabelEn}
                                 </span>
-                                <ArrowUpRight className="w-3.5 h-3.5" aria-hidden="true" />
-                              </a>
+                              </div>
+
+                              {cit.excerptPa && !isExpanded && (
+                                <blockquote className="pt-1 space-y-0.5 border-l-2 border-[#B8860B]/60 pl-2.5">
+                                  <p className="font-gurmukhi text-sm text-[#1C1917]">
+                                    {cit.excerptPa}
+                                  </p>
+                                  {!isPa && cit.excerptTranslit && (
+                                    <p className="text-xs italic text-[#57534E]">
+                                      {cit.excerptTranslit}
+                                    </p>
+                                  )}
+                                </blockquote>
+                              )}
+
+                              {/* Two Interactive Citation Actions */}
+                              <div className="pt-1.5 flex flex-wrap items-center gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => toggleCitation(citKey)}
+                                  aria-expanded={isExpanded}
+                                  data-testid={`read-source-btn-${citKey}`}
+                                  className={`inline-flex items-center gap-1.5 min-h-[34px] px-2.5 py-1 text-xs font-semibold rounded-md border transition-colors cursor-pointer ${
+                                    isExpanded
+                                      ? 'border-[#1B263B] bg-[#1B263B] text-[#FAF6EE]'
+                                      : 'border-[#C6B9A3] bg-[#F3ECE0] text-[#1B263B] hover:border-[#9E4F00] hover:text-[#9E4F00]'
+                                  }`}
+                                >
+                                  <ScrollText className="w-3.5 h-3.5" aria-hidden="true" />
+                                  <span>
+                                    {isExpanded
+                                      ? isPa
+                                        ? 'ਸੰਪੂਰਨ ਪਾਠ ਲੁਕਾਓ'
+                                        : 'Hide Full Source'
+                                      : isPa
+                                        ? 'ਸੰਪੂਰਨ ਇਤਿਹਾਸ / ਪਾਠ ਪੜ੍ਹੋ'
+                                        : 'Read Full Source / Itihaas'}
+                                  </span>
+                                  {isExpanded ? (
+                                    <ChevronUp className="w-3.5 h-3.5" aria-hidden="true" />
+                                  ) : (
+                                    <ChevronDown className="w-3.5 h-3.5" aria-hidden="true" />
+                                  )}
+                                </button>
+
+                                <a
+                                  href={reader.exactGranthUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  data-testid={`open-granth-link-${citKey}`}
+                                  className="inline-flex items-center gap-1 min-h-[34px] px-2.5 py-1 text-xs font-semibold rounded-md border border-[#B8860B]/50 bg-[#FAF6EE] text-[#9E4F00] hover:bg-[#F3ECE0] hover:text-[#7C3D00] transition-colors"
+                                >
+                                  <span>
+                                    {isPa
+                                      ? reader.exactGranthLabelPa
+                                      : reader.exactGranthLabelEn}
+                                  </span>
+                                  <ArrowUpRight className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+                                </a>
+                              </div>
                             </div>
-                          )}
-                        </div>
-                      ))}
-                    </dl>
+
+                            {/* Expandable Full Granth / Itihaas Reader Panel */}
+                            {isExpanded && (
+                              <div
+                                data-testid={`citation-reader-${citKey}`}
+                                className="border-t border-[#D8CBB4] bg-[#F3ECE0]/85 px-4 py-3.5 space-y-3"
+                              >
+                                <p className="text-[11px] font-semibold uppercase tracking-wide text-[#9E4F00]">
+                                  {isPa ? reader.headingPa : reader.headingEn}
+                                </p>
+
+                                <div className="rounded-md border border-[#DDD2BE] bg-[#FAF6EE] p-3 space-y-2">
+                                  {reader.gurmukhiLines.map((line, lIdx) => (
+                                    <div key={lIdx} className="space-y-0.5">
+                                      <p className="font-gurmukhi text-[15px] text-[#1C1917] leading-relaxed">
+                                        {line}
+                                      </p>
+                                      {!isPa && reader.transliterationLines[lIdx] && (
+                                        <p className="text-xs italic text-[#57534E] leading-relaxed">
+                                          {reader.transliterationLines[lIdx]}
+                                        </p>
+                                      )}
+                                    </div>
+                                  ))}
+                                </div>
+
+                                <div className="space-y-1.5 text-xs text-[#292524] leading-relaxed">
+                                  <p className="font-semibold text-[#1B263B]">
+                                    {isPa
+                                      ? 'ਇਤਿਹਾਸਕ ਵਿਆਖਿਆ ਅਤੇ ਪ੍ਰਸੰਗ:'
+                                      : 'Historical Translation & Archival Context:'}
+                                  </p>
+                                  <p>{isPa ? reader.translationPa : reader.translationEn}</p>
+                                  {isBi && (
+                                    <p className="font-gurmukhi text-[#44403C] pt-1">
+                                      {reader.translationPa}
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 </article>
               ))}

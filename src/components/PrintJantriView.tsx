@@ -107,19 +107,28 @@ export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
       {/* Archival A4 Landscape Broadsheet */}
       <div className="print-sheet mx-auto max-w-[1120px] rounded-xl border border-[#C6B9A3] bg-white p-6 sm:p-8 shadow-sm text-[#1C1917]">
         {/* Dual-Script Broadsheet Header */}
-        <header className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b-2 border-[#1B263B] pb-3.5">
-          <div>
-            <p className="text-[11px] tracking-widest uppercase text-[#57534E]">
-              Tatkhalsa Foundation · calendar.tatkhalsa.in · Puratan Bikrami
-            </p>
-            <h1
-              id="print-sheet-heading"
-              className="mt-1 font-display text-2xl sm:text-3xl font-bold text-[#1B263B]"
-            >
-              {isSolarMode
-                ? `${currentSolarMeta.nameEn} · ${currentSolarMeta.namePa} · Sambat ${currentSolarSpan.sambat}`
-                : `${GREGORIAN_MONTHS[monthIndex0].en} ${year} · ${GREGORIAN_MONTHS[monthIndex0].pa} ${toGurmukhiNumerals(year)}`}
-            </h1>
+        <header className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b-2 border-[#1B263B] pb-3.5">
+          <div className="flex items-center gap-3.5">
+            <img
+              src="./logo.png"
+              alt="Tatkhalsa Puratan Jantri Seal"
+              width={48}
+              height={48}
+              className="w-12 h-12 rounded-lg border border-[#B8860B] object-cover shrink-0 bg-[#FAF6EE]"
+            />
+            <div>
+              <p className="text-[11px] tracking-widest uppercase text-[#57534E]">
+                Tatkhalsa Foundation · calendar.tatkhalsa.in · Puratan Bikrami
+              </p>
+              <h1
+                id="print-sheet-heading"
+                className="mt-0.5 font-display text-2xl sm:text-3xl font-bold text-[#1B263B]"
+              >
+                {isSolarMode
+                  ? `${currentSolarMeta.nameEn} · ${currentSolarMeta.namePa} · Sambat ${currentSolarSpan.sambat}`
+                  : `${GREGORIAN_MONTHS[monthIndex0].en} ${year} · ${GREGORIAN_MONTHS[monthIndex0].pa} ${toGurmukhiNumerals(year)}`}
+              </h1>
+            </div>
           </div>
           <div className="sm:text-right">
             {isSolarMode ? (
