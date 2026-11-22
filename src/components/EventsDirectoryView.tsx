@@ -36,12 +36,12 @@ type DirectoryFilter = DirectoryFilterState;
 const CATEGORY_TABS: readonly {id: DirectoryFilter; en: string; pa: string}[] = [
   {id: 'all', en: 'All', pa: 'ਸਭ'},
   {id: 'gurpurab', en: 'Gurpurabs', pa: 'ਗੁਰਪੁਰਬ'},
+  {id: 'guru-ghar', en: 'Sahibzade & Guru Ghar', pa: 'ਸਾਹਿਬਜ਼ਾਦੇ ਤੇ ਗੁਰੂ ਘਰ'},
+  {id: 'bhagat-bhatt', en: 'Bhagats & Bhatts', pa: 'ਭਗਤ ਅਤੇ ਭੱਟ'},
+  {id: 'gursikh', en: 'Gursikhs & Panj Pyare', pa: 'ਗੁਰਸਿੱਖ ਤੇ ਪੰਜ ਪਿਆਰੇ'},
   {id: 'shaheedi', en: 'Shaheedi', pa: 'ਸ਼ਹੀਦੀ'},
-  {id: 'khalsa', en: 'Khalsa & Colophons', pa: 'ਖ਼ਾਲਸਾ / ਹਵਾਲੇ'},
   {id: 'barsi', en: 'Barsis & Mahapurakhs', pa: 'ਬਰਸੀਆਂ / ਮਹਾਂਪੁਰਖ'},
-  {id: 'sangrand', en: 'Sangrand (Month Start)', pa: 'ਸੰਗਰਾਂਦਾਂ'},
-  {id: 'puranmashi', en: 'Puranmashi (Full Moon)', pa: 'ਪੂਰਨਮਾਸ਼ੀ'},
-  {id: 'masya', en: 'Masya (New Moon)', pa: 'ਮੱਸਿਆ'},
+  {id: 'sangrand-tithi', en: 'Sangrands / Tithis', pa: 'ਸੰਗਰਾਂਦਾਂ / ਤਿਥੀਆਂ'},
 ];
 
 const QUICK_LOOKUPS: readonly {iso: string; en: string; pa: string}[] = [
@@ -108,7 +108,21 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return allObservances.filter((item) => {
-      if (category !== 'all' && item.category !== category) return false;
+      if (category !== 'all') {
+        if (category === 'guru-ghar' || category === 'bhagat-bhatt' || category === 'gursikh') {
+          if (!item.subGroups?.includes(category)) return false;
+        } else if (category === 'sangrand-tithi') {
+          if (
+            item.category !== 'sangrand' &&
+            item.category !== 'puranmashi' &&
+            item.category !== 'masya'
+          ) {
+            return false;
+          }
+        } else if (item.category !== category) {
+          return false;
+        }
+      }
       if (sambat !== 'all' && String(item.sambat) !== sambat) return false;
       if (upcomingOnly && item.date < todayIso) return false;
       if (!q) return true;
@@ -321,8 +335,8 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
                 onChange={(e) => onQueryChange(e.target.value)}
                 placeholder={
                   isPa
-                    ? 'ਗੁਰਪੁਰਬ, ਪੂਰਨਮਾਸ਼ੀ, ਤਿਥੀ ਜਾਂ ਗ੍ਰੰਥ ਖੋਜੋ...'
-                    : 'Search Gurpurab, Puranmashi, tithi, or source...'
+                    ? 'ਗੁਰਪੁਰਬ, ਭਗਤ, ਭੱਟ, ਸਾਹਿਬਜ਼ਾਦੇ, ਪੰਜ ਪਿਆਰੇ ਜਾਂ ਗ੍ਰੰਥ ਖੋਜੋ...'
+                    : 'Search Gurpurab, Bhagat, Bhatt, Sahibzade, Panj Pyare...'
                 }
                 className="w-full min-h-[42px] pl-9 pr-3 py-2 text-sm rounded-md border border-[var(--border-strong)] bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] placeholder:text-[var(--text-faint)] focus:outline-2 focus:outline-[var(--accent-primary)]"
               />
@@ -372,22 +386,24 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
             </div>
           </div>
 
-          {/* 7 Category Filter Tabs */}
+          {/* 8 Panthic Category Filter Chips */}
           <div
             role="group"
             aria-label={isPa ? 'ਸ਼੍ਰੇਣੀ ਚੁਣੋ' : 'Filter by observance category'}
-            className="flex items-center gap-1 overflow-x-auto rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-1 max-w-full"
+            data-testid="directory-category-chips"
+            className="flex flex-wrap items-center gap-1.5 rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-1.5 max-w-full"
           >
             {CATEGORY_TABS.map((opt) => (
               <button
                 key={opt.id}
                 type="button"
+                data-testid={`directory-filter-${opt.id}`}
                 onClick={() => onCategoryChange(opt.id)}
                 aria-pressed={category === opt.id}
                 className={`min-h-[36px] px-3 text-xs font-medium rounded-sm transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
                   category === opt.id
-                    ? 'bg-[var(--bg-surface-elevated)] text-[var(--text-heading)] shadow-xs'
-                    : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+                    ? 'bg-[var(--accent-navy)] text-[var(--accent-on-navy)] shadow-xs'
+                    : 'bg-[var(--bg-surface-elevated)] text-[var(--text-secondary)] hover:text-[var(--text-heading)] hover:bg-[var(--bg-hover)]'
                 }`}
               >
                 {isPa ? opt.pa : opt.en}

@@ -5,19 +5,39 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{outcome: 'accepted' | 'dismissed'; platform: string}>;
 }
 
+export function detectIsStandalone(): boolean {
+  if (typeof window === 'undefined') return false;
+  return (
+    window.matchMedia('(display-mode: standalone)').matches ||
+    (window.navigator as unknown as {standalone?: boolean}).standalone === true
+  );
+}
+
+export function detectIsIOS(): boolean {
+  if (typeof window === 'undefined') return false;
+  const ua = window.navigator.userAgent.toLowerCase();
+  const isClassicIOS = /iphone|ipad|ipod/.test(ua);
+  const isIPadOS =
+    window.navigator.platform === 'MacIntel' && (window.navigator.maxTouchPoints ?? 0) > 1;
+  return isClassicIOS || isIPadOS;
+}
+
 export function usePWAInstall() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
-  const [isInstalled, setIsInstalled] = useState(false);
-  const [isIOS, setIsIOS] = useState(false);
+  const [isInstalled, setIsInstalled] = useState<boolean>(() => detectIsStandalone());
+  const [isIOS, setIsIOS] = useState<boolean>(() => detectIsIOS());
 
   useEffect(() => {
-    const isStandalone =
-      window.matchMedia('(display-mode: standalone)').matches ||
-      (window.navigator as unknown as {standalone?: boolean}).standalone === true;
-    setIsInstalled(isStandalone);
+    setIsInstalled(detectIsStandalone());
+    setIsIOS(detectIsIOS());
 
-    const userAgent = window.navigator.userAgent.toLowerCase();
-    setIsIOS(/iphone|ipad|ipod/.test(userAgent));
+    const mql = window.matchMedia('(display-mode: standalone)');
+    const handleDisplayModeChange = (e: MediaQueryListEvent) => {
+      if (e.matches) {
+        setIsInstalled(true);
+        setDeferredPrompt(null);
+      }
+    };
 
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
@@ -31,14 +51,16 @@ export function usePWAInstall() {
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     window.addEventListener('appinstalled', handleAppInstalled);
+    mql.addEventListener?.('change', handleDisplayModeChange);
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       window.removeEventListener('appinstalled', handleAppInstalled);
+      mql.removeEventListener?.('change', handleDisplayModeChange);
     };
   }, []);
 
-  const install = async () => {
+  const install = async (): Promise<boolean> => {
     if (!deferredPrompt) return false;
     await deferredPrompt.prompt();
     const {outcome} = await deferredPrompt.userChoice;

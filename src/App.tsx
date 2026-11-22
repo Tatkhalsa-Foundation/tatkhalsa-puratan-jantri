@@ -3,21 +3,21 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {ArrowUpRight, Check, X} from 'lucide-react';
+import {ArrowUpRight, Check, Scale, X} from 'lucide-react';
 import {useEffect, useMemo, useRef, useState} from 'react';
 import {EventColophonDrawer} from './components/EventColophonDrawer';
 import {EventsDirectoryView} from './components/EventsDirectoryView';
 import {Header, type AppView} from './components/Header';
 import {IcsExportModal} from './components/IcsExportModal';
+import {LicenseCreditsModal} from './components/LicenseCreditsModal';
 import {MonthlyJantriGrid, type CalendarFilter} from './components/MonthlyJantriGrid';
 import {PersonalDatesDrawer} from './components/PersonalDatesDrawer';
-import {OfflineIndicator} from './components/PWAInstallButton';
+import {OfflineIndicator, PWAInstallButton} from './components/PWAInstallButton';
 import {PrintJantriView} from './components/PrintJantriView';
 import {PurabReminderStrip} from './components/PurabReminderStrip';
 import {SangrandsTableView} from './components/SangrandsTableView';
-import {ShastarAsthaanCard} from './components/ShastarAsthaanCard';
 import {TodayHero} from './components/TodayHero';
-import {getBikramiMonthMeta, POTHI_BARAH_MAHA_URL} from './data/sambatData';
+import {POTHI_BARAH_MAHA_URL} from './data/sambatData';
 import type {
   CalendarGridMode,
   JantriDay,
@@ -110,6 +110,7 @@ export default function App() {
   );
   const [lookupInput, setLookupInput] = useState<string>(initialPersisted.lookupInput);
   const [isIcsOpen, setIsIcsOpen] = useState<boolean>(false);
+  const [isLicenseOpen, setIsLicenseOpen] = useState<boolean>(false);
 
   // Personal Desi/Bikrami Family Dates (localStorage)
   const [personalDates, setPersonalDates] = useState<PersonalDesiDate[]>(() => loadPersonalDates());
@@ -230,16 +231,6 @@ export default function App() {
         : getMonthCalendarGrid(viewYear, viewMonth0),
     [gridMode, solarSpanIndex, viewYear, viewMonth0],
   );
-
-  const activeSolarMonthKey = useMemo(() => {
-    if (gridMode === 'solar') {
-      const span = BROWSEABLE_SOLAR_SPANS[solarSpanIndex];
-      return getBikramiMonthMeta(span.monthId).key;
-    }
-    const midDay =
-      monthGrid.find((d) => d.inCurrentGridMonth && d.gregorianDay === 15) ?? monthGrid[15];
-    return midDay ? midDay.solar.monthMeta.key : todayRecord.solar.monthMeta.key;
-  }, [gridMode, solarSpanIndex, monthGrid, todayRecord]);
 
   const showShareToast = (message: string) => {
     setShareToast(message);
@@ -503,8 +494,6 @@ export default function App() {
               onToggleReminders={handleToggleReminders}
               onInspectTomorrow={handleJumpToDateAndOpen}
             />
-
-            <ShastarAsthaanCard monthKey={activeSolarMonthKey} lang={lang} />
           </>
         )}
 
@@ -566,7 +555,30 @@ export default function App() {
                 : 'Authentic Luni-Solar Puratan Bikrami Chronology (Sambat 2083–2084) · Anchored to Sri Anandpur Sahib (IST) · Zero astrology or fixed Nanakshahi dates.'}
             </p>
           </div>
-          <div className="flex flex-wrap items-center gap-4 shrink-0">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 shrink-0">
+            <PWAInstallButton lang={lang} variant="footer" />
+            <button
+              type="button"
+              data-testid="license-credits-btn"
+              onClick={() => setIsLicenseOpen(true)}
+              className="inline-flex items-center gap-1.5 font-medium text-[var(--text-heading)] hover:text-[var(--accent-primary-text)] hover:underline underline-offset-4 cursor-pointer"
+            >
+              <Scale className="w-3.5 h-3.5" aria-hidden="true" />
+              <span>
+                {isPa
+                  ? 'ਲਾਇਸੈਂਸ ਅਤੇ ਸਰੋਤ (MIT / CC BY-NC-SA 4.0)'
+                  : 'License & Credits (MIT / CC BY-NC-SA 4.0)'}
+              </span>
+            </button>
+            <a
+              href="https://github.com/Tatkhalsa-Foundation/tatkhalsa-puratan-jantri"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 font-medium text-[var(--text-primary)] hover:text-[var(--accent-primary-text)] hover:underline underline-offset-4"
+            >
+              <span>GitHub</span>
+              <ArrowUpRight className="w-3.5 h-3.5" aria-hidden="true" />
+            </a>
             <a
               href={POTHI_BARAH_MAHA_URL}
               target="_blank"
@@ -636,6 +648,12 @@ export default function App() {
         lang={lang}
         personalDates={personalDates}
         onClose={() => setIsIcsOpen(false)}
+      />
+
+      <LicenseCreditsModal
+        isOpen={isLicenseOpen}
+        lang={lang}
+        onClose={() => setIsLicenseOpen(false)}
       />
 
       <OfflineIndicator lang={lang} />

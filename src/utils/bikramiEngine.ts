@@ -323,6 +323,7 @@ export function getAllDirectoryObservances(): readonly DirectoryObservance[] {
       date: ev.date,
       sambat: ev.sambat,
       category: ev.category,
+      subGroups: ev.subGroups,
       titleEn: ev.titleEn,
       titlePa: ev.titlePa,
       ruleEn: ev.tithiRuleEn,

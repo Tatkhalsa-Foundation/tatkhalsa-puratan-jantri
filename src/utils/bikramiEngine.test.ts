@@ -3,7 +3,6 @@ import test from 'node:test';
 import {BARAH_MAHA_PAURIS} from '../data/barahMahaData';
 import {resolveCitationReader} from '../data/citationSourcesData';
 import {HISTORICAL_EVENTS} from '../data/eventsData';
-import {MONTHLY_HERITAGE} from '../data/heritageData';
 import {BIKRAMI_MONTHS, POTHI_BARAH_MAHA_URL, POTHI_BASE_URL, SOLAR_MONTH_SPANS} from '../data/sambatData';
 import {formatLiveClockSnapshot} from '../hooks/useLiveClock';
 import {
@@ -297,7 +296,7 @@ test('RFC 5545 .ics export supports selective mode AND full 365-day daily Bikram
   assert.ok(single.includes('SUMMARY:Katak Puranmashi'));
 });
 
-test('All 12 months have complete Barah Maha Majh pauris, pothi.tatkhalsa.in/tabs/pothi deep links, and Shastar/Asthaan heritage items', () => {
+test('All 12 months have complete Barah Maha Majh pauris and pothi.tatkhalsa.in/tabs/pothi deep links', () => {
   for (const month of BIKRAMI_MONTHS) {
     assert.equal(
       month.pothiUrl,
@@ -308,9 +307,6 @@ test('All 12 months have complete Barah Maha Majh pauris, pothi.tatkhalsa.in/tab
     assert.ok(pauri, `Missing Barah Maha pauri for ${month.key}`);
     assert.ok(pauri.pauriPa.length >= 9, `Expected >= 9 Gurmukhi lines for ${month.key}`);
     assert.equal(pauri.pauriPa.length, pauri.pauriEn.length, `Line count mismatch for ${month.key}`);
-
-    const heritage = MONTHLY_HERITAGE[month.key];
-    assert.ok(heritage && heritage.shastarNameEn && heritage.asthaanEn && heritage.captionPa);
   }
   const linkedEvents = HISTORICAL_EVENTS.filter((e) => Boolean(e.pothiUrl));
   assert.ok(linkedEvents.length >= 8);
@@ -583,5 +579,151 @@ test('1-day-before Purab reminder engine detects tomorrow Sangrand, Puranmashi, 
   assert.equal(sangrandEve.hasReminderItems, true);
   assert.ok(sangrandEve.items.some((i) => i.kind === 'sangrand'));
 });
+
+test('Expanded Panthic dataset includes all 15 Bhagats, 11 Bhatts, Gursikh Bani-kars, Guru Ghar families, Panj Pyare & Khalsa Shaheeds', () => {
+  const all = getAllDirectoryObservances();
+  const searchableBlob = all
+    .map((o) => `${o.titleEn} ${o.summaryEn} ${o.ruleEn} ${o.sourceSearchText}`)
+    .join('\n')
+    .toLowerCase();
+
+  // All 15 Bhagat Sahibaan
+  const fifteenBhagats = [
+    'kabir',
+    'namdev',
+    'ravidas',
+    'dhanna',
+    'sheikh farid',
+    'trilochan',
+    'beni',
+    'jaidev',
+    'bhikhan',
+    'sain',
+    'pipa',
+    'sadhna',
+    'ramanand',
+    'parmanand',
+    'surdas',
+  ];
+  for (const name of fifteenBhagats) {
+    assert.ok(searchableBlob.includes(name), `Missing Bhagat in directory: ${name}`);
+  }
+
+  // All 11 Bhatt Sahibaan
+  const elevenBhatts = [
+    'kalh',
+    'jalap',
+    'kirat',
+    'bhikha',
+    'salh',
+    'bhalh',
+    'nalh',
+    'gayand',
+    'mathura',
+    'balh',
+    'harbans',
+  ];
+  for (const name of elevenBhatts) {
+    assert.ok(searchableBlob.includes(name), `Missing Bhatt in directory: ${name}`);
+  }
+
+  // 4 Gursikh Bani-kars & Bhai Gurdas Ji
+  for (const name of ['bhai mardana', 'baba sundar', 'bhai satta', 'bhai balwand', 'bhai gurdas']) {
+    assert.ok(searchableBlob.includes(name), `Missing Gursikh Bani-kar: ${name}`);
+  }
+
+  // Guru Ghar families & Sahibzade
+  const guruGharFigures = [
+    'baba sri chand',
+    'baba lakhmi das',
+    'bebe nanaki',
+    'mata sulakhni',
+    'mata khivi',
+    'baba dasu',
+    'baba datu',
+    'bibi amro',
+    'bibi anokhi',
+    'mata mansa devi',
+    'baba mohan',
+    'baba mohri',
+    'bibi dani',
+    'bibi bhani',
+    'baba prithi chand',
+    'baba mahadev',
+    'mata ganga',
+    'baba gurditta',
+    'bibi viro',
+    'baba ani rai',
+    'baba suraj mal',
+    'baba atal',
+    'baba ram rai',
+    'baba ajit singh',
+    'baba jujhar singh',
+    'baba zorawar singh',
+    'baba fateh singh',
+    'mata gujri',
+    'mata jito',
+    'mata sundri',
+    'mata sahib kaur',
+  ];
+  for (const name of guruGharFigures) {
+    assert.ok(searchableBlob.includes(name), `Missing Guru Ghar figure: ${name}`);
+  }
+
+  // Panj Pyare & Classic Gursikhs / Khalsa Shaheeds / Shaheedi Hafta
+  const gursikhsAndShaheeds = [
+    'bhai daya singh',
+    'bhai dharam singh',
+    'bhai himmat singh',
+    'bhai mohkam singh',
+    'bhai sahib singh',
+    'baba budha',
+    'bhai mati das',
+    'bhai sati das',
+    'bhai dayala',
+    'bhai mani singh',
+    'bhai taru singh',
+    'baba deep singh',
+    'bhai bachittar singh',
+    'bhai uday singh',
+    'bhai kanhaiya',
+    'mai bhago',
+    'baba banda singh bahadur',
+    'akali baba phula singh',
+    'hari singh nalwa',
+    'baba baghel singh',
+    'jassa singh ahluwalia',
+    'maharaja ranjit singh',
+    'qila chhodna',
+    'sarsa nadi',
+  ];
+  for (const name of gursikhsAndShaheeds) {
+    assert.ok(searchableBlob.includes(name), `Missing Gursikh/Shaheed: ${name}`);
+  }
+
+  // Verify subGroup filter coverage
+  const guruGharCount = all.filter((o) => o.subGroups?.includes('guru-ghar')).length;
+  const bhagatBhattCount = all.filter((o) => o.subGroups?.includes('bhagat-bhatt')).length;
+  const gursikhCount = all.filter((o) => o.subGroups?.includes('gursikh')).length;
+  assert.ok(guruGharCount >= 18, `Expected >= 18 Guru Ghar observances, got ${guruGharCount}`);
+  assert.ok(bhagatBhattCount >= 12, `Expected >= 12 Bhagats & Bhatts observances, got ${bhagatBhattCount}`);
+  assert.ok(gursikhCount >= 22, `Expected >= 22 Gursikhs & Panj Pyare observances, got ${gursikhCount}`);
+
+  // Verify persistence & legacy migration of new directory filter keys
+  const defaults = createDefaultPersistedState('2026-11-22', 1, 2026, 10);
+  assert.equal(
+    parsePersistedState(JSON.stringify({directoryCategory: 'bhagat-bhatt'}), defaults).directoryCategory,
+    'bhagat-bhatt',
+  );
+  assert.equal(
+    parsePersistedState(JSON.stringify({directoryCategory: 'guru-ghar'}), defaults).directoryCategory,
+    'guru-ghar',
+  );
+  assert.equal(
+    parsePersistedState(JSON.stringify({directoryCategory: 'puranmashi'}), defaults).directoryCategory,
+    'sangrand-tithi',
+  );
+});
+
 
 

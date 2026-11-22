@@ -1,6 +1,6 @@
 import type {AppView} from '../components/Header';
 import type {CalendarFilter} from '../components/MonthlyJantriGrid';
-import type {CalendarGridMode, DirectoryCategory, LanguageMode, ThemeId} from '../data/types';
+import type {CalendarGridMode, DirectoryFilterKey, LanguageMode, ThemeId} from '../data/types';
 import {
   BROWSEABLE_SOLAR_SPANS,
   LOOKUP_MAX_ISO,
@@ -13,7 +13,7 @@ export const APP_STATE_STORAGE_KEY = 'tatkhalsa_jantri_state_v1';
 export const LEGACY_LANG_STORAGE_KEY = 'tatkhalsa_jantri_lang';
 export const THEME_STORAGE_KEY = 'tatkhalsa_jantri_theme';
 
-export type DirectoryFilterState = 'all' | DirectoryCategory;
+export type DirectoryFilterState = DirectoryFilterKey;
 export type DirectorySambatState = 'all' | '2083' | '2084';
 
 export interface PersistedJantriState {
@@ -51,12 +51,12 @@ const VALID_CALENDAR_FILTERS: readonly CalendarFilter[] = [
 const VALID_DIRECTORY_CATEGORIES: readonly DirectoryFilterState[] = [
   'all',
   'gurpurab',
+  'guru-ghar',
+  'bhagat-bhatt',
+  'gursikh',
   'shaheedi',
-  'khalsa',
   'barsi',
-  'sangrand',
-  'puranmashi',
-  'masya',
+  'sangrand-tithi',
 ];
 const VALID_DIRECTORY_SAMBATS: readonly DirectorySambatState[] = ['all', '2083', '2084'];
 
@@ -185,11 +185,18 @@ export function parsePersistedState(
   if (typeof obj.directoryQuery === 'string') {
     result.directoryQuery = obj.directoryQuery.slice(0, 120);
   }
-  if (
-    typeof obj.directoryCategory === 'string' &&
-    (VALID_DIRECTORY_CATEGORIES as readonly string[]).includes(obj.directoryCategory)
-  ) {
-    result.directoryCategory = obj.directoryCategory as DirectoryFilterState;
+  if (typeof obj.directoryCategory === 'string') {
+    if ((VALID_DIRECTORY_CATEGORIES as readonly string[]).includes(obj.directoryCategory)) {
+      result.directoryCategory = obj.directoryCategory as DirectoryFilterState;
+    } else if (
+      obj.directoryCategory === 'sangrand' ||
+      obj.directoryCategory === 'puranmashi' ||
+      obj.directoryCategory === 'masya'
+    ) {
+      result.directoryCategory = 'sangrand-tithi';
+    } else if (obj.directoryCategory === 'khalsa') {
+      result.directoryCategory = 'gursikh';
+    }
   }
   if (
     typeof obj.directorySambat === 'string' &&

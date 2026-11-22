@@ -860,8 +860,8 @@ export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
                       {day.events.length > 1 && (
                         <p className="mt-0.5 text-[11px] font-medium text-[var(--accent-primary-text)]">
                           {isPa
-                            ? `+${toGurmukhiNumerals(day.events.length - 1)} ਹੋਰ ਦਿਹਾੜਾ`
-                            : `+${day.events.length - 1} more observance`}
+                            ? `+${toGurmukhiNumerals(day.events.length - 1)} ਹੋਰ ${day.events.length - 1 === 1 ? 'ਦਿਹਾੜਾ' : 'ਦਿਹਾੜੇ'}`
+                            : `+${day.events.length - 1} more observance${day.events.length - 1 === 1 ? '' : 's'}`}
                         </p>
                       )}
                       {primaryEvent && dayPersonal.length > 0 && (

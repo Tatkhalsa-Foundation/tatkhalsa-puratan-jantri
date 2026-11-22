@@ -1,6 +1,7 @@
 import {BookOpen, CalendarDays, Check, Compass, Flame, Moon, Printer, Sun} from 'lucide-react';
 import React, {useEffect, useRef, useState} from 'react';
 import type {LanguageMode, ThemeId} from '../data/types';
+import {PWAInstallButton} from './PWAInstallButton';
 
 export type AppView = 'jantri' | 'events' | 'sangrands' | 'print';
 
@@ -175,8 +176,10 @@ export const Header: React.FC<HeaderProps> = ({
             })}
           </nav>
 
-          {/* Zone 3: Compact Theme Switcher Icon + Language Toggle */}
+          {/* Zone 3: Install App Button + Theme Switcher + Language Toggle */}
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+            <PWAInstallButton lang={lang} variant="header" />
+
             {/* Curated 3-Theme Switcher */}
             <div className="relative" ref={themeMenuRef}>
               <button

@@ -20,6 +20,8 @@ export type LunarPaksh = 'Sudhi' | 'Vadhi';
 
 export type EventCategory = 'gurpurab' | 'shaheedi' | 'khalsa' | 'barsi' | 'sangrand' | 'lunar';
 
+export type HistoricalSubGroup = 'guru-ghar' | 'bhagat-bhatt' | 'gursikh';
+
 export type DirectoryCategory =
   | 'gurpurab'
   | 'shaheedi'
@@ -28,6 +30,16 @@ export type DirectoryCategory =
   | 'sangrand'
   | 'puranmashi'
   | 'masya';
+
+export type DirectoryFilterKey =
+  | 'all'
+  | 'gurpurab'
+  | 'guru-ghar'
+  | 'bhagat-bhatt'
+  | 'gursikh'
+  | 'shaheedi'
+  | 'barsi'
+  | 'sangrand-tithi';
 
 export interface BilingualText {
   en: string;
@@ -87,6 +99,7 @@ export interface HistoricalEvent {
   date: string; // YYYY-MM-DD
   sambat: number;
   category: Exclude<EventCategory, 'sangrand' | 'lunar'>;
+  subGroups?: readonly HistoricalSubGroup[];
   titleEn: string;
   titlePa: string;
   shortLabelEn: string;
@@ -109,6 +122,7 @@ export interface DirectoryObservance {
   date: string; // YYYY-MM-DD
   sambat: number;
   category: DirectoryCategory;
+  subGroups?: readonly HistoricalSubGroup[];
   titleEn: string;
   titlePa: string;
   ruleEn: string;

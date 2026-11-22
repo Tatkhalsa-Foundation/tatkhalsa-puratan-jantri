@@ -1,5 +1,6 @@
+import {EXPANDED_PANTHIC_EVENTS} from './expandedPanthicEvents';
 import {POTHI_BARAH_MAHA_URL} from './sambatData';
-import type {HistoricalEvent} from './types';
+import type {HistoricalEvent, HistoricalSubGroup} from './types';
 
 /**
  * Verified Puratan Bikrami Gurpurabs, Shaheedi Divases, Barsis, and Khalsa/Sampardai historical events
@@ -8,7 +9,7 @@ import type {HistoricalEvent} from './types';
  * All dates strictly follow Puratan luni-solar Bikrami chronology (Purnimanta tithis & sidereal solar dates).
  * Zero fixed Nanakshahi dates and zero astrology/rashifal/muhurat entries.
  */
-export const HISTORICAL_EVENTS: readonly HistoricalEvent[] = [
+const BASE_HISTORICAL_EVENTS: readonly HistoricalEvent[] = [
   // =========================================================================
   // SAMBAT 2083 (Oct 2026 – Mar 2027 · Katak through Phagun)
   // =========================================================================
@@ -2045,6 +2046,44 @@ export const HISTORICAL_EVENTS: readonly HistoricalEvent[] = [
     ],
   },
 ] as const;
+
+/** Sub-group tags for existing base events so overlapping observances surface across Purabs & Lookup filters. */
+const BASE_EVENT_SUBGROUPS: Partial<Record<string, readonly HistoricalSubGroup[]>> = {
+  '2083-janam-baba-budha-ji': ['gursikh'],
+  '2083-saka-sri-panja-sahib': ['gursikh'],
+  '2083-shaheedi-bhai-beant-singh-ji': ['gursikh'],
+  '2083-barsi-mahakavi-bhai-santokh-singh': ['gursikh'],
+  '2083-shaheedi-baba-deep-singh-ji': ['gursikh'],
+  '2083-janam-bhagat-namdev-ji': ['bhagat-bhatt'],
+  '2083-janam-dr-bhai-vir-singh-ji': ['gursikh'],
+  '2083-shaheedi-guru-tegh-bahadur': ['gursikh'],
+  '2083-janam-baba-atal-sahib-ji': ['guru-ghar'],
+  '2083-vadde-sahibzade': ['guru-ghar'],
+  '2083-chhote-sahibzade': ['guru-ghar'],
+  '2083-shaheedi-jathedar-gurdev-singh-kaunke': ['gursikh'],
+  '2083-shaheedi-bhai-satwant-singh-kehar-singh': ['gursikh'],
+  '2083-maghi-chali-mukte': ['gursikh'],
+  '2083-janam-baba-deep-singh-ji': ['gursikh'],
+  '2083-janam-sahibzada-baba-ajit-singh-ji': ['guru-ghar'],
+  '2083-parkash-bhagat-ravidas': ['bhagat-bhatt'],
+  '2083-saka-sri-nankana-sahib': ['gursikh'],
+  '2084-vaisakhi-khalsa-sajna': ['gursikh'],
+  '2084-parkash-guru-tegh-bahadur': ['guru-ghar'],
+  '2084-parkash-guru-hargobind': ['guru-ghar'],
+  '2084-parkash-guru-harkrishan': ['guru-ghar'],
+  '2084-vadde-sahibzade': ['guru-ghar'],
+  '2084-chhote-sahibzade': ['guru-ghar'],
+  '2084-maghi-chali-mukte': ['gursikh'],
+};
+
+/** Unified chronologically sorted historical events across Sambat 2083–2084. */
+export const HISTORICAL_EVENTS: readonly HistoricalEvent[] = [
+  ...BASE_HISTORICAL_EVENTS.map((ev) => {
+    const extra = BASE_EVENT_SUBGROUPS[ev.id];
+    return extra ? {...ev, subGroups: extra} : ev;
+  }),
+  ...EXPANDED_PANTHIC_EVENTS,
+].sort((a, b) => a.date.localeCompare(b.date));
 
 /** Index events by ISO date for O(1) lookup. */
 export const EVENTS_BY_DATE: ReadonlyMap<string, HistoricalEvent[]> = (() => {
