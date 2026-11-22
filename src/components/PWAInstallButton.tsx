@@ -93,8 +93,8 @@ export const PWAInstallButton: React.FC<PWAInstallButtonProps> = ({
                       ? 'iPhone / iPad ’ਤੇ ਐਪ ਇੰਸਟਾਲ ਕਰੋ'
                       : 'Install on iPhone or iPad'
                     : isPa
-                      ? 'ਤੱਤਖ਼ਾਲਸਾ ਜੰਤਰੀ ਐਪ ਇੰਸਟਾਲ ਕਰੋ'
-                      : 'Install Tatkhalsa Puratan Jantri'}
+                      ? 'ਤੱਤਖ਼ਾਲਸਾ ਪੁਰਾਤਨ ਜੰਤਰੀ ਐਪ ਇੰਸਟਾਲ ਕਰੋ'
+                      : 'Install Tat Khalsa Puratan Jantri'}
                 </h3>
               </div>
               <button

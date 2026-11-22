@@ -547,7 +547,7 @@ export default function App() {
             <p className="font-semibold text-[var(--text-heading)]">
               {isPa
                 ? 'ਤੱਤਖ਼ਾਲਸਾ ਫ਼ਾਊਂਡੇਸ਼ਨ · ਤੱਤਖ਼ਾਲਸਾ ਪੁਰਾਤਨ ਜੰਤਰੀ'
-                : 'Tatkhalsa Foundation · Tatkhalsa Puratan Jantri'}
+                : 'Tatkhalsa Foundation · Tat Khalsa Puratan Jantri'}
             </p>
             <p>
               {isPa

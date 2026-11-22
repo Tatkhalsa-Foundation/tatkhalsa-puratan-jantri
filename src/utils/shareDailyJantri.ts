@@ -43,7 +43,7 @@ export function buildDailyShareText(
   }
 
   const lines: string[] = [
-    '☬ Tatkhalsa Puratan Jantri · ਤੱਤਖ਼ਾਲਸਾ ਪੁਰਾਤਨ ਜੰਤਰੀ',
+    '☬ Tat Khalsa Puratan Jantri · ਤੱਤਖ਼ਾਲਸਾ ਪੁਰਾਤਨ ਜੰਤਰੀ',
     '',
     `Desi Date: ${desiEn}`,
     `ਦੇਸੀ ਤਾਰੀਖ਼: ${desiPa}`,
@@ -70,7 +70,7 @@ export async function shareDailyJantri(
   personalDates: PersonalDesiDate[] = [],
 ): Promise<ShareOutcome> {
   const text = buildDailyShareText(day, personalDates);
-  const title = `Tatkhalsa Puratan Jantri — ${day.solar.day} ${day.solar.monthMeta.nameEn}, Sambat ${day.solar.sambat}`;
+  const title = `Tat Khalsa Puratan Jantri — ${day.solar.day} ${day.solar.monthMeta.nameEn}, Sambat ${day.solar.sambat}`;
 
   if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
     try {

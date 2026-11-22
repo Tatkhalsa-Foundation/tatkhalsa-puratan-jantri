@@ -110,15 +110,15 @@ export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
         <header className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b-2 border-[#1B263B] pb-3.5">
           <div className="flex items-center gap-3.5">
             <img
-              src="./logo.png"
-              alt="Tatkhalsa Puratan Jantri Seal"
+              src="./logo.png?v=2"
+              alt="Tat Khalsa Puratan Jantri Seal"
               width={48}
               height={48}
               className="w-12 h-12 rounded-lg border border-[#B8860B] object-cover shrink-0 bg-[#FAF6EE]"
             />
             <div>
               <p className="text-[11px] tracking-widest uppercase text-[#57534E]">
-                Tatkhalsa Foundation · calendar.tatkhalsa.in · Puratan Bikrami
+                Tat Khalsa Puratan Jantri · calendar.tatkhalsa.in · Puratan Bikrami
               </p>
               <h1
                 id="print-sheet-heading"

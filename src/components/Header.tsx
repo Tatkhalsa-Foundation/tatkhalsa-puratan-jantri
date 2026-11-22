@@ -123,12 +123,12 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={() => onSelectView('jantri')}
             className="flex items-center gap-2 sm:gap-2.5 text-left whitespace-nowrap shrink-0 min-w-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent-primary)]"
             aria-label={
-              isPa ? 'ਤੱਤਖ਼ਾਲਸਾ ਪੁਰਾਤਨ ਜੰਤਰੀ — ਮੁੱਖ ਪੰਨਾ' : 'Tatkhalsa Puratan Jantri — Home'
+              isPa ? 'ਤੱਤਖ਼ਾਲਸਾ ਪੁਰਾਤਨ ਜੰਤਰੀ — ਮੁੱਖ ਪੰਨਾ' : 'Tat Khalsa Puratan Jantri — Home'
             }
           >
             <img
-              src="./logo.png"
-              alt={isPa ? 'ਤੱਤਖ਼ਾਲਸਾ ਪੁਰਾਤਨ ਜੰਤਰੀ ਮੋਹਰ' : 'Tatkhalsa Puratan Jantri Logo'}
+              src="./logo.png?v=2"
+              alt={isPa ? 'ਤੱਤਖ਼ਾਲਸਾ ਪੁਰਾਤਨ ਜੰਤਰੀ ਮੋਹਰ' : 'Tat Khalsa Puratan Jantri Logo'}
               width={36}
               height={36}
               className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg border border-[var(--accent-gold)] object-cover shrink-0 shadow-xs bg-[#FAF6EE]"
@@ -140,7 +140,7 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <span className="sm:hidden">{isPa ? 'ਪੁਰਾਤਨ ਜੰਤਰੀ' : 'Puratan Jantri'}</span>
               <span className="hidden sm:inline">
-                {isPa ? 'ਤੱਤਖ਼ਾਲਸਾ ਪੁਰਾਤਨ ਜੰਤਰੀ' : 'Tatkhalsa Puratan Jantri'}
+                {isPa ? 'ਤੱਤਖ਼ਾਲਸਾ ਪੁਰਾਤਨ ਜੰਤਰੀ' : 'Tat Khalsa Puratan Jantri'}
               </span>
             </span>
           </button>

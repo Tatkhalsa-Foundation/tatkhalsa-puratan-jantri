@@ -14,7 +14,7 @@ import {
 } from './personalDates';
 
 /**
- * Pure RFC 5545 iCalendar (.ics) generator for Tatkhalsa Puratan Jantri.
+ * Pure RFC 5545 iCalendar (.ics) generator for Tat Khalsa Puratan Jantri.
  * Supports both selective observance export AND full 365-day daily Bikrami + Lunar date export
  * (combining same-day Purabs, Sangrands, Puranmashi, Masya, Shaheedi Divases, Barsis, and Personal Desi Dates cleanly into each daily VEVENT).
  */
@@ -159,7 +159,7 @@ export function generateJantriIcs(
 
       // Special observances appended after em-dash when checked
       const highlights: string[] = [];
-      const categories = new Set<string>(['Tatkhalsa Puratan Jantri', 'Daily Bikrami']);
+      const categories = new Set<string>(['Tat Khalsa Puratan Jantri', 'Daily Bikrami']);
 
       if (options.includeSangrands && solar.isSangrand) {
         highlights.push(
@@ -257,7 +257,7 @@ export function generateJantriIcs(
           description: isPa
             ? `ਪੁਰਾਤਨ ਬਿਕ੍ਰਮੀ ਸੰਗਰਾਂਦ (${meta.barahMahaRefPa})। ਸੰਕ੍ਰਾਂਤੀ (ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ IST): ${sankrantiDual.amritsarTime}, ${sankrantiDual.amritsarDate}। ਬਾਰਹ ਮਾਹਾ: ${meta.pothiUrl}\nhttps://calendar.tatkhalsa.in/`
             : `Puratan Bikrami Sangrand (${meta.barahMahaRefEn}). Sankranti (Sri Anandpur Sahib IST): ${sankrantiDual.amritsarTime}, ${sankrantiDual.amritsarDate}. Read Barah Maha: ${meta.pothiUrl}\nhttps://calendar.tatkhalsa.in/`,
-          categories: 'Sangrand,Tatkhalsa Puratan Jantri',
+          categories: 'Sangrand,Tat Khalsa Puratan Jantri',
         });
       }
     }
@@ -282,7 +282,7 @@ export function generateJantriIcs(
               description: isPa
                 ? `ਪੁਰਾਤਨ ਬਿਕ੍ਰਮੀ ਚੰਦਰ ਤਿਥੀ: ${lunar.lunarMonthPa} ਸੁਦੀ ੧੫ (ਪੂਰਨਮਾਸ਼ੀ)। ਸੂਰਜੀ ਤਾਰੀਖ਼: ${toGurmukhiNumerals(solar.day)} ${solar.monthMeta.namePa}, ਸੰਮਤ ${toGurmukhiNumerals(solar.sambat)}। ਤਿਥੀ ਸਮਾਪਤੀ (ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ IST): ${tithiDual.amritsarTime}, ${tithiDual.amritsarDate}\nhttps://calendar.tatkhalsa.in/`
                 : `Puratan Bikrami Lunar Tithi: ${lunar.lunarMonthEn} Sudhi 15 (Puranmashi). Solar Date: ${solar.day} ${solar.monthMeta.nameEn}, Sambat ${solar.sambat}. Tithi ends (Sri Anandpur Sahib IST): ${tithiDual.amritsarTime}, ${tithiDual.amritsarDate}\nhttps://calendar.tatkhalsa.in/`,
-              categories: 'Puranmashi,Tatkhalsa Puratan Jantri',
+              categories: 'Puranmashi,Tat Khalsa Puratan Jantri',
             });
           }
           if (options.includeMasya && lunar.isMasya) {
@@ -297,7 +297,7 @@ export function generateJantriIcs(
               description: isPa
                 ? `ਪੁਰਾਤਨ ਬਿਕ੍ਰਮੀ ਚੰਦਰ ਤਿਥੀ: ${lunar.lunarMonthPa} ਵਦੀ ੧੫ (ਮੱਸਿਆ)। ਸੂਰਜੀ ਤਾਰੀਖ਼: ${toGurmukhiNumerals(solar.day)} ${solar.monthMeta.namePa}, ਸੰਮਤ ${toGurmukhiNumerals(solar.sambat)}। ਤਿਥੀ ਸਮਾਪਤੀ (ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ IST): ${tithiDual.amritsarTime}, ${tithiDual.amritsarDate}\nhttps://calendar.tatkhalsa.in/`
                 : `Puratan Bikrami Lunar Tithi: ${lunar.lunarMonthEn} Vadhi 15 (Masya). Solar Date: ${solar.day} ${solar.monthMeta.nameEn}, Sambat ${solar.sambat}. Tithi ends (Sri Anandpur Sahib IST): ${tithiDual.amritsarTime}, ${tithiDual.amritsarDate}\nhttps://calendar.tatkhalsa.in/`,
-              categories: 'Masya,Tatkhalsa Puratan Jantri',
+              categories: 'Masya,Tat Khalsa Puratan Jantri',
             });
           }
         }
@@ -324,7 +324,7 @@ export function generateJantriIcs(
         description: isPa
           ? `${toGurmukhiNumerals(solar.day)} ${solar.monthMeta.namePa} ${toGurmukhiNumerals(solar.sambat)} · ${ev.tithiRulePa}\nਤਿਥੀ ਸਮਾਪਤੀ (ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ IST): ${tithiDual.amritsarTime}, ${tithiDual.amritsarDate}\n${ev.summaryPa}\nਹਵਾਲੇ: ${citationsLine}\nhttps://calendar.tatkhalsa.in/`
           : `${solar.day} ${solar.monthMeta.nameEn} ${solar.sambat} · ${ev.tithiRuleEn}\nTithi ends (Sri Anandpur Sahib IST): ${tithiDual.amritsarTime}, ${tithiDual.amritsarDate}\n${ev.summaryEn}\nSources: ${citationsLine}\nhttps://calendar.tatkhalsa.in/`,
-        categories: `${ev.category.toUpperCase()},Tatkhalsa Puratan Jantri`,
+        categories: `${ev.category.toUpperCase()},Tat Khalsa Puratan Jantri`,
       });
     }
 
@@ -349,7 +349,7 @@ export function generateJantriIcs(
               ...(pd.notes ? [pd.notes] : []),
               'https://calendar.tatkhalsa.in/',
             ].join('\n'),
-            categories: 'Personal Desi Date,Tatkhalsa Puratan Jantri',
+            categories: 'Personal Desi Date,Tat Khalsa Puratan Jantri',
           });
         }
       }
@@ -361,10 +361,10 @@ export function generateJantriIcs(
   const header = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//Tatkhalsa Foundation//Tatkhalsa Puratan Jantri//EN',
+    'PRODID:-//Tatkhalsa Foundation//Tat Khalsa Puratan Jantri//EN',
     'CALSCALE:GREGORIAN',
     'METHOD:PUBLISH',
-    `X-WR-CALNAME:${isPa ? 'ਤੱਤਖ਼ਾਲਸਾ ਪੁਰਾਤਨ ਜੰਤਰੀ (੨੦੮੩–੨੦੮੪)' : 'Tatkhalsa Puratan Jantri (Sambat 2083–2084)'}`,
+    `X-WR-CALNAME:${isPa ? 'ਤੱਤਖ਼ਾਲਸਾ ਪੁਰਾਤਨ ਜੰਤਰੀ (੨੦੮੩–੨੦੮੪)' : 'Tat Khalsa Puratan Jantri (Sambat 2083–2084)'}`,
     'X-WR-TIMEZONE:Asia/Kolkata',
   ];
 
@@ -388,14 +388,14 @@ export function generateSingleDayIcs(
       date: isoDate,
       summary: title,
       description: `${description}\nhttps://calendar.tatkhalsa.in/`,
-      categories: 'Tatkhalsa Puratan Jantri',
+      categories: 'Tat Khalsa Puratan Jantri',
     },
     dtStamp,
   );
   return [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//Tatkhalsa Foundation//Tatkhalsa Puratan Jantri//EN',
+    'PRODID:-//Tatkhalsa Foundation//Tat Khalsa Puratan Jantri//EN',
     'CALSCALE:GREGORIAN',
     'METHOD:PUBLISH',
     eventBlock,
