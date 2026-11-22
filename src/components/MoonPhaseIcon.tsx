@@ -43,8 +43,9 @@ export const MoonPhaseIcon: React.FC<MoonPhaseIconProps> = ({
   }
 
   const litFill = isPuranmashi ? '#D49A2A' : '#DFB24C';
-  const darkFill = '#1B263B';
-  const ringStroke = isPuranmashi ? '#C86400' : '#44403C';
+  const darkFill = 'var(--moon-dark-fill, #1B263B)';
+  const ringStroke = isPuranmashi ? '#C86400' : 'var(--moon-ring-stroke, #44403C)';
+  const masyaRim = 'var(--moon-masya-rim, #B8860B)';
 
   return (
     <svg
@@ -68,7 +69,14 @@ export const MoonPhaseIcon: React.FC<MoonPhaseIconProps> = ({
           strokeDasharray={isPuranmashi ? 'none' : '3 3'}
         />
       )}
-      <circle cx={cx} cy={cy} r={r} fill={darkFill} stroke={ringStroke} strokeWidth="2.5" />
+      <circle
+        cx={cx}
+        cy={cy}
+        r={r}
+        fill={darkFill}
+        stroke={ringStroke}
+        strokeWidth={isMasya ? '6' : '3'}
+      />
 
       {isPuranmashi ? (
         <>
@@ -76,7 +84,15 @@ export const MoonPhaseIcon: React.FC<MoonPhaseIconProps> = ({
           <circle cx={cx} cy={cy} r={r - 0.8} fill={litFill} fillOpacity="0.4" />
         </>
       ) : isMasya ? (
-        <circle cx={cx} cy={cy} r={r - 4} fill="none" stroke="#B8860B" strokeWidth="1.3" strokeOpacity="0.55" />
+        <circle
+          cx={cx}
+          cy={cy}
+          r={r - 8}
+          fill="none"
+          stroke={masyaRim}
+          strokeWidth="2.5"
+          strokeOpacity="0.85"
+        />
       ) : (
         <path d={litPath} fill={litFill} />
       )}

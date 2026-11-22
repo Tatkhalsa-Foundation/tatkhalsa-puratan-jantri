@@ -1,0 +1,24 @@
+# Tat Khalsa Puratan Jantri (ਤੱਤਖ਼ਾਲਸਾ ਪੁਰਾਤਨ ਜੰਤਰੀ)
+
+> Authentic Sikh Puratan Bikrami Sambat luni-solar calendar published by Tatkhalsa Foundation for Bikrami Sambat 2082, 2083, and 2084 (March 2025 – March 2028 CE).
+
+## Methodology & Chronology
+- **Traditional Puratan Bikrami Luni-Solar Reckoning**: Follows traditional Puratan Sikh Jantri chronology rather than the 2003 solar-fixed Nanakshahi calendar.
+- **Sri Anandpur Sahib (IST) Udaya Sangrands**: Solar month transitions (Sangrands across all 12 Punjabi months from Chet through Phagun) and lunar tithi endpoints are computed with Sri Anandpur Sahib (India Standard Time, UTC+05:30) as the primary reference alongside the user's local device timezone.
+- **Lunar Tithis**: Tracks daily Sudhi (waxing) and Vadhi (waning) tithis, including Puranmashi (full moon), Masya (new moon), Panchmi, Ashtami, and Ekadashi.
+
+## Coverage (Sambat 2082–2084)
+- **Full 3-Year Parity**: Complete coverage of Gurpurabs (Parkash, Gurgaddi, Joti Jot), Shaheedi Divases (including Shaheedi Hafta 6–13 Poh), Khalsa & Sampardai historical days, 15 Bhagats, 11 Bhatts, Gursikh Bani-kars, Guru Ghar families, Panj Pyare, Khalsa Shaheeds, and Sampardai Mahapurakh Barsis across Sambat 2082, 2083, and 2084.
+- **Primary Scriptural Colophons**: Every observance links directly to primary Granth & Barah Maha readings on Tatkhalsa Pothi.
+
+## Key Features
+- Bilingual English and Punjabi (Gurmukhi) interface with Dual (`Both`) script mode and curated Parchment, Surmai Night, and Hazuri Kesri themes.
+- Full 365/366-day and selective RFC 5545 `.ics` calendar export (1,096 total daily dates across Sambat 2082–2084).
+- Personal Desi Date reminders (birthdays, anniversaries, family barsis) saved locally, included in `.ics` exports and A4 printable monthly Jantris.
+- Offline-capable Progressive Web App (PWA).
+
+## Canonical Links
+- **Web App**: https://calendar.tatkhalsa.in/
+- **Tatkhalsa Pothi (Scriptural & Barah Maha Reader)**: https://pothi.tatkhalsa.in/
+- **Tatkhalsa Foundation**: https://tatkhalsa.in/
+- **Source Repository**: https://github.com/Tatkhalsa-Foundation/tatkhalsa-puratan-jantri

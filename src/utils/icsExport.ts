@@ -26,12 +26,25 @@ const SCOPE_RANGES: Record<IcsExportOptions['sambatScope'], {start: string; end:
   all: {start: '2025-03-14', end: '2028-03-13'}, // Full Sambat 2082–2084 coverage (1,096 days)
 };
 
+/**
+ * Strip raw line breaks and ASCII control characters from user-entered personal
+ * Desi date fields so untrusted text cannot inject additional iCalendar properties.
+ */
+export function sanitizePersonalIcsField(value: string | undefined): string {
+  if (!value) return '';
+  return value
+    .replace(/[\r\n\u0000-\u001F\u007F]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 function escapeIcsText(text: string): string {
   return text
     .replace(/\\/g, '\\\\')
     .replace(/;/g, '\\;')
     .replace(/,/g, '\\,')
-    .replace(/\r?\n/g, '\\n');
+    .replace(/\r\n|\r|\n/g, '\\n')
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '');
 }
 
 function isoToIcsDate(isoDate: string): string {
@@ -179,7 +192,8 @@ export function generateJantriIcs(
         categories.add(ev.category.toUpperCase());
       }
       for (const pd of dayPersonal) {
-        highlights.push(`${pd.title} (${getPersonalDateKindLabel(pd.kind, isPa)})`);
+        const safeTitle = sanitizePersonalIcsField(pd.title) || 'Personal Desi Date';
+        highlights.push(`${safeTitle} (${getPersonalDateKindLabel(pd.kind, isPa)})`);
         categories.add('Personal Desi Date');
       }
 
@@ -219,10 +233,12 @@ export function generateJantriIcs(
       }
 
       for (const pd of dayPersonal) {
+        const safeTitle = sanitizePersonalIcsField(pd.title) || 'Personal Desi Date';
+        const safeNotes = sanitizePersonalIcsField(pd.notes);
         descLines.push(
           '',
-          `My Desi Date: ${pd.title} (${getPersonalDateKindLabel(pd.kind, false)})`,
-          ...(pd.notes ? [pd.notes] : []),
+          `My Desi Date: ${safeTitle} (${getPersonalDateKindLabel(pd.kind, false)})`,
+          ...(safeNotes ? [safeNotes] : []),
         );
       }
 
@@ -337,17 +353,19 @@ export function generateJantriIcs(
         for (const occ of occurrences) {
           if (occ.isoDate < range.start || occ.isoDate > range.end) continue;
           const kindLabel = getPersonalDateKindLabel(pd.kind, isPa);
+          const safeTitle = sanitizePersonalIcsField(pd.title) || 'Personal Desi Date';
+          const safeNotes = sanitizePersonalIcsField(pd.notes);
           records.push({
             uid: `personal-${pd.id}-${occ.sambat}`,
             date: occ.isoDate,
             summary: isPa
-              ? `${pd.title} (${kindLabel}) · ${toGurmukhiNumerals(occ.actualDay)} ${meta.namePa}`
-              : `${pd.title} (${kindLabel}) · ${occ.actualDay} ${meta.nameEn}`,
+              ? `${safeTitle} (${kindLabel}) · ${toGurmukhiNumerals(occ.actualDay)} ${meta.namePa}`
+              : `${safeTitle} (${kindLabel}) · ${occ.actualDay} ${meta.nameEn}`,
             description: [
               isPa
                 ? `ਮੇਰੀ ਦੇਸੀ ਤਾਰੀਖ਼: ${toGurmukhiNumerals(occ.actualDay)} ${meta.namePa}, ਸੰਮਤ ${toGurmukhiNumerals(occ.sambat)}`
                 : `Personal Desi Date: ${occ.actualDay} ${meta.nameEn}, Sambat ${occ.sambat}`,
-              ...(pd.notes ? [pd.notes] : []),
+              ...(safeNotes ? [safeNotes] : []),
               'https://calendar.tatkhalsa.in/',
             ].join('\n'),
             categories: 'Personal Desi Date,Tat Khalsa Puratan Jantri',

@@ -493,12 +493,19 @@ export function formatDualTime(utcIso: string, localTimeZone?: string): DualTime
     (typeof Intl !== 'undefined' ? Intl.DateTimeFormat().resolvedOptions().timeZone : 'UTC') ||
     'UTC';
 
-  const amritsarTime = new Intl.DateTimeFormat('en-IN', {
-    timeZone: 'Asia/Kolkata',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: true,
-  }).format(date);
+  const normalizeAmPm = (raw: string): string =>
+    raw
+      .replace(/[\u00A0\u202F]/g, ' ')
+      .replace(/\b(am|pm)\b/gi, (m) => m.toUpperCase());
+
+  const amritsarTime = normalizeAmPm(
+    new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Asia/Kolkata',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    }).format(date),
+  );
 
   const amritsarDate = new Intl.DateTimeFormat('en-IN', {
     timeZone: 'Asia/Kolkata',
@@ -506,12 +513,14 @@ export function formatDualTime(utcIso: string, localTimeZone?: string): DualTime
     month: 'short',
   }).format(date);
 
-  const localTime = new Intl.DateTimeFormat('en-US', {
-    timeZone: resolvedLocalTz,
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: true,
-  }).format(date);
+  const localTime = normalizeAmPm(
+    new Intl.DateTimeFormat('en-US', {
+      timeZone: resolvedLocalTz,
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    }).format(date),
+  );
 
   const localDate = new Intl.DateTimeFormat('en-US', {
     timeZone: resolvedLocalTz,

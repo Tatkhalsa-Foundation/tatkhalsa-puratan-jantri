@@ -1,7 +1,7 @@
 import {ArrowLeft, ChevronLeft, ChevronRight, Printer} from 'lucide-react';
 import React from 'react';
 import {getBikramiMonthMeta, GREGORIAN_MONTHS, WEEKDAYS} from '../data/sambatData';
-import type {CalendarGridMode, JantriDay, LanguageMode} from '../data/types';
+import type {CalendarGridMode, JantriDay, LanguageMode, PersonalDesiDate} from '../data/types';
 import {
   BROWSEABLE_SOLAR_SPANS,
   formatGregorianDate,
@@ -12,6 +12,7 @@ import {
   SUPPORTED_MIN_MONTH,
   toGurmukhiNumerals,
 } from '../utils/bikramiEngine';
+import {getPersonalDateKindLabel, getPersonalDatesForSolarDay} from '../utils/personalDates';
 import {MoonPhaseIcon} from './MoonPhaseIcon';
 
 interface PrintJantriViewProps {
@@ -20,6 +21,7 @@ interface PrintJantriViewProps {
   year: number;
   monthIndex0: number;
   days: JantriDay[];
+  personalDates: PersonalDesiDate[];
   lang: LanguageMode;
   onPrevMonth: () => void;
   onNextMonth: () => void;
@@ -32,6 +34,7 @@ export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
   year,
   monthIndex0,
   days,
+  personalDates,
   lang,
   onPrevMonth,
   onNextMonth,
@@ -54,11 +57,17 @@ export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
     : year < SUPPORTED_MAX_MONTH.year ||
       (year === SUPPORTED_MAX_MONTH.year && monthIndex0 < SUPPORTED_MAX_MONTH.monthIndex0);
 
-  const monthNotes = days.filter(
-    (d) =>
-      d.inCurrentGridMonth &&
-      (d.events.length > 0 || d.solar.isSangrand || d.lunar.isPuranmashi || d.lunar.isMasya),
-  );
+  const monthNotes = days.filter((d) => {
+    if (!d.inCurrentGridMonth) return false;
+    const dayPersonal = getPersonalDatesForSolarDay(personalDates, d.solar.monthId, d.solar.day);
+    return (
+      d.events.length > 0 ||
+      dayPersonal.length > 0 ||
+      d.solar.isSangrand ||
+      d.lunar.isPuranmashi ||
+      d.lunar.isMasya
+    );
+  });
 
   return (
     <section aria-labelledby="print-sheet-heading" className="space-y-5">
@@ -114,6 +123,8 @@ export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
               alt="Tat Khalsa Puratan Jantri Seal"
               width={48}
               height={48}
+              loading="eager"
+              decoding="sync"
               className="w-12 h-12 rounded-lg border border-[#B8860B] object-cover shrink-0 bg-[#FAF6EE]"
             />
             <div>
@@ -163,68 +174,84 @@ export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
           </div>
 
           <div className="grid grid-cols-7">
-            {days.map((day) => (
-              <div
-                key={day.isoDate}
-                className={`min-h-[82px] p-1.5 border-r border-b border-[#D6D3D1] flex flex-col justify-between ${
-                  !day.inCurrentGridMonth ? 'bg-[#FAF9F6] text-[#A8A29E]' : 'bg-white'
-                }`}
-              >
-                <div className="flex items-start justify-between gap-1">
-                  <span
-                    className={`font-mono-tabular text-sm font-bold leading-none ${
-                      isSolarMode && day.solar.isSangrand && day.inCurrentGridMonth
-                        ? 'text-[#C86400]'
-                        : ''
-                    }`}
-                  >
-                    {isSolarMode ? day.solar.day : day.gregorianDay}
-                  </span>
-                  <span
-                    className={`text-[10px] leading-tight text-right ${
-                      !isSolarMode && day.solar.isSangrand ? 'font-bold text-[#9E4F00]' : 'text-[#44403C]'
-                    }`}
-                  >
-                    {isSolarMode
-                      ? formatShortGregorian(day, 'en')
-                      : `${day.solar.day} ${day.solar.monthMeta.nameEn}`}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between gap-1 mt-1">
-                  <span className="font-gurmukhi text-[10px] text-[#57534E] truncate">
-                    {day.lunar.shortTithiPa}
-                  </span>
-                  {(day.lunar.isPuranmashi || day.lunar.isMasya) && (
-                    <MoonPhaseIcon elongationDeg={day.lunar.elongationDeg} size={12} />
-                  )}
-                </div>
-
-                <div className="mt-1 space-y-0.5">
-                  {day.solar.isSangrand && (
-                    <p className="text-[9px] font-bold text-[#9E4F00] leading-tight break-words">
-                      Sangrand · ਸੰਗਰਾਂਦ
-                    </p>
-                  )}
-                  {day.events.slice(0, 2).map((ev) => (
-                    <p
-                      key={ev.id}
-                      className={`text-[9px] font-semibold leading-tight break-words ${
-                        ev.category === 'shaheedi'
-                          ? 'text-[#8F1D1D]'
-                          : ev.category === 'khalsa'
-                            ? 'text-[#1B263B]'
-                            : ev.category === 'barsi'
-                              ? 'text-[#6B4E16]'
-                              : 'text-[#9E4F00]'
+            {days.map((day) => {
+              const dayPersonal = getPersonalDatesForSolarDay(
+                personalDates,
+                day.solar.monthId,
+                day.solar.day,
+              );
+              return (
+                <div
+                  key={day.isoDate}
+                  className={`min-h-[82px] p-1.5 border-r border-b border-[#D6D3D1] flex flex-col justify-between ${
+                    !day.inCurrentGridMonth ? 'bg-[#FAF9F6] text-[#A8A29E]' : 'bg-white'
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-1">
+                    <span
+                      className={`font-mono-tabular text-sm font-bold leading-none ${
+                        isSolarMode && day.solar.isSangrand && day.inCurrentGridMonth
+                          ? 'text-[#C86400]'
+                          : ''
                       }`}
                     >
-                      {isPa ? ev.shortLabelPa : ev.shortLabelEn}
-                    </p>
-                  ))}
+                      {isSolarMode ? day.solar.day : day.gregorianDay}
+                    </span>
+                    <span
+                      className={`text-[10px] leading-tight text-right ${
+                        !isSolarMode && day.solar.isSangrand ? 'font-bold text-[#9E4F00]' : 'text-[#44403C]'
+                      }`}
+                    >
+                      {isSolarMode
+                        ? formatShortGregorian(day, 'en')
+                        : `${day.solar.day} ${day.solar.monthMeta.nameEn}`}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-1 mt-1">
+                    <span className="font-gurmukhi text-[10px] text-[#57534E] truncate">
+                      {day.lunar.shortTithiPa}
+                    </span>
+                    {(day.lunar.isPuranmashi || day.lunar.isMasya) && (
+                      <MoonPhaseIcon elongationDeg={day.lunar.elongationDeg} size={12} />
+                    )}
+                  </div>
+
+                  <div className="mt-1 space-y-0.5">
+                    {day.solar.isSangrand && (
+                      <p className="text-[9px] font-bold text-[#9E4F00] leading-tight break-words">
+                        Sangrand · ਸੰਗਰਾਂਦ
+                      </p>
+                    )}
+                    {day.events.slice(0, 2).map((ev) => (
+                      <p
+                        key={ev.id}
+                        className={`text-[9px] font-semibold leading-tight break-words ${
+                          ev.category === 'shaheedi'
+                            ? 'text-[#8F1D1D]'
+                            : ev.category === 'khalsa'
+                              ? 'text-[#1B263B]'
+                              : ev.category === 'barsi'
+                                ? 'text-[#6B4E16]'
+                                : 'text-[#9E4F00]'
+                        }`}
+                      >
+                        {isPa ? ev.shortLabelPa : ev.shortLabelEn}
+                      </p>
+                    ))}
+                    {dayPersonal.slice(0, 2).map((pd) => (
+                      <p
+                        key={pd.id}
+                        data-testid={`print-personal-cell-${day.isoDate}`}
+                        className="text-[9px] font-semibold text-[#1E6B52] leading-tight break-words"
+                      >
+                        {pd.title}
+                      </p>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
@@ -232,26 +259,46 @@ export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
         {monthNotes.length > 0 && (
           <div className="mt-4 pt-3 border-t border-[#D6D3D1]">
             <h2 className="text-xs font-semibold uppercase tracking-wide text-[#44403C] mb-2">
-              {isPa ? 'ਮਹੀਨੇ ਦੇ ਮੁੱਖ ਦਿਹਾੜੇ ਅਤੇ ਸੰਗਰਾਂਦ' : 'Marked Dates & Key Observances This Month'}
+              {isPa ? 'ਮਹੀਨੇ ਦੇ ਮੁੱਖ ਦਿਹਾੜੇ, ਸੰਗਰਾਂਦ ਅਤੇ ਨਿੱਜੀ ਤਾਰੀਖ਼ਾਂ' : 'Marked Dates & Key Observances This Month'}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1.5 text-[11px] leading-snug text-[#292524]">
               {monthNotes.map((d) => {
-                const label =
-                  d.events.length > 0
-                    ? d.events
-                        .map((ev) => (isPa ? ev.titlePa : ev.titleEn))
-                        .join(' · ')
-                    : d.solar.isSangrand
-                      ? isPa
+                const dayPersonal = getPersonalDatesForSolarDay(
+                  personalDates,
+                  d.solar.monthId,
+                  d.solar.day,
+                );
+                const parts: string[] = [];
+                if (d.events.length > 0) {
+                  parts.push(...d.events.map((ev) => (isPa ? ev.titlePa : ev.titleEn)));
+                } else {
+                  if (d.solar.isSangrand) {
+                    parts.push(
+                      isPa
                         ? `${d.solar.monthMeta.namePa} ਸੰਗਰਾਂਦ`
-                        : `${d.solar.monthMeta.nameEn} Sangrand`
-                      : d.lunar.isPuranmashi
-                        ? isPa
-                          ? `${d.lunar.lunarMonthPa} ਪੂਰਨਮਾਸ਼ੀ`
-                          : `${d.lunar.lunarMonthEn} Puranmashi`
-                        : isPa
-                          ? `${d.lunar.lunarMonthPa} ਮੱਸਿਆ`
-                          : `${d.lunar.lunarMonthEn} Masya`;
+                        : `${d.solar.monthMeta.nameEn} Sangrand`,
+                    );
+                  }
+                  if (d.lunar.isPuranmashi) {
+                    parts.push(
+                      isPa
+                        ? `${d.lunar.lunarMonthPa} ਪੂਰਨਮਾਸ਼ੀ`
+                        : `${d.lunar.lunarMonthEn} Puranmashi`,
+                    );
+                  }
+                  if (d.lunar.isMasya) {
+                    parts.push(
+                      isPa ? `${d.lunar.lunarMonthPa} ਮੱਸਿਆ` : `${d.lunar.lunarMonthEn} Masya`,
+                    );
+                  }
+                }
+                if (dayPersonal.length > 0) {
+                  parts.push(
+                    ...dayPersonal.map(
+                      (pd) => `${pd.title} (${getPersonalDateKindLabel(pd.kind, isPa)})`,
+                    ),
+                  );
+                }
                 return (
                   <p key={d.isoDate} className="break-words">
                     <span className="font-mono-tabular font-semibold">
@@ -259,7 +306,7 @@ export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
                         ? `${toGurmukhiNumerals(d.solar.day)} ${d.solar.monthMeta.namePa}`
                         : `${d.solar.day} ${d.solar.monthMeta.nameEn}`}
                     </span>{' '}
-                    ({formatGregorianDate(d.isoDate, lang, false)}) — {label}
+                    ({formatGregorianDate(d.isoDate, lang, false)}) — {parts.join(' · ')}
                   </p>
                 );
               })}

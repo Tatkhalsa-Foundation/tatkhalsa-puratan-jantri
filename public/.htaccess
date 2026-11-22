@@ -1,0 +1,12 @@
+# Tat Khalsa Puratan Jantri — Hostinger / Apache Security & Caching Headers
+<IfModule mod_headers.c>
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set X-Content-Type-Options "nosniff"
+</IfModule>
+
+# Ensure Workbox service worker and PWA manifest are always revalidated cleanly
+<FilesMatch "^(sw\.js|registerSW\.js|manifest\.webmanifest)$">
+  <IfModule mod_headers.c>
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+  </IfModule>
+</FilesMatch>

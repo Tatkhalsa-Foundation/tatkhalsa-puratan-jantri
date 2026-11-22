@@ -20,22 +20,17 @@ interface CuratedSourceEntry {
   build: (cit: ColophonCitation, ev: HistoricalEvent) => CitationReaderContent;
 }
 
-const SURAJ_PRAKASH_URL =
-  'https://archive.org/details/SriGurPratapSurajGranth-BhaiVirSinghJi';
-const PANTH_PRAKASH_URL =
-  'https://archive.org/details/PrachinPanthPrakashByBhaiRattanSinghBhangu';
-const GUR_SOBHA_URL =
-  'https://archive.org/details/SriGurSobhaByKaviSainapati';
-const BHATT_VAHI_URL =
-  'https://archive.org/details/GuruKianSakhian-PiaraSinghPadam';
-const MEHMA_PRAKASH_URL =
-  'https://archive.org/details/MehmaPrakash-SarupDasBhalla';
-const GURBILAS_6_URL =
-  'https://archive.org/details/GurbilasPatshahi6';
-const JANAMSAKHI_URL =
-  'https://archive.org/details/PuratanJanamSakhi-BhaiVirSingh';
-const HUKAMNAMA_URL =
-  'https://archive.org/details/Hukamname-GandaSingh';
+const POTHI_HOME_URL = 'https://pothi.tatkhalsa.in/';
+const POTHI_NITNEM_URL = 'https://pothi.tatkhalsa.in/tabs/pothi';
+const POTHI_SGGS_URL = 'https://pothi.tatkhalsa.in/reader?source=sggs&ang=1';
+const POTHI_DASAM_URL = 'https://pothi.tatkhalsa.in/reader?source=dasam&ang=1';
+
+function sanitizePothiUrl(url?: string): string {
+  if (url && /^https:\/\/pothi\.tatkhalsa\.in(\/|$)/i.test(url)) {
+    return url;
+  }
+  return POTHI_HOME_URL;
+}
 
 function extractAng(ref: string): string | null {
   const m = ref.match(/Ang\s+(\d+)/i);
@@ -75,9 +70,9 @@ const CURATED_SOURCES: readonly CuratedSourceEntry[] = [
         'In Raas 5 (Ansus 26–32), Mahakavi Bhai Santokh Singh Ji chronicles how Sri Guru Hargobind Sahib Ji refused to leave Gwalior Fort alone when Emperor Jahangir ordered His release. Wearing a specially stitched fifty-two-tasseled chola, the Sixth Patshah secured the freedom of all fifty-two detained hill rulers—earning the immortal title "Bandi Chhor Data." Returning to Sri Amritsar Sahib on Katak Masya, Baba Budha Ji, Bhai Gurdas Ji, and the Sangat illuminated Sri Harmandir Sahib with rows of ghee lamps.',
       translationPa:
         'ਰਾਸਿ ੫ (ਅੰਸੂ ੨੬–੩੨) ਵਿੱਚ ਮਹਾਂਕਵੀ ਭਾਈ ਸੰਤੋਖ ਸਿੰਘ ਜੀ ਵਰਣਨ ਕਰਦੇ ਹਨ ਕਿ ਸ੍ਰੀ ਗੁਰੂ ਹਰਿਗੋਬਿੰਦ ਸਾਹਿਬ ਜੀ ਨੇ ੫੨ ਕਲੀਆਂ ਵਾਲਾ ਚੋਲਾ ਪਹਿਨ ਕੇ ਗਵਾਲੀਅਰ ਦੇ ਕਿਲ੍ਹੇ ਵਿੱਚੋਂ ੫੨ ਰਾਜਿਆਂ ਨੂੰ ਰਿਹਾਅ ਕਰਵਾਇਆ ਅਤੇ ਕੱਤਕ ਮੱਸਿਆ ਨੂੰ ਸ੍ਰੀ ਅੰਮ੍ਰਿਤਸਰ ਸਾਹਿਬ ਪਹੁੰਚੇ, ਜਿੱਥੇ ਬਾਬਾ ਬੁੱਢਾ ਜੀ ਅਤੇ ਭਾਈ ਗੁਰਦਾਸ ਜੀ ਦੀ ਅਗਵਾਈ ਵਿੱਚ ਦੀਪਮਾਲਾ ਕੀਤੀ ਗਈ।',
-      exactGranthUrl: `${SURAJ_PRAKASH_URL}?q=Raas+5+Gwalior+Bandi+Chhor`,
-      exactGranthLabelEn: 'Open Exact Page in Granth (Raas 5, Ansu 26–32)',
-      exactGranthLabelPa: 'ਗ੍ਰੰਥ ਦਾ ਸਹੀ ਪੰਨਾ ਖੋਲ੍ਹੋ (ਰਾਸਿ ੫, ਅੰਸੂ ੨੬–੩੨)',
+      exactGranthUrl: POTHI_HOME_URL,
+      exactGranthLabelEn: 'Open Pothi Sahib (pothi.tatkhalsa.in)',
+      exactGranthLabelPa: 'ਪੋਥੀ ਸਾਹਿਬ ਖੋਲ੍ਹੋ (pothi.tatkhalsa.in)',
       granthTypeLabelEn: 'Puratan Itihaas Granth',
       granthTypeLabelPa: 'ਪੁਰਾਤਨ ਇਤਿਹਾਸ ਗ੍ਰੰਥ',
     }),
@@ -109,9 +104,9 @@ const CURATED_SOURCES: readonly CuratedSourceEntry[] = [
         'Just as earthenware lamps lit on the night of Diwali eventually burn out, stars fade at dawn, flowers wither in gardens, and mirage-cities dissolve in an instant—only the Gurmukh who enshrines the eternal Guru-Shabad receives the everlasting fruit of inner illumination and liberation.',
       translationPa:
         'ਜਿਵੇਂ ਦੀਵਾਲੀ ਦੀ ਰਾਤ ਬਾਲੇ ਦੀਵੇ ਬੁੱਝ ਜਾਂਦੇ ਹਨ ਅਤੇ ਤਾਰੇ ਸਵੇਰ ਹੁੰਦਿਆਂ ਅਲੋਪ ਹੋ ਜਾਂਦੇ ਹਨ, ਤਿਵੇਂ ਸੰਸਾਰਕ ਚਮਕ ਨਾਸ਼ਵਾਨ ਹੈ; ਕੇਵਲ ਗੁਰਮੁਖ ਹੀ ਗੁਰੂ ਦੇ ਸ਼ਬਦ ਨੂੰ ਸੰਭਾਲ ਕੇ ਸਦੀਵੀ ਆਤਮਿਕ ਸੁਖ-ਫਲ ਪ੍ਰਾਪਤ ਕਰਦੇ ਹਨ।',
-      exactGranthUrl: 'https://www.searchgurbani.com/bhai-gurdas-vaaran/vaar/19/pauri/6',
-      exactGranthLabelEn: 'Open Exact Page in Granth (Vaar 19, Pauri 6)',
-      exactGranthLabelPa: 'ਗ੍ਰੰਥ ਦਾ ਸਹੀ ਪੰਨਾ ਖੋਲ੍ਹੋ (ਵਾਰ ੧੯, ਪਉੜੀ ੬)',
+      exactGranthUrl: POTHI_HOME_URL,
+      exactGranthLabelEn: 'Open Pothi Sahib (Vaar 19, Pauri 6 · pothi.tatkhalsa.in)',
+      exactGranthLabelPa: 'ਪੋਥੀ ਸਾਹਿਬ ਖੋਲ੍ਹੋ (ਵਾਰ ੧੯, ਪਉੜੀ ੬)',
       granthTypeLabelEn: 'Bhai Gurdas Ji Vaaran',
       granthTypeLabelPa: 'ਭਾਈ ਗੁਰਦਾਸ ਜੀ ਵਾਰਾਂ',
     }),
@@ -147,9 +142,9 @@ const CURATED_SOURCES: readonly CuratedSourceEntry[] = [
         'With the advent of True Guru Nanak Dev Ji, the mist of spiritual ignorance lifted and light radiated across the world—just as when the sun rises, the stars vanish and darkness flees. Wherever Baba Nanak placed His sacred footsteps became a sanctuary of worship. Every home transformed into a Dharamsal echoing with perennial Kirtan as Guru Nanak liberated all four directions and nine realms of the earth in Kaljug.',
       translationPa:
         'ਸਤਿਗੁਰੂ ਨਾਨਕ ਦੇਵ ਜੀ ਦੇ ਪ੍ਰਗਟ ਹੋਣ ਨਾਲ ਜਗਤ ਵਿੱਚੋਂ ਅਗਿਆਨਤਾ ਦੀ ਧੁੰਦ ਮਿਟ ਗਈ ਅਤੇ ਸੱਚ ਦਾ ਚਾਨਣ ਫੈਲ ਗਿਆ। ਜਿੱਥੇ-ਜਿੱਥੇ ਗੁਰੂ ਬਾਬਾ ਜੀ ਨੇ ਚਰਨ ਪਾਏ ਉਹ ਅਸਥਾਨ ਪੂਜਣਯੋਗ ਧਰਮਸਾਲ ਬਣ ਗਏ ਅਤੇ ਘਰ-ਘਰ ਅੰਦਰ ਸਦਾ ਕੀਰਤਨ ਦੀ ਗੂੰਜ ਪੈਣ ਲੱਗੀ।',
-      exactGranthUrl: 'https://www.searchgurbani.com/bhai-gurdas-vaaran/vaar/1/pauri/27',
-      exactGranthLabelEn: 'Open Exact Page in Granth (Vaar 1, Pauri 27)',
-      exactGranthLabelPa: 'ਗ੍ਰੰਥ ਦਾ ਸਹੀ ਪੰਨਾ ਖੋਲ੍ਹੋ (ਵਾਰ ੧, ਪਉੜੀ ੨੭)',
+      exactGranthUrl: POTHI_HOME_URL,
+      exactGranthLabelEn: 'Open Pothi Sahib (Vaar 1, Pauri 27 · pothi.tatkhalsa.in)',
+      exactGranthLabelPa: 'ਪੋਥੀ ਸਾਹਿਬ ਖੋਲ੍ਹੋ (ਵਾਰ ੧, ਪਉੜੀ ੨੭)',
       granthTypeLabelEn: 'Bhai Gurdas Ji Vaaran',
       granthTypeLabelPa: 'ਭਾਈ ਗੁਰਦਾਸ ਜੀ ਵਾਰਾਂ',
     }),
@@ -175,9 +170,9 @@ const CURATED_SOURCES: readonly CuratedSourceEntry[] = [
         'Bhai Gurdas Ji celebrates the childlike, fearless devotion of Shiromani Bhagat Namdev Ji: how the Lord honored Namdev’s loving faith by drinking the bowl of milk and turning the temple toward him when cast out by caste-proud priests, proving that God cherishes sincere loving devotion above all social hierarchy.',
       translationPa:
         'ਭਾਈ ਗੁਰਦਾਸ ਜੀ ਵਾਰ ੧੦ ਵਿੱਚ ਸ਼੍ਰੋਮਣੀ ਭਗਤ ਨਾਮਦੇਵ ਜੀ ਦੀ ਅਨੰਨ ਪ੍ਰੇਮਾ-ਭਗਤੀ ਦਾ ਵਰਣਨ ਕਰਦੇ ਹਨ ਕਿ ਕਿਵੇਂ ਅਕਾਲ ਪੁਰਖ ਨੇ ਭਗਤ ਜੀ ਦੀ ਪੈਜ ਰੱਖੀ, ਦੁੱਧ ਦਾ ਕਟੋਰਾ ਛਕਿਆ ਅਤੇ ਮੰਦਰ ਦਾ ਮੂੰਹ ਫੇਰ ਕੇ ਦਰਸਾਇਆ ਕਿ ਪ੍ਰਭੂ ਜਾਤ-ਪਾਤ ਨਹੀਂ ਸਗੋਂ ਪ੍ਰੇਮ-ਭਗਤੀ ਵੇਖਦਾ ਹੈ।',
-      exactGranthUrl: 'https://www.searchgurbani.com/bhai-gurdas-vaaran/vaar/10/pauri/1',
-      exactGranthLabelEn: 'Open Exact Page in Granth (Vaar 10, Pauri 1)',
-      exactGranthLabelPa: 'ਗ੍ਰੰਥ ਦਾ ਸਹੀ ਪੰਨਾ ਖੋਲ੍ਹੋ (ਵਾਰ ੧੦, ਪਉੜੀ ੧)',
+      exactGranthUrl: 'https://pothi.tatkhalsa.in/reader?source=sggs&ang=1163',
+      exactGranthLabelEn: 'Open Exact Page in Granth (Bhagat Namdev Ji · SGGS Ang 1163)',
+      exactGranthLabelPa: 'ਗ੍ਰੰਥ ਦਾ ਸਹੀ ਪੰਨਾ ਖੋਲ੍ਹੋ (ਭਗਤ ਨਾਮਦੇਵ ਜੀ · ਅੰਗ ੧੧੬੩)',
       granthTypeLabelEn: 'Bhai Gurdas Ji Vaaran',
       granthTypeLabelPa: 'ਭਾਈ ਗੁਰਦਾਸ ਜੀ ਵਾਰਾਂ',
     }),
@@ -211,9 +206,9 @@ const CURATED_SOURCES: readonly CuratedSourceEntry[] = [
         'Like a fish immersed in the river, Sri Guru Arjan Dev Ji remained merged in the Lord’s Will even amidst extreme torment in Lahore (Jeth Sudhi 4, Sambat 1663). Like a moth merging into the flame, His Light blended back into the Infinite Light without a trace of wavering. Bhai Gurdas Ji concludes: "I am forever a sacrifice unto Guru Arjan Dev Ji."',
       translationPa:
         'ਮੱਛੀ ਵਾਂਗ ਅਕਾਲ ਪੁਰਖ ਦੇ ਭਾਣੇ ਰੂਪੀ ਦਰਿਆ ਵਿੱਚ ਲੀਨ ਰਹਿੰਦਿਆਂ, ਭੀੜ ਪੈਣ ’ਤੇ ਵੀ ਸ੍ਰੀ ਗੁਰੂ ਅਰਜਨ ਦੇਵ ਜੀ ਨੇ ਚਿੱਤ ਵਿੱਚ ਕਿਸੇ ਹੋਰ ਦਾ ਆਸਰਾ ਨਾ ਲਿਆ ਅਤੇ ਜੋਤਿ ਵਿੱਚ ਜੋਤਿ ਸਮਾ ਗਏ। ਭਾਈ ਗੁਰਦਾਸ ਜੀ ਫ਼ੁਰਮਾਉਂਦੇ ਹਨ: ਮੈਂ ਗੁਰੂ ਅਰਜਨ ਦੇਵ ਜੀ ਤੋਂ ਸਦਾ ਕੁਰਬਾਨ ਹਾਂ।',
-      exactGranthUrl: 'https://www.searchgurbani.com/bhai-gurdas-vaaran/vaar/24/pauri/23',
-      exactGranthLabelEn: 'Open Exact Page in Granth (Vaar 24, Pauri 23)',
-      exactGranthLabelPa: 'ਗ੍ਰੰਥ ਦਾ ਸਹੀ ਪੰਨਾ ਖੋਲ੍ਹੋ (ਵਾਰ ੨੪, ਪਉੜੀ ੨੩)',
+      exactGranthUrl: 'https://pothi.tatkhalsa.in/reader?source=sggs&ang=394',
+      exactGranthLabelEn: 'Open Exact Page in Granth (Guru Arjan Dev Ji · SGGS Ang 394)',
+      exactGranthLabelPa: 'ਗ੍ਰੰਥ ਦਾ ਸਹੀ ਪੰਨਾ ਖੋਲ੍ਹੋ (ਗੁਰੂ ਅਰਜਨ ਦੇਵ ਜੀ · ਅੰਗ ੩੯੪)',
       granthTypeLabelEn: 'Bhai Gurdas Ji Vaaran & Chronicle',
       granthTypeLabelPa: 'ਭਾਈ ਗੁਰਦਾਸ ਜੀ ਵਾਰਾਂ ਅਤੇ ਇਤਿਹਾਸ',
     }),
@@ -449,9 +444,9 @@ const CURATED_SOURCES: readonly CuratedSourceEntry[] = [
         'Contemporaneous eyewitness entry recorded by Narbud Singh Bhatt in Bhatt Vahi Talauda: On Wednesday, Katak Sudhi 4, Sambat 1765 Bikrami (1708 CE) at Nanded on the Godavari, Sri Guru Gobind Singh Ji instructed Bhai Daya Singh Ji to bring Sri Adi Granth Sahib Ji, placed five paise and a coconut before It, bowed His forehead to the ground, and commanded the entire Sangat: "It is my command to recognize Sri Guru Granth Sahib Ji as the eternal living Guru in my stead."',
       translationPa:
         'ਭੱਟ ਵਹੀ ਤਲੌਡਾ ਵਿੱਚ ਨਰਬੁਦ ਸਿੰਘ ਭੱਟ ਦੀ ਸਮਕਾਲੀ ਸਾਖੀ ਦਰਜ ਹੈ ਕਿ ਬੁੱਧਵਾਰ ਕੱਤਕ ਸੁਦੀ ੪, ਸੰਮਤ ੧੭੬੫ ਨੂੰ ਨਾਂਦੇੜ ਸਾਹਿਬ ਵਿਖੇ ਦਸਮੇਸ਼ ਪਿਤਾ ਜੀ ਨੇ ਪੰਜ ਪੈਸੇ ਤੇ ਨਾਰੀਅਲ ਰੱਖ ਕੇ ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ ਨੂੰ ਮੱਥਾ ਟੇਕਿਆ ਅਤੇ ਸਰਬੱਤ ਸੰਗਤ ਨੂੰ ਸ਼ਬਦ ਗੁਰੂ ਦੇ ਲੜ ਲਾਇਆ।',
-      exactGranthUrl: `${BHATT_VAHI_URL}?q=1765+Katak+Sudhi+Chauth`,
-      exactGranthLabelEn: 'Open Exact Page in Granth (Bhatt Vahi Entry · 1765)',
-      exactGranthLabelPa: 'ਗ੍ਰੰਥ ਦਾ ਸਹੀ ਪੰਨਾ ਖੋਲ੍ਹੋ (ਭੱਟ ਵਹੀ ਲੇਖ · ੧੭੬੫)',
+      exactGranthUrl: POTHI_SGGS_URL,
+      exactGranthLabelEn: 'Open Sri Guru Granth Sahib Ji (pothi.tatkhalsa.in)',
+      exactGranthLabelPa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ ਖੋਲ੍ਹੋ (pothi.tatkhalsa.in)',
       granthTypeLabelEn: 'Primary Bhatt Vahi Record',
       granthTypeLabelPa: 'ਮੂਲ ਭੱਟ ਵਹੀ ਰਿਕਾਰਡ',
     }),
@@ -477,9 +472,9 @@ const CURATED_SOURCES: readonly CuratedSourceEntry[] = [
         'Bhatt Vahi Talauda and Bhatt Vahi Jado Bansian preserve the exact Puratan Bikrami solar date of Saka Sirhind: 13 Poh, Sambat 1761 Bikrami, when the nine-year-old Sahibzada Baba Zorawar Singh Ji and seven-year-old Sahibzada Baba Fateh Singh Ji refused to renounce Sikhi and were bricked alive and martyred by Wazir Khan, followed by Mata Gujri Ji’s departure in the Thanda Burj and Diwan Todar Mal Ji’s purchase of the cremation ground with upright gold mohars.',
       translationPa:
         'ਭੱਟ ਵਹੀ ਤਲੌਡਾ ਅਤੇ ਜਾਦੋਬੰਸੀਆਂ ਵਿੱਚ ੧੩ ਪੋਹ, ਸੰਮਤ ੧੭੬੧ ਬਿਕ੍ਰਮੀ ਦੀ ਸਟੀਕ ਤਾਰੀਖ਼ ਦਰਜ ਹੈ, ਜਦੋਂ ਛੋਟੇ ਸਾਹਿਬਜ਼ਾਦੇ ਬਾਬਾ ਜ਼ੋਰਾਵਰ ਸਿੰਘ ਜੀ, ਬਾਬਾ ਫ਼ਤਿਹ ਸਿੰਘ ਜੀ ਅਤੇ ਮਾਤਾ ਗੁਜਰੀ ਜੀ ਨੇ ਸਰਹਿੰਦ ਵਿਖੇ ਲਾਸਾਨੀ ਸ਼ਹਾਦਤ ਪ੍ਰਾਪਤ ਕੀਤੀ।',
-      exactGranthUrl: `${BHATT_VAHI_URL}?q=13+Poh+1761+Sirhind`,
-      exactGranthLabelEn: 'Open Exact Page in Granth (Bhatt Vahi · 13 Poh 1761)',
-      exactGranthLabelPa: 'ਗ੍ਰੰਥ ਦਾ ਸਹੀ ਪੰਨਾ ਖੋਲ੍ਹੋ (ਭੱਟ ਵਹੀ · ੧੩ ਪੋਹ ੧੭੬੧)',
+      exactGranthUrl: POTHI_NITNEM_URL,
+      exactGranthLabelEn: 'Open Pothi Sahib (pothi.tatkhalsa.in)',
+      exactGranthLabelPa: 'ਪੋਥੀ ਸਾਹਿਬ ਖੋਲ੍ਹੋ (pothi.tatkhalsa.in)',
       granthTypeLabelEn: 'Primary Bhatt Vahi Record',
       granthTypeLabelPa: 'ਮੂਲ ਭੱਟ ਵਹੀ ਰਿਕਾਰਡ',
     }),
@@ -505,9 +500,9 @@ const CURATED_SOURCES: readonly CuratedSourceEntry[] = [
         'Bhatt Vahi Multani Sindhi records the exact lunar tithi—Maghar Sudhi Panchmi, Sambat 1732 Bikrami (11 November 1675 CE)—when Ninth Patshah Sri Guru Tegh Bahadur Ji and His three devoted Sikhs (Bhai Mati Das Ji, Bhai Sati Das Ji, and Bhai Dayala Ji) attained supreme martyrdom at Chandni Chowk, Delhi, and Bhai Jaita Ji (Baba Jiwan Singh Ji) carried the sacred Sis to Sri Anandpur Sahib.',
       translationPa:
         'ਭੱਟ ਵਹੀ ਮੁਲਤਾਨੀ ਸਿੰਧੀ ਵਿੱਚ ਮੱਘਰ ਸੁਦੀ ਪੰਚਮੀ, ਸੰਮਤ ੧੭੩੨ ਬਿਕ੍ਰਮੀ ਦਾ ਪ੍ਰਤੱਖ ਵੇਰਵਾ ਦਰਜ ਹੈ ਕਿ ਨੌਵੇਂ ਪਾਤਸ਼ਾਹ ਸ੍ਰੀ ਗੁਰੂ ਤੇਗ਼ ਬਹਾਦਰ ਜੀ, ਭਾਈ ਮਤੀ ਦਾਸ ਜੀ, ਭਾਈ ਸਤੀ ਦਾਸ ਜੀ ਅਤੇ ਭਾਈ ਦਿਆਲਾ ਜੀ ਨੇ ਚਾਂਦਨੀ ਚੌਕ ਦਿੱਲੀ ਵਿਖੇ ਸ਼ਹਾਦਤ ਪ੍ਰਾਪਤ ਕੀਤੀ।',
-      exactGranthUrl: `${BHATT_VAHI_URL}?q=Maghar+Sudhi+5+1732`,
-      exactGranthLabelEn: 'Open Exact Page in Granth (Bhatt Vahi · Maghar Sudhi 5, 1732)',
-      exactGranthLabelPa: 'ਗ੍ਰੰਥ ਦਾ ਸਹੀ ਪੰਨਾ ਖੋਲ੍ਹੋ (ਭੱਟ ਵਹੀ · ਮੱਘਰ ਸੁਦੀ ੫, ੧੭੩੨)',
+      exactGranthUrl: 'https://pothi.tatkhalsa.in/sundar-gutka/salok-mahalla-9',
+      exactGranthLabelEn: 'Open Salok Mahalla 9 on Pothi Sahib (pothi.tatkhalsa.in)',
+      exactGranthLabelPa: 'ਪੋਥੀ ਸਾਹਿਬ ’ਤੇ ਸਲੋਕ ਮਹਲਾ ੯ ਖੋਲ੍ਹੋ',
       granthTypeLabelEn: 'Primary Bhatt Vahi Record',
       granthTypeLabelPa: 'ਮੂਲ ਭੱਟ ਵਹੀ ਰਿਕਾਰਡ',
     }),
@@ -535,9 +530,9 @@ const CURATED_SOURCES: readonly CuratedSourceEntry[] = [
         'Bhai Rattan Singh Bhangu narrates in Prachin Panth Prakash how the 75-year-old Baba Deep Singh Ji Shaheed—first Head of Damdami Taksal—drew a line on the ground with his Khanda outside Tarn Taran in Sambat 1814 (1757 CE), calling only those ready to lay down their heads for Sachkhand Sri Harmandir Sahib. Wounded mortally near Goharwal, he honored his vow by supporting his severed head on his left palm while fighting with his khanda until reaching the sacred Parikrama.',
       translationPa:
         'ਭਾਈ ਰਤਨ ਸਿੰਘ ਭੰਗੂ ਪ੍ਰਾਚੀਨ ਪੰਥ ਪ੍ਰਕਾਸ਼ ਵਿੱਚ ਬਿਆਨ ਕਰਦੇ ਹਨ ਕਿ ੭੫ ਸਾਲਾ ਬਾਬਾ ਦੀਪ ਸਿੰਘ ਜੀ ਸ਼ਹੀਦ ਨੇ ਸੰਮਤ ੧੮੧੪ ਵਿੱਚ ਤਰਨਤਾਰਨ ਵਿਖੇ ਖੰਡੇ ਨਾਲ ਲਕੀਰ ਖਿੱਚੀ ਅਤੇ ਗੋਹਲਵੜ੍ਹ ਦੀ ਜੰਗ ਵਿੱਚ ਸੀਸ ਕੱਟੇ ਜਾਣ ਉਪਰੰਤ ਵੀ ਖੱਬੇ ਹੱਥ ’ਤੇ ਸੀਸ ਟਿਕਾ ਕੇ ਸ੍ਰੀ ਹਰਿਮੰਦਰ ਸਾਹਿਬ ਦੀ ਪਰਿਕਰਮਾ ਤੱਕ ਜੂਝੇ।',
-      exactGranthUrl: `${PANTH_PRAKASH_URL}?q=Deep+Singh+Shaheed`,
-      exactGranthLabelEn: 'Open Exact Page in Granth (Prachin Panth Prakash · Sakhi Baba Deep Singh Ji)',
-      exactGranthLabelPa: 'ਗ੍ਰੰਥ ਦਾ ਸਹੀ ਪੰਨਾ ਖੋਲ੍ਹੋ (ਪ੍ਰਾਚੀਨ ਪੰਥ ਪ੍ਰਕਾਸ਼ · ਸਾਖੀ ਬਾਬਾ ਦੀਪ ਸਿੰਘ ਜੀ)',
+      exactGranthUrl: POTHI_NITNEM_URL,
+      exactGranthLabelEn: 'Open Pothi Sahib (pothi.tatkhalsa.in)',
+      exactGranthLabelPa: 'ਪੋਥੀ ਸਾਹਿਬ ਖੋਲ੍ਹੋ (pothi.tatkhalsa.in)',
       granthTypeLabelEn: 'Puratan Khalsa Chronicle',
       granthTypeLabelPa: 'ਪੁਰਾਤਨ ਖ਼ਾਲਸਾ ਇਤਿਹਾਸ',
     }),
@@ -563,9 +558,9 @@ const CURATED_SOURCES: readonly CuratedSourceEntry[] = [
         'Rattan Singh Bhangu preserves the heroic battle of 8 Poh, Sambat 1761 Bikrami at the mud fortress of Chamkaur, where small jathas of five Singhs emerged wave after wave against imperial battalions, culminating in the sublime martyrdom of Sahibzada Baba Ajit Singh Ji (age 18), Sahibzada Baba Jujhar Singh Ji (age 14), three of the Panj Pyare (Bhai Himmat Singh Ji, Bhai Mohkam Singh Ji, Bhai Sahib Singh Ji), and Bhai Jiwan Singh Ji.',
       translationPa:
         'ਪ੍ਰਾਚੀਨ ਪੰਥ ਪ੍ਰਕਾਸ਼ ਵਿੱਚ ੮ ਪੋਹ, ਸੰਮਤ ੧੭੬੧ ਬਿਕ੍ਰਮੀ ਦੀ ਚਮਕੌਰ ਗੜ੍ਹੀ ਦੀ ਅਸਾਵੀਂ ਜੰਗ ਦਾ ਬਿਆਨ ਹੈ, ਜਿੱਥੇ ਪੰਜ-ਪੰਜ ਸਿੰਘਾਂ ਦੇ ਜਥਿਆਂ ਸਮੇਤ ਵੱਡੇ ਸਾਹਿਬਜ਼ਾਦੇ ਬਾਬਾ ਅਜੀਤ ਸਿੰਘ ਜੀ ਅਤੇ ਬਾਬਾ ਜੁਝਾਰ ਸਿੰਘ ਜੀ ਨੇ ਲਾਸਾਨੀ ਸ਼ਹਾਦਤ ਪ੍ਰਾਪਤ ਕੀਤੀ।',
-      exactGranthUrl: `${PANTH_PRAKASH_URL}?q=Chamkaur`,
-      exactGranthLabelEn: 'Open Exact Page in Granth (Prachin Panth Prakash · Garhi Chamkaur)',
-      exactGranthLabelPa: 'ਗ੍ਰੰਥ ਦਾ ਸਹੀ ਪੰਨਾ ਖੋਲ੍ਹੋ (ਪ੍ਰਾਚੀਨ ਪੰਥ ਪ੍ਰਕਾਸ਼ · ਗੜ੍ਹੀ ਚਮਕੌਰ)',
+      exactGranthUrl: 'https://pothi.tatkhalsa.in/sundar-gutka/zafarnama',
+      exactGranthLabelEn: 'Open Zafarnama on Pothi Sahib (pothi.tatkhalsa.in)',
+      exactGranthLabelPa: 'ਪੋਥੀ ਸਾਹਿਬ ’ਤੇ ਜ਼ਫ਼ਰਨਾਮਾ ਖੋਲ੍ਹੋ',
       granthTypeLabelEn: 'Puratan Khalsa Chronicle',
       granthTypeLabelPa: 'ਪੁਰਾਤਨ ਖ਼ਾਲਸਾ ਇਤਿਹਾਸ',
     }),
@@ -593,9 +588,9 @@ const CURATED_SOURCES: readonly CuratedSourceEntry[] = [
         'Written by court poet Kavi Sainapati, an eyewitness at Sri Anandpur Sahib, Adhyay 5 of Sri Gur Sobha records how on Vaisakh Sangrand, Sambat 1756 Bikrami (1699 CE), Sri Guru Gobind Singh Ji administered Khande-Bate di Pahul to the Panj Pyare, abolished the Masand system, and revealed the sovereign Khalsa Panth directly linked to Akal Purakh.',
       translationPa:
         'ਦਰਬਾਰੀ ਕਵੀ ਸੈਨਾਪਤਿ ਸ੍ਰੀ ਗੁਰ ਸੋਭਾ ਦੇ ਅਧਿਆਇ ੫ ਵਿੱਚ ਵੈਸਾਖ ਸੰਗਰਾਂਦ, ਸੰਮਤ ੧੭੫੬ (੧੬੯੯ ਈ.) ਨੂੰ ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ ਵਿਖੇ ਖੰਡੇ-ਬਾਟੇ ਦੀ ਪਾਹੁਲ ਦੇ ਕੇ ਖ਼ਾਲਸਾ ਪੰਥ ਦੀ ਸਾਜਨਾ ਦਾ ਪ੍ਰਤੱਖ ਵਰਣਨ ਕਰਦੇ ਹਨ।',
-      exactGranthUrl: `${GUR_SOBHA_URL}?q=Adhyay+5+Khalsa+Vaisakh`,
-      exactGranthLabelEn: 'Open Exact Page in Granth (Sri Gur Sobha · Adhyay 5)',
-      exactGranthLabelPa: 'ਗ੍ਰੰਥ ਦਾ ਸਹੀ ਪੰਨਾ ਖੋਲ੍ਹੋ (ਸ੍ਰੀ ਗੁਰ ਸੋਭਾ · ਅਧਿਆਇ ੫)',
+      exactGranthUrl: 'https://pothi.tatkhalsa.in/sundar-gutka/tav-prasad-swaiye',
+      exactGranthLabelEn: 'Open Tav-Prasad Swaiye on Pothi Sahib (pothi.tatkhalsa.in)',
+      exactGranthLabelPa: 'ਪੋਥੀ ਸਾਹਿਬ ’ਤੇ ਤ੍ਵਪ੍ਰਸਾਦਿ ਸਵਈਏ ਖੋਲ੍ਹੋ',
       granthTypeLabelEn: 'Contemporary Darbari Chronicle',
       granthTypeLabelPa: 'ਸਮਕਾਲੀ ਦਰਬਾਰੀ ਗ੍ਰੰਥ',
     }),
@@ -623,9 +618,9 @@ const CURATED_SOURCES: readonly CuratedSourceEntry[] = [
         'In Adhyay 18 of Sri Gur Sobha (completed 1711 CE), Kavi Sainapati documents the final dialogue at Nanded before Katak Sudhi 5, Sambat 1765: when Sikhs asked what form the Guru would take hereafter, Dashmesh Pita declared that His eternal essence abides in the Shabad Guru (Sri Guru Granth Sahib Ji) and in the Khalsa Panth.',
       translationPa:
         'ਸ੍ਰੀ ਗੁਰ ਸੋਭਾ ਦੇ ਅਧਿਆਇ ੧੮ ਵਿੱਚ ਕਵੀ ਸੈਨਾਪਤਿ ਸੰਮਤ ੧੭੬੫ ਕੱਤਕ ਸੁਦੀ ਪੰਚਮੀ ਦੇ ਨਾਂਦੇੜ ਪ੍ਰਸੰਗ ਦਾ ਵਰਣਨ ਕਰਦੇ ਹਨ ਕਿ ਦਸਮੇਸ਼ ਪਿਤਾ ਜੀ ਨੇ ਗੁਰਿਆਈ ਸ਼ਬਦ ਗੁਰੂ ਅਤੇ ਖ਼ਾਲਸੇ ਨੂੰ ਸੌਂਪ ਕੇ ਜੋਤੀ ਜੋਤ ਸਮਾਉਣ ਦਾ ਕੌਤਕ ਵਰਤਾਇਆ।',
-      exactGranthUrl: `${GUR_SOBHA_URL}?q=Adhyay+18+1765`,
-      exactGranthLabelEn: 'Open Exact Page in Granth (Sri Gur Sobha · Adhyay 18)',
-      exactGranthLabelPa: 'ਗ੍ਰੰਥ ਦਾ ਸਹੀ ਪੰਨਾ ਖੋਲ੍ਹੋ (ਸ੍ਰੀ ਗੁਰ ਸੋਭਾ · ਅਧਿਆਇ ੧੮)',
+      exactGranthUrl: POTHI_SGGS_URL,
+      exactGranthLabelEn: 'Open Sri Guru Granth Sahib Ji (pothi.tatkhalsa.in)',
+      exactGranthLabelPa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ ਖੋਲ੍ਹੋ (pothi.tatkhalsa.in)',
       granthTypeLabelEn: 'Contemporary Darbari Chronicle',
       granthTypeLabelPa: 'ਸਮਕਾਲੀ ਦਰਬਾਰੀ ਗ੍ਰੰਥ',
     }),
@@ -653,9 +648,9 @@ const CURATED_SOURCES: readonly CuratedSourceEntry[] = [
         'Recited at the close of every Khalsa Ardas: "By the command of the Timeless One was the Panth established. Unto all Sikhs is this edict: recognize the Granth as Guru. Revere Sri Guru Granth Sahib Ji as the manifest body of the Ten Gurus; whoever seeks union with the Lord shall discover Him within the Shabad."',
       translationPa:
         'ਹਰ ਸਿੱਖ ਅਰਦਾਸ ਉਪਰੰਤ ਪੜ੍ਹਿਆ ਜਾਣ ਵਾਲਾ ਇਹ ਪਾਵਨ ਦੋਹਰਾ ਦਸਮੇਸ਼ ਪਿਤਾ ਜੀ ਦੇ ਸਦੀਵੀ ਹੁਕਮ ਨੂੰ ਪ੍ਰਗਟ ਕਰਦਾ ਹੈ ਕਿ ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ ਹੀ ਦਸਾਂ ਪਾਤਸ਼ਾਹੀਆਂ ਦੀ ਪ੍ਰਗਟ ਦੇਹ ਅਤੇ ਸਦੀਵੀ ਗੁਰੂ ਹਨ।',
-      exactGranthUrl: `${PANTH_PRAKASH_URL}?q=Guru+Manio+Granth`,
-      exactGranthLabelEn: 'Open Exact Page in Granth (Rehatnama & Panth Prakash)',
-      exactGranthLabelPa: 'ਗ੍ਰੰਥ ਦਾ ਸਹੀ ਪੰਨਾ ਖੋਲ੍ਹੋ (ਰਹਿਤਨਾਮਾ ਅਤੇ ਪੰਥ ਪ੍ਰਕਾਸ਼)',
+      exactGranthUrl: POTHI_SGGS_URL,
+      exactGranthLabelEn: 'Open Sri Guru Granth Sahib Ji (pothi.tatkhalsa.in)',
+      exactGranthLabelPa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ ਖੋਲ੍ਹੋ (pothi.tatkhalsa.in)',
       granthTypeLabelEn: 'Puratan Khalsa Rehatnama',
       granthTypeLabelPa: 'ਪੁਰਾਤਨ ਖ਼ਾਲਸਾ ਰਹਿਤਨਾਮਾ',
     }),
@@ -730,7 +725,7 @@ const CURATED_SOURCES: readonly CuratedSourceEntry[] = [
         /(Raas\s*\d+[^·]*|Rut\s*\d+[^·]*|Ayan\s*\d+[^·]*|Purbaradh[^·]*|Jild\s*\d+[^·]*)/i,
       );
       const locator = locatorMatch ? locatorMatch[1].trim() : cit.referenceEn.split('·')[0].trim();
-      const query = encodeURIComponent(locator);
+      const targetUrl = sanitizePothiUrl(cit.pothiUrl || ev.pothiUrl || POTHI_HOME_URL);
       return {
         headingEn: `Sri Gurpratap Suraj Granth Sahib Ji — ${cit.referenceEn}`,
         headingPa: `ਸ੍ਰੀ ਗੁਰਪ੍ਰਤਾਪ ਸੂਰਜ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ — ${cit.referencePa}`,
@@ -745,9 +740,9 @@ const CURATED_SOURCES: readonly CuratedSourceEntry[] = [
           : [`Prasang (${locator}) — Mahakavi Bhai Santokh Singh Ji (Edited by Dr. Bhai Vir Singh Ji).`],
         translationEn: `${ev.historicalContextEn} Recorded in Mahakavi Bhai Santokh Singh Ji’s monumental 14-volume chronicle (${locator}), which preserves the authentic Puratan Bikrami lunar tithis and solar dates handed down through the Giani and Nirmala Sampardas.`,
         translationPa: `${ev.historicalContextPa} ਮਹਾਂਕਵੀ ਭਾਈ ਸੰਤੋਖ ਸਿੰਘ ਜੀ (ਸੰਪਾਦਕ ਡਾ. ਭਾਈ ਵੀਰ ਸਿੰਘ ਜੀ) ਵੱਲੋਂ ਰਚਿਤ ਸ੍ਰੀ ਗੁਰਪ੍ਰਤਾਪ ਸੂਰਜ ਗ੍ਰੰਥ ਦੇ ਇਸ ਪ੍ਰਸੰਗ (${cit.referencePa}) ਵਿੱਚ ਇਸ ਦਿਹਾੜੇ ਦਾ ਪ੍ਰਮਾਣਿਕ ਪੁਰਾਤਨ ਬਿਕ੍ਰਮੀ ਇਤਿਹਾਸ ਦਰਜ ਹੈ।`,
-        exactGranthUrl: `${SURAJ_PRAKASH_URL}?q=${query}`,
-        exactGranthLabelEn: `Open Exact Page in Granth (${locator})`,
-        exactGranthLabelPa: `ਗ੍ਰੰਥ ਦਾ ਸਹੀ ਪੰਨਾ ਖੋਲ੍ਹੋ (${cit.referencePa.split('·')[0].trim()})`,
+        exactGranthUrl: targetUrl,
+        exactGranthLabelEn: 'Open Pothi Sahib (pothi.tatkhalsa.in)',
+        exactGranthLabelPa: 'ਪੋਥੀ ਸਾਹਿਬ ਖੋਲ੍ਹੋ (pothi.tatkhalsa.in)',
         granthTypeLabelEn: 'Sri Gurpratap Suraj Granth',
         granthTypeLabelPa: 'ਸ੍ਰੀ ਗੁਰਪ੍ਰਤਾਪ ਸੂਰਜ ਗ੍ਰੰਥ',
       };
@@ -772,9 +767,9 @@ const CURATED_SOURCES: readonly CuratedSourceEntry[] = [
         'Bhai Nand Lal Goya, beloved devotee at Sri Anandpur Sahib, describes the fragrant spiritual joy of Holla Mohalla in the court of Sri Guru Gobind Singh Ji, where the Tenth Patshah transformed seasonal revelry into disciplined Khalsa martial valor (Shastar Vidya, horsemanship, and mock battles at Qila Holgarh) infused with Divine Name.',
       translationPa:
         'ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ ਦੇ ਦਰਬਾਰੀ ਕਵੀ ਭਾਈ ਨੰਦ ਲਾਲ ਜੀ ‘ਗੋਯਾ’ ਨੇ ਹੋਲੇ-ਮਹੱਲੇ ਦੇ ਪਾਵਨ ਰੰਗ ਨੂੰ ਅਧਿਆਤਮਕ ਅਤੇ ਬੀਰ-ਰਸੀ ਚੜ੍ਹਦੀ ਕਲਾ ਦੇ ਪ੍ਰਤੀਕ ਵਜੋਂ ਬਿਆਨ ਕੀਤਾ ਹੈ।',
-      exactGranthUrl: 'https://www.searchgurbani.com/bhai-nand-lal/ghazals',
-      exactGranthLabelEn: 'Open Exact Page in Granth (Bhai Nand Lal · Diwan-e-Goya)',
-      exactGranthLabelPa: 'ਗ੍ਰੰਥ ਦਾ ਸਹੀ ਪੰਨਾ ਖੋਲ੍ਹੋ (ਭਾਈ ਨੰਦ ਲਾਲ ਜੀ · ਦੀਵਾਨ-ਏ-ਗੋਯਾ)',
+      exactGranthUrl: POTHI_DASAM_URL,
+      exactGranthLabelEn: 'Open Pothi Sahib (Bhai Nand Lal · pothi.tatkhalsa.in)',
+      exactGranthLabelPa: 'ਪੋਥੀ ਸਾਹਿਬ ਖੋਲ੍ਹੋ (ਭਾਈ ਨੰਦ ਲਾਲ ਜੀ)',
       granthTypeLabelEn: 'Bhai Nand Lal Ji Bani',
       granthTypeLabelPa: 'ਭਾਈ ਨੰਦ ਲਾਲ ਜੀ ਬਾਣੀ',
     }),
@@ -784,13 +779,7 @@ const CURATED_SOURCES: readonly CuratedSourceEntry[] = [
   {
     match: (src) => /mehma prakash|gurbilas|janamsakhi|hukamnama|bhatt vahi/i.test(src),
     build: (cit, ev) => {
-      const lower = cit.sourceEn.toLowerCase();
-      let url = BHATT_VAHI_URL;
-      if (lower.includes('mehma prakash')) url = MEHMA_PRAKASH_URL;
-      else if (lower.includes('gurbilas')) url = GURBILAS_6_URL;
-      else if (lower.includes('janamsakhi')) url = JANAMSAKHI_URL;
-      else if (lower.includes('hukamnama')) url = HUKAMNAMA_URL;
-
+      const targetUrl = sanitizePothiUrl(cit.pothiUrl || ev.pothiUrl || POTHI_HOME_URL);
       const shortRef = cit.referenceEn.split('·')[0].trim();
       return {
         headingEn: `${cit.sourceEn} — ${cit.referenceEn}`,
@@ -801,9 +790,9 @@ const CURATED_SOURCES: readonly CuratedSourceEntry[] = [
           : [`Puratan Archival Colophon (${shortRef}) — ${cit.sourceEn}`],
         translationEn: `${ev.historicalContextEn} This primary historical source (${cit.sourceEn}: ${cit.referenceEn}) preserves the contemporary Puratan Bikrami record for ${ev.titleEn}.`,
         translationPa: `${ev.historicalContextPa} ਇਹ ਪੁਰਾਤਨ ਇਤਿਹਾਸਕ ਸਰੋਤ (${cit.sourcePa} — ${cit.referencePa}) ਇਸ ਘਟਨਾ ਦੀ ਪ੍ਰਮਾਣਿਕ ਗਵਾਹੀ ਦਿੰਦਾ ਹੈ।`,
-        exactGranthUrl: `${url}?q=${encodeURIComponent(shortRef)}`,
-        exactGranthLabelEn: `Open Exact Page in Granth (${shortRef})`,
-        exactGranthLabelPa: `ਗ੍ਰੰਥ ਦਾ ਸਹੀ ਪੰਨਾ ਖੋਲ੍ਹੋ (${cit.referencePa.split('·')[0].trim()})`,
+        exactGranthUrl: targetUrl,
+        exactGranthLabelEn: 'Open Pothi Sahib (pothi.tatkhalsa.in)',
+        exactGranthLabelPa: 'ਪੋਥੀ ਸਾਹਿਬ ਖੋਲ੍ਹੋ (pothi.tatkhalsa.in)',
         granthTypeLabelEn: 'Primary Historical Chronicle',
         granthTypeLabelPa: 'ਮੂਲ ਇਤਿਹਾਸਕ ਗ੍ਰੰਥ',
       };
@@ -813,7 +802,7 @@ const CURATED_SOURCES: readonly CuratedSourceEntry[] = [
 
 /**
  * Resolves full readable Gurmukhi text, transliteration, English/Punjabi translation,
- * and an exact Granth/page deep link for any citation card in the Colophon drawer.
+ * and a strict pothi.tatkhalsa.in Granth deep link for any citation card in the Colophon drawer.
  */
 export function resolveCitationReader(
   cit: ColophonCitation,
@@ -821,7 +810,11 @@ export function resolveCitationReader(
 ): CitationReaderContent {
   for (const entry of CURATED_SOURCES) {
     if (entry.match(cit.sourceEn, cit.referenceEn)) {
-      return entry.build(cit, ev);
+      const built = entry.build(cit, ev);
+      return {
+        ...built,
+        exactGranthUrl: sanitizePothiUrl(built.exactGranthUrl),
+      };
     }
   }
 
@@ -835,19 +828,15 @@ export function resolveCitationReader(
       transliterationLines: cit.excerptTranslit ? [cit.excerptTranslit] : [cit.referenceEn],
       translationEn: ev.historicalContextEn,
       translationPa: ev.historicalContextPa,
-      exactGranthUrl: `https://www.searchgurbani.com/bhai-gurdas-vaaran/vaar/${vp.vaar}/pauri/${vp.pauri}`,
-      exactGranthLabelEn: `Open Exact Page in Granth (Vaar ${vp.vaar}, Pauri ${vp.pauri})`,
-      exactGranthLabelPa: `ਗ੍ਰੰਥ ਦਾ ਸਹੀ ਪੰਨਾ ਖੋਲ੍ਹੋ (ਵਾਰ ${vp.vaar}, ਪਉੜੀ ${vp.pauri})`,
+      exactGranthUrl: sanitizePothiUrl(cit.pothiUrl || ev.pothiUrl || POTHI_HOME_URL),
+      exactGranthLabelEn: `Open Pothi Sahib (Vaar ${vp.vaar}, Pauri ${vp.pauri})`,
+      exactGranthLabelPa: `ਪੋਥੀ ਸਾਹਿਬ ਖੋਲ੍ਹੋ (ਵਾਰ ${vp.vaar}, ਪਉੜੀ ${vp.pauri})`,
       granthTypeLabelEn: 'Bhai Gurdas Ji Vaaran',
       granthTypeLabelPa: 'ਭਾਈ ਗੁਰਦਾਸ ਜੀ ਵਾਰਾਂ',
     };
   }
 
-  const shortRef = cit.referenceEn.split('·')[0].trim();
-  const fallbackUrl =
-    cit.pothiUrl ||
-    ev.pothiUrl ||
-    `https://archive.org/search?query=${encodeURIComponent(`${cit.sourceEn} ${shortRef}`)}`;
+  const fallbackUrl = sanitizePothiUrl(cit.pothiUrl || ev.pothiUrl || POTHI_HOME_URL);
 
   return {
     headingEn: `${cit.sourceEn} — ${cit.referenceEn}`,
@@ -859,8 +848,8 @@ export function resolveCitationReader(
     translationEn: `${ev.historicalContextEn} Archival citation: ${cit.sourceEn} (${cit.referenceEn}).`,
     translationPa: `${ev.historicalContextPa} ਇਤਿਹਾਸਕ ਹਵਾਲਾ: ${cit.sourcePa} (${cit.referencePa})।`,
     exactGranthUrl: fallbackUrl,
-    exactGranthLabelEn: `Open Exact Page in Granth (${shortRef})`,
-    exactGranthLabelPa: `ਗ੍ਰੰਥ ਦਾ ਸਹੀ ਪੰਨਾ ਖੋਲ੍ਹੋ (${cit.referencePa.split('·')[0].trim()})`,
+    exactGranthLabelEn: 'Open Pothi Sahib (pothi.tatkhalsa.in)',
+    exactGranthLabelPa: 'ਪੋਥੀ ਸਾਹਿਬ ਖੋਲ੍ਹੋ (pothi.tatkhalsa.in)',
     granthTypeLabelEn: 'Archival Panthic Record',
     granthTypeLabelPa: 'ਪੰਥਕ ਇਤਿਹਾਸਕ ਰਿਕਾਰਡ',
   };

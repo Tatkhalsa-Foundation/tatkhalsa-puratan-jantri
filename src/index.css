@@ -83,6 +83,9 @@
   --heritage-from: #F6EFE2;
   --heritage-via: #FAF6EE;
   --heritage-to: #F2E8D6;
+  --moon-dark-fill: #1B263B;
+  --moon-ring-stroke: #44403C;
+  --moon-masya-rim: #B8860B;
   color-scheme: light;
 }
 
@@ -138,6 +141,9 @@
   --heritage-from: #0B192C;
   --heritage-via: #0F223A;
   --heritage-to: #091626;
+  --moon-dark-fill: #1E3250;
+  --moon-ring-stroke: #CBD5E1;
+  --moon-masya-rim: #E2E8F0;
   color-scheme: dark;
 }
 
@@ -193,6 +199,9 @@
   --heritage-from: #FBF1DF;
   --heritage-via: #FFFBF2;
   --heritage-to: #F6E5C9;
+  --moon-dark-fill: #2A1810;
+  --moon-ring-stroke: #644332;
+  --moon-masya-rim: #B8730B;
   color-scheme: light;
 }
 

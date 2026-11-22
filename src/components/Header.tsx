@@ -131,6 +131,8 @@ export const Header: React.FC<HeaderProps> = ({
               alt={isPa ? 'ਤੱਤਖ਼ਾਲਸਾ ਪੁਰਾਤਨ ਜੰਤਰੀ ਮੋਹਰ' : 'Tat Khalsa Puratan Jantri Logo'}
               width={36}
               height={36}
+              loading="eager"
+              decoding="sync"
               className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg border border-[var(--accent-gold)] object-cover shrink-0 shadow-xs bg-[#FAF6EE]"
             />
             <span

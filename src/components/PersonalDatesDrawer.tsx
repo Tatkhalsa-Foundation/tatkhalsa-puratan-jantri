@@ -174,70 +174,68 @@ export const PersonalDatesDrawer: React.FC<PersonalDatesDrawerProps> = ({
               />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="space-y-1">
+            <div className="space-y-1">
+              <label
+                htmlFor="personal-date-kind"
+                className="block text-xs font-medium text-[var(--text-secondary)]"
+              >
+                {isPa ? 'ਕਿਸਮ' : 'Occasion'}
+              </label>
+              <select
+                id="personal-date-kind"
+                value={kind}
+                onChange={(e) => setKind(e.target.value as PersonalDateKind)}
+                className="w-full min-h-[44px] rounded-md border border-[var(--border-strong)] bg-[var(--bg-surface-elevated)] px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-2 focus:outline-[var(--accent-primary)] cursor-pointer"
+              >
+                {PERSONAL_DATE_KINDS.map((k) => (
+                  <option key={k.id} value={k.id}>
+                    {isPa ? k.labelPa : k.labelEn}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="grid grid-cols-3 gap-3">
+              <div className="col-span-2 space-y-1">
                 <label
-                  htmlFor="personal-date-kind"
+                  htmlFor="personal-date-month"
                   className="block text-xs font-medium text-[var(--text-secondary)]"
                 >
-                  {isPa ? 'ਕਿਸਮ' : 'Occasion'}
+                  {isPa ? 'ਦੇਸੀ ਮਹੀਨਾ' : 'Desi Month'}
                 </label>
                 <select
-                  id="personal-date-kind"
-                  value={kind}
-                  onChange={(e) => setKind(e.target.value as PersonalDateKind)}
+                  id="personal-date-month"
+                  value={monthId}
+                  onChange={(e) => handleMonthChange(Number(e.target.value))}
                   className="w-full min-h-[44px] rounded-md border border-[var(--border-strong)] bg-[var(--bg-surface-elevated)] px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-2 focus:outline-[var(--accent-primary)] cursor-pointer"
                 >
-                  {PERSONAL_DATE_KINDS.map((k) => (
-                    <option key={k.id} value={k.id}>
-                      {isPa ? k.labelPa : k.labelEn}
+                  {BIKRAMI_MONTHS.map((m) => (
+                    <option key={m.id} value={m.id}>
+                      {isPa ? m.namePa : m.nameEn}
                     </option>
                   ))}
                 </select>
               </div>
 
-              <div className="grid grid-cols-2 gap-2">
-                <div className="space-y-1">
-                  <label
-                    htmlFor="personal-date-month"
-                    className="block text-xs font-medium text-[var(--text-secondary)]"
-                  >
-                    {isPa ? 'ਦੇਸੀ ਮਹੀਨਾ' : 'Desi Month'}
-                  </label>
-                  <select
-                    id="personal-date-month"
-                    value={monthId}
-                    onChange={(e) => handleMonthChange(Number(e.target.value))}
-                    className="w-full min-h-[44px] rounded-md border border-[var(--border-strong)] bg-[var(--bg-surface-elevated)] px-2 py-2 text-sm text-[var(--text-primary)] focus:outline-2 focus:outline-[var(--accent-primary)] cursor-pointer"
-                  >
-                    {BIKRAMI_MONTHS.map((m) => (
-                      <option key={m.id} value={m.id}>
-                        {isPa ? m.namePa : m.nameEn}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="space-y-1">
-                  <label
-                    htmlFor="personal-date-day"
-                    className="block text-xs font-medium text-[var(--text-secondary)]"
-                  >
-                    {isPa ? 'ਤਾਰੀਖ਼' : 'Day'}
-                  </label>
-                  <select
-                    id="personal-date-day"
-                    value={day}
-                    onChange={(e) => setDay(Number(e.target.value))}
-                    className="w-full min-h-[44px] rounded-md border border-[var(--border-strong)] bg-[var(--bg-surface-elevated)] px-2 py-2 text-sm font-mono-tabular text-[var(--text-primary)] focus:outline-2 focus:outline-[var(--accent-primary)] cursor-pointer"
-                  >
-                    {dayOptions.map((d) => (
-                      <option key={d} value={d}>
-                        {isPa ? toGurmukhiNumerals(d) : d}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+              <div className="col-span-1 space-y-1">
+                <label
+                  htmlFor="personal-date-day"
+                  className="block text-xs font-medium text-[var(--text-secondary)]"
+                >
+                  {isPa ? 'ਤਾਰੀਖ਼' : 'Day'}
+                </label>
+                <select
+                  id="personal-date-day"
+                  value={day}
+                  onChange={(e) => setDay(Number(e.target.value))}
+                  className="w-full min-h-[44px] rounded-md border border-[var(--border-strong)] bg-[var(--bg-surface-elevated)] px-2.5 py-2 text-sm font-mono-tabular text-[var(--text-primary)] focus:outline-2 focus:outline-[var(--accent-primary)] cursor-pointer"
+                >
+                  {dayOptions.map((d) => (
+                    <option key={d} value={d}>
+                      {isPa ? toGurmukhiNumerals(d) : d}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 

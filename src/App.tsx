@@ -44,9 +44,11 @@ import {
 import {dispatchTomorrowPurabNotification, getTomorrowObservances} from './utils/purabReminders';
 import {shareDailyJantri} from './utils/shareDailyJantri';
 import {
+  clearSessionNavigation,
   createDefaultPersistedState,
   loadPersistedState,
   savePersistedState,
+  saveSessionNavigation,
   type DirectoryFilterState,
   type DirectorySambatState,
 } from './utils/statePersistence';
@@ -341,10 +343,11 @@ export default function App() {
 
   const handleSelectSolarSpan = (idx: number) => {
     const clamped = Math.max(0, Math.min(BROWSEABLE_SOLAR_SPANS.length - 1, idx));
-    setSolarSpanIndex(clamped);
     const [sy, sm] = BROWSEABLE_SOLAR_SPANS[clamped].startDate.split('-').map(Number);
+    setSolarSpanIndex(clamped);
     setViewYear(sy);
     setViewMonth0(sm - 1);
+    saveSessionNavigation({solarSpanIndex: clamped, viewYear: sy, viewMonth0: sm - 1});
   };
 
   const handlePrevMonth = () => {
@@ -355,12 +358,11 @@ export default function App() {
     if (viewYear === SUPPORTED_MIN_MONTH.year && viewMonth0 <= SUPPORTED_MIN_MONTH.monthIndex0) {
       return;
     }
-    if (viewMonth0 === 0) {
-      setViewYear((y) => y - 1);
-      setViewMonth0(11);
-    } else {
-      setViewMonth0((m) => m - 1);
-    }
+    const nextYear = viewMonth0 === 0 ? viewYear - 1 : viewYear;
+    const nextMonth0 = viewMonth0 === 0 ? 11 : viewMonth0 - 1;
+    setViewYear(nextYear);
+    setViewMonth0(nextMonth0);
+    saveSessionNavigation({solarSpanIndex, viewYear: nextYear, viewMonth0: nextMonth0});
   };
 
   const handleNextMonth = () => {
@@ -373,12 +375,11 @@ export default function App() {
     if (viewYear === SUPPORTED_MAX_MONTH.year && viewMonth0 >= SUPPORTED_MAX_MONTH.monthIndex0) {
       return;
     }
-    if (viewMonth0 === 11) {
-      setViewYear((y) => y + 1);
-      setViewMonth0(0);
-    } else {
-      setViewMonth0((m) => m + 1);
-    }
+    const nextYear = viewMonth0 === 11 ? viewYear + 1 : viewYear;
+    const nextMonth0 = viewMonth0 === 11 ? 0 : viewMonth0 + 1;
+    setViewYear(nextYear);
+    setViewMonth0(nextMonth0);
+    saveSessionNavigation({solarSpanIndex, viewYear: nextYear, viewMonth0: nextMonth0});
   };
 
   const handleGoToday = () => {
@@ -386,31 +387,35 @@ export default function App() {
     setViewYear(todayYear);
     setViewMonth0(todayMonth1 - 1);
     setSelectedIso(todayIso);
+    clearSessionNavigation();
   };
 
   const handleJumpSambat = (sambat: 2082 | 2083 | 2084) => {
+    let targetSpanIdx = 0;
+    let targetYear = 2026;
     if (sambat === 2082) {
       const chet2082Idx = BROWSEABLE_SOLAR_SPANS.findIndex(
         (s) => s.sambat === 2082 && s.monthId === 1,
       );
-      setSolarSpanIndex(chet2082Idx >= 0 ? chet2082Idx : 0);
-      setViewYear(2025);
-      setViewMonth0(2);
+      targetSpanIdx = chet2082Idx >= 0 ? chet2082Idx : 0;
+      targetYear = 2025;
     } else if (sambat === 2083) {
       const chet2083Idx = BROWSEABLE_SOLAR_SPANS.findIndex(
         (s) => s.sambat === 2083 && s.monthId === 1,
       );
-      setSolarSpanIndex(chet2083Idx >= 0 ? chet2083Idx : 0);
-      setViewYear(2026);
-      setViewMonth0(2);
+      targetSpanIdx = chet2083Idx >= 0 ? chet2083Idx : 0;
+      targetYear = 2026;
     } else {
       const chet2084Idx = BROWSEABLE_SOLAR_SPANS.findIndex(
         (s) => s.sambat === 2084 && s.monthId === 1,
       );
-      setSolarSpanIndex(chet2084Idx >= 0 ? chet2084Idx : 0);
-      setViewYear(2027);
-      setViewMonth0(2);
+      targetSpanIdx = chet2084Idx >= 0 ? chet2084Idx : 0;
+      targetYear = 2027;
     }
+    setSolarSpanIndex(targetSpanIdx);
+    setViewYear(targetYear);
+    setViewMonth0(2);
+    saveSessionNavigation({solarSpanIndex: targetSpanIdx, viewYear: targetYear, viewMonth0: 2});
   };
 
   const handleSelectDay = (day: JantriDay) => {
@@ -420,20 +425,24 @@ export default function App() {
 
   const handleJumpToDateAndOpen = (isoDate: string) => {
     const [y, m] = isoDate.split('-').map(Number);
-    setSolarSpanIndex(getSolarMonthSpanIndexForDate(isoDate));
+    const targetSpanIdx = getSolarMonthSpanIndexForDate(isoDate);
+    setSolarSpanIndex(targetSpanIdx);
     setViewYear(y);
     setViewMonth0(m - 1);
     setSelectedIso(isoDate);
     setDrawerDateIso(isoDate);
+    saveSessionNavigation({solarSpanIndex: targetSpanIdx, viewYear: y, viewMonth0: m - 1});
   };
 
   const handleJumpToGridDate = (isoDate: string) => {
     const [y, m] = isoDate.split('-').map(Number);
-    setSolarSpanIndex(getSolarMonthSpanIndexForDate(isoDate));
+    const targetSpanIdx = getSolarMonthSpanIndexForDate(isoDate);
+    setSolarSpanIndex(targetSpanIdx);
     setViewYear(y);
     setViewMonth0(m - 1);
     setSelectedIso(isoDate);
     setActiveView('jantri');
+    saveSessionNavigation({solarSpanIndex: targetSpanIdx, viewYear: y, viewMonth0: m - 1});
   };
 
   const isPa = lang === 'pa';
@@ -541,6 +550,7 @@ export default function App() {
             year={viewYear}
             monthIndex0={viewMonth0}
             days={monthGrid}
+            personalDates={personalDates}
             lang={lang}
             onPrevMonth={handlePrevMonth}
             onNextMonth={handleNextMonth}

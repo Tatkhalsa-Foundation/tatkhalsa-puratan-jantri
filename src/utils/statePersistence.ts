@@ -10,8 +10,15 @@ import {
 } from './bikramiEngine';
 
 export const APP_STATE_STORAGE_KEY = 'tatkhalsa_jantri_state_v1';
+export const SESSION_NAV_STORAGE_KEY = 'tatkhalsa_jantri_session_nav_v1';
 export const LEGACY_LANG_STORAGE_KEY = 'tatkhalsa_jantri_lang';
 export const THEME_STORAGE_KEY = 'tatkhalsa_jantri_theme';
+
+export interface SessionMonthNavigation {
+  solarSpanIndex: number;
+  viewYear: number;
+  viewMonth0: number;
+}
 
 export type DirectoryFilterState = DirectoryFilterKey;
 export type DirectorySambatState = 'all' | '2082' | '2083' | '2084';
@@ -36,7 +43,7 @@ export interface PersistedJantriState {
   lookupInput: string;
 }
 
-const VALID_VIEWS: readonly AppView[] = ['jantri', 'events', 'sangrands', 'print'];
+const PERSISTABLE_VIEWS: readonly AppView[] = ['jantri', 'events', 'sangrands'];
 const VALID_LANGS: readonly LanguageMode[] = ['en', 'pa', 'bi'];
 const VALID_THEMES: readonly ThemeId[] = ['parchment', 'surmai', 'kesri'];
 const VALID_GRID_MODES: readonly CalendarGridMode[] = ['solar', 'gregorian'];
@@ -113,6 +120,7 @@ export function parsePersistedState(
   defaults: PersistedJantriState,
   legacyLangRaw?: string | null,
   standaloneThemeRaw?: string | null,
+  sessionNavRaw?: string | null,
 ): PersistedJantriState {
   const result: PersistedJantriState = {...defaults};
 
@@ -123,92 +131,111 @@ export function parsePersistedState(
     result.theme = standaloneThemeRaw as ThemeId;
   }
 
-  if (!raw) return result;
+  if (raw) {
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(raw);
+    } catch {
+      parsed = null;
+    }
 
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(raw);
-  } catch {
-    return result;
-  }
+    if (parsed && typeof parsed === 'object') {
+      const obj = parsed as Record<string, unknown>;
 
-  if (!parsed || typeof parsed !== 'object') return result;
-  const obj = parsed as Record<string, unknown>;
+      // Never restore 'print' across reloads; default back to 'jantri'
+      if (
+        typeof obj.activeView === 'string' &&
+        (PERSISTABLE_VIEWS as readonly string[]).includes(obj.activeView)
+      ) {
+        result.activeView = obj.activeView as AppView;
+      } else {
+        result.activeView = 'jantri';
+      }
 
-  if (typeof obj.activeView === 'string' && (VALID_VIEWS as readonly string[]).includes(obj.activeView)) {
-    result.activeView = obj.activeView as AppView;
-  }
-  if (typeof obj.lang === 'string' && (VALID_LANGS as readonly string[]).includes(obj.lang)) {
-    result.lang = obj.lang as LanguageMode;
-  }
-  if (typeof obj.theme === 'string' && (VALID_THEMES as readonly string[]).includes(obj.theme)) {
-    result.theme = obj.theme as ThemeId;
-  }
-  if (typeof obj.remindersEnabled === 'boolean') {
-    result.remindersEnabled = obj.remindersEnabled;
-  }
-  if (
-    typeof obj.gridMode === 'string' &&
-    (VALID_GRID_MODES as readonly string[]).includes(obj.gridMode)
-  ) {
-    result.gridMode = obj.gridMode as CalendarGridMode;
-  }
-  if (
-    typeof obj.solarSpanIndex === 'number' &&
-    Number.isInteger(obj.solarSpanIndex) &&
-    obj.solarSpanIndex >= 0 &&
-    obj.solarSpanIndex < BROWSEABLE_SOLAR_SPANS.length
-  ) {
-    result.solarSpanIndex = obj.solarSpanIndex;
-  }
-  if (isValidMonthYear(obj.viewYear, obj.viewMonth0)) {
-    result.viewYear = obj.viewYear as number;
-    result.viewMonth0 = obj.viewMonth0 as number;
-  }
-  if (isValidIsoInRange(obj.selectedIso)) {
-    result.selectedIso = obj.selectedIso;
-  }
-  if (obj.drawerDateIso === null) {
-    result.drawerDateIso = null;
-  } else if (isValidIsoInRange(obj.drawerDateIso)) {
-    result.drawerDateIso = obj.drawerDateIso;
-  }
-  if (
-    typeof obj.activeFilter === 'string' &&
-    (VALID_CALENDAR_FILTERS as readonly string[]).includes(obj.activeFilter)
-  ) {
-    result.activeFilter = obj.activeFilter as CalendarFilter;
-  }
-  if (obj.sangrandYear === 2082 || obj.sangrandYear === 2083 || obj.sangrandYear === 2084) {
-    result.sangrandYear = obj.sangrandYear;
-  }
-  if (typeof obj.directoryQuery === 'string') {
-    result.directoryQuery = obj.directoryQuery.slice(0, 120);
-  }
-  if (typeof obj.directoryCategory === 'string') {
-    if ((VALID_DIRECTORY_CATEGORIES as readonly string[]).includes(obj.directoryCategory)) {
-      result.directoryCategory = obj.directoryCategory as DirectoryFilterState;
-    } else if (
-      obj.directoryCategory === 'sangrand' ||
-      obj.directoryCategory === 'puranmashi' ||
-      obj.directoryCategory === 'masya'
-    ) {
-      result.directoryCategory = 'sangrand-tithi';
-    } else if (obj.directoryCategory === 'khalsa') {
-      result.directoryCategory = 'gursikh';
+      if (typeof obj.lang === 'string' && (VALID_LANGS as readonly string[]).includes(obj.lang)) {
+        result.lang = obj.lang as LanguageMode;
+      }
+      if (typeof obj.theme === 'string' && (VALID_THEMES as readonly string[]).includes(obj.theme)) {
+        result.theme = obj.theme as ThemeId;
+      }
+      if (typeof obj.remindersEnabled === 'boolean') {
+        result.remindersEnabled = obj.remindersEnabled;
+      }
+      if (
+        typeof obj.gridMode === 'string' &&
+        (VALID_GRID_MODES as readonly string[]).includes(obj.gridMode)
+      ) {
+        result.gridMode = obj.gridMode as CalendarGridMode;
+      }
+      if (isValidIsoInRange(obj.selectedIso)) {
+        result.selectedIso = obj.selectedIso;
+      }
+      if (obj.drawerDateIso === null) {
+        result.drawerDateIso = null;
+      } else if (isValidIsoInRange(obj.drawerDateIso)) {
+        result.drawerDateIso = obj.drawerDateIso;
+      }
+      if (
+        typeof obj.activeFilter === 'string' &&
+        (VALID_CALENDAR_FILTERS as readonly string[]).includes(obj.activeFilter)
+      ) {
+        result.activeFilter = obj.activeFilter as CalendarFilter;
+      }
+      if (obj.sangrandYear === 2082 || obj.sangrandYear === 2083 || obj.sangrandYear === 2084) {
+        result.sangrandYear = obj.sangrandYear;
+      }
+      if (typeof obj.directoryQuery === 'string') {
+        result.directoryQuery = obj.directoryQuery.slice(0, 120);
+      }
+      if (typeof obj.directoryCategory === 'string') {
+        if ((VALID_DIRECTORY_CATEGORIES as readonly string[]).includes(obj.directoryCategory)) {
+          result.directoryCategory = obj.directoryCategory as DirectoryFilterState;
+        } else if (
+          obj.directoryCategory === 'sangrand' ||
+          obj.directoryCategory === 'puranmashi' ||
+          obj.directoryCategory === 'masya'
+        ) {
+          result.directoryCategory = 'sangrand-tithi';
+        } else if (obj.directoryCategory === 'khalsa') {
+          result.directoryCategory = 'gursikh';
+        }
+      }
+      if (
+        typeof obj.directorySambat === 'string' &&
+        (VALID_DIRECTORY_SAMBATS as readonly string[]).includes(obj.directorySambat)
+      ) {
+        result.directorySambat = obj.directorySambat as DirectorySambatState;
+      }
+      if (typeof obj.directoryUpcomingOnly === 'boolean') {
+        result.directoryUpcomingOnly = obj.directoryUpcomingOnly;
+      }
+      if (isValidIsoInRange(obj.lookupInput)) {
+        result.lookupInput = obj.lookupInput;
+      }
     }
   }
-  if (
-    typeof obj.directorySambat === 'string' &&
-    (VALID_DIRECTORY_SAMBATS as readonly string[]).includes(obj.directorySambat)
-  ) {
-    result.directorySambat = obj.directorySambat as DirectorySambatState;
-  }
-  if (typeof obj.directoryUpcomingOnly === 'boolean') {
-    result.directoryUpcomingOnly = obj.directoryUpcomingOnly;
-  }
-  if (isValidIsoInRange(obj.lookupInput)) {
-    result.lookupInput = obj.lookupInput;
+
+  // Only restore non-default month navigation when explicitly set in the current browser session
+  if (sessionNavRaw) {
+    try {
+      const navParsed = JSON.parse(sessionNavRaw) as Record<string, unknown>;
+      if (
+        navParsed &&
+        typeof navParsed === 'object' &&
+        typeof navParsed.solarSpanIndex === 'number' &&
+        Number.isInteger(navParsed.solarSpanIndex) &&
+        navParsed.solarSpanIndex >= 0 &&
+        navParsed.solarSpanIndex < BROWSEABLE_SOLAR_SPANS.length
+      ) {
+        result.solarSpanIndex = navParsed.solarSpanIndex;
+      }
+      if (navParsed && typeof navParsed === 'object' && isValidMonthYear(navParsed.viewYear, navParsed.viewMonth0)) {
+        result.viewYear = navParsed.viewYear as number;
+        result.viewMonth0 = navParsed.viewMonth0 as number;
+      }
+    } catch {
+      // Ignore invalid session navigation JSON and retain today's defaults
+    }
   }
 
   return result;
@@ -220,7 +247,8 @@ export function loadPersistedState(defaults: PersistedJantriState): PersistedJan
     const raw = window.localStorage.getItem(APP_STATE_STORAGE_KEY);
     const legacyLang = window.localStorage.getItem(LEGACY_LANG_STORAGE_KEY);
     const standaloneTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
-    return parsePersistedState(raw, defaults, legacyLang, standaloneTheme);
+    const sessionNav = window.sessionStorage.getItem(SESSION_NAV_STORAGE_KEY);
+    return parsePersistedState(raw, defaults, legacyLang, standaloneTheme, sessionNav);
   } catch {
     return defaults;
   }
@@ -229,10 +257,33 @@ export function loadPersistedState(defaults: PersistedJantriState): PersistedJan
 export function savePersistedState(state: PersistedJantriState): void {
   if (typeof window === 'undefined') return;
   try {
-    window.localStorage.setItem(APP_STATE_STORAGE_KEY, JSON.stringify(state));
-    window.localStorage.setItem(LEGACY_LANG_STORAGE_KEY, state.lang);
-    window.localStorage.setItem(THEME_STORAGE_KEY, state.theme);
+    const safeState: PersistedJantriState = {
+      ...state,
+      // Never persist 'print' view across reloads
+      activeView: state.activeView === 'print' ? 'jantri' : state.activeView,
+    };
+    window.localStorage.setItem(APP_STATE_STORAGE_KEY, JSON.stringify(safeState));
+    window.localStorage.setItem(LEGACY_LANG_STORAGE_KEY, safeState.lang);
+    window.localStorage.setItem(THEME_STORAGE_KEY, safeState.theme);
   } catch {
     // Ignore storage quota or private-browsing restrictions
+  }
+}
+
+export function saveSessionNavigation(nav: SessionMonthNavigation): void {
+  if (typeof window === 'undefined') return;
+  try {
+    window.sessionStorage.setItem(SESSION_NAV_STORAGE_KEY, JSON.stringify(nav));
+  } catch {
+    // Ignore storage quota or private-browsing restrictions
+  }
+}
+
+export function clearSessionNavigation(): void {
+  if (typeof window === 'undefined') return;
+  try {
+    window.sessionStorage.removeItem(SESSION_NAV_STORAGE_KEY);
+  } catch {
+    // Ignore storage restrictions
   }
 }

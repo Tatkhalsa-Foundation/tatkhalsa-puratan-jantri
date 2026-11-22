@@ -1,6 +1,7 @@
 import {EXPANDED_PANTHIC_EVENTS} from './expandedPanthicEvents';
 import {SAMBAT_2082_AND_2083_EVENTS} from './sambat2082And2083Events';
 import {POTHI_BARAH_MAHA_URL} from './sambatData';
+import {buildParityBackfillEvents} from './sambatParityBackfill';
 import type {HistoricalEvent, HistoricalSubGroup} from './types';
 
 /**
@@ -2070,21 +2071,37 @@ const BASE_EVENT_SUBGROUPS: Partial<Record<string, readonly HistoricalSubGroup[]
   '2083-saka-sri-nankana-sahib': ['gursikh'],
   '2084-vaisakhi-khalsa-sajna': ['gursikh'],
   '2084-parkash-guru-tegh-bahadur': ['guru-ghar'],
+  '2084-parkash-guru-angad-dev': ['guru-ghar'],
+  '2084-parkash-guru-amar-das': ['guru-ghar'],
+  '2084-shaheedi-guru-arjan-dev': ['guru-ghar'],
   '2084-parkash-guru-hargobind': ['guru-ghar'],
   '2084-parkash-guru-harkrishan': ['guru-ghar'],
+  '2084-pehla-parkash-sggs': ['bhagat-bhatt', 'gursikh'],
+  '2084-joti-jot-guru-nanak': ['guru-ghar'],
+  '2084-parkash-guru-ram-das': ['guru-ghar'],
+  '2084-joti-jot-guru-gobind-singh': ['guru-ghar'],
+  '2084-parkash-guru-nanak-dev-ji': ['guru-ghar'],
+  '2084-shaheedi-guru-tegh-bahadur': ['guru-ghar', 'gursikh'],
   '2084-vadde-sahibzade': ['guru-ghar'],
   '2084-chhote-sahibzade': ['guru-ghar'],
+  '2084-parkash-guru-gobind-singh': ['guru-ghar'],
   '2084-maghi-chali-mukte': ['gursikh'],
+  '2084-parkash-guru-har-rai': ['guru-ghar'],
 };
 
-/** Unified chronologically sorted historical events across Sambat 2082–2084. */
-export const HISTORICAL_EVENTS: readonly HistoricalEvent[] = [
+const CORE_HISTORICAL_EVENTS: readonly HistoricalEvent[] = [
   ...SAMBAT_2082_AND_2083_EVENTS,
   ...BASE_HISTORICAL_EVENTS.map((ev) => {
     const extra = BASE_EVENT_SUBGROUPS[ev.id];
     return extra ? {...ev, subGroups: extra} : ev;
   }),
   ...EXPANDED_PANTHIC_EVENTS,
+];
+
+/** Unified chronologically sorted historical events across Sambat 2082–2084 with full cross-year parity. */
+export const HISTORICAL_EVENTS: readonly HistoricalEvent[] = [
+  ...CORE_HISTORICAL_EVENTS,
+  ...buildParityBackfillEvents(CORE_HISTORICAL_EVENTS),
 ].sort((a, b) => a.date.localeCompare(b.date));
 
 /** Index events by ISO date for O(1) lookup. */

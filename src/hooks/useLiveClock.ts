@@ -12,19 +12,29 @@ export interface LiveClockSnapshot {
   effectiveTodayIso: string;
 }
 
+function normalizeAmPm(timeText: string): string {
+  return timeText
+    .replace(/[\u202f\u00a0]/g, ' ')
+    .replace(/\b(am|pm)\b/gi, (m) => m.toUpperCase())
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 export function formatLiveClockSnapshot(now: Date, localTimeZone?: string): LiveClockSnapshot {
   const resolvedLocalTz =
     localTimeZone ||
     (typeof Intl !== 'undefined' ? Intl.DateTimeFormat().resolvedOptions().timeZone : 'UTC') ||
     'UTC';
 
-  const anandpurTime = new Intl.DateTimeFormat('en-IN', {
-    timeZone: 'Asia/Kolkata',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: true,
-  }).format(now);
+  const anandpurTime = normalizeAmPm(
+    new Intl.DateTimeFormat('en-IN', {
+      timeZone: 'Asia/Kolkata',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true,
+    }).format(now),
+  );
 
   const anandpurDate = new Intl.DateTimeFormat('en-IN', {
     timeZone: 'Asia/Kolkata',
@@ -32,13 +42,15 @@ export function formatLiveClockSnapshot(now: Date, localTimeZone?: string): Live
     month: 'short',
   }).format(now);
 
-  const localTime = new Intl.DateTimeFormat('en-US', {
-    timeZone: resolvedLocalTz,
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: true,
-  }).format(now);
+  const localTime = normalizeAmPm(
+    new Intl.DateTimeFormat('en-US', {
+      timeZone: resolvedLocalTz,
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true,
+    }).format(now),
+  );
 
   const localDate = new Intl.DateTimeFormat('en-US', {
     timeZone: resolvedLocalTz,

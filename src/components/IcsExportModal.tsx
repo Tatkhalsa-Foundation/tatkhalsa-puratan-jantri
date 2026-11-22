@@ -293,14 +293,26 @@ export const IcsExportModal: React.FC<IcsExportModalProps> = ({
         </div>
 
         <div className="flex items-center justify-between gap-4 border-t border-[var(--border-subtle)] bg-[var(--bg-surface)] px-5 py-3.5 shrink-0">
-          <p
-            className="text-xs font-mono-tabular text-[var(--text-muted)]"
-            data-testid="ics-selected-count"
-          >
-            {isPa
-              ? `ਕੁੱਲ ${formatNum(preview.eventCount, 'pa')} ਦਿਹਾੜੇ ਚੁਣੇ ਗਏ`
-              : `${preview.eventCount} dates selected`}
-          </p>
+          <div className="min-w-0 space-y-0.5">
+            <p
+              className="text-xs font-mono-tabular font-medium text-[var(--text-primary)]"
+              data-testid="ics-selected-count"
+            >
+              {isPa
+                ? `ਕੁੱਲ ${formatNum(preview.eventCount, 'pa')} ਦਿਹਾੜੇ ਚੁਣੇ ਗਏ`
+                : `${preview.eventCount} dates selected`}
+            </p>
+            {includeDaily && (
+              <p
+                data-testid="ics-daily-merge-note"
+                className="text-[11px] leading-snug text-[var(--text-muted)]"
+              >
+                {isPa
+                  ? 'ਸਾਰੇ ਗੁਰਪੁਰਬ, ਸੰਗਰਾਂਦਾਂ ਅਤੇ ਨਿੱਜੀ ਤਾਰੀਖ਼ਾਂ ਵੱਖਰੇ ਇਵੈਂਟ ਦੀ ਬਜਾਏ ੩੬੫/੩੬੬ ਰੋਜ਼ਾਨਾ ਇਵੈਂਟਾਂ (੨੦੮੨–੨੦੮੪ ਲਈ ੧,੦੯੬) ਵਿੱਚ ਜੋੜ ਦਿੱਤੀਆਂ ਜਾਂਦੀਆਂ ਹਨ।'
+                  : 'Checked observances are merged into the 365/366 daily events (1,096 total for 2082–2084) rather than counted as separate events.'}
+              </p>
+            )}
+          </div>
           <button
             type="button"
             onClick={handleDownload}

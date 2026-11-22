@@ -20,7 +20,7 @@ import {
   lookupGregorianToBikrami,
   toGurmukhiNumerals,
 } from './bikramiEngine';
-import {generateJantriIcs, generateSingleDayIcs} from './icsExport';
+import {generateJantriIcs, generateSingleDayIcs, sanitizePersonalIcsField} from './icsExport';
 import {
   getMaxDaysForBikramiMonth,
   getPersonalDatesForSolarDay,
@@ -378,18 +378,37 @@ test('App state persistence defaults Sangrands to Sambat 2083, round-trips all f
     directoryUpcomingOnly: true,
     lookupInput: '2027-04-14',
   });
-  const restored = parsePersistedState(saved, defaults);
-  assert.equal(restored.activeView, 'sangrands');
-  assert.equal(restored.lang, 'pa');
-  assert.equal(restored.gridMode, 'gregorian');
-  assert.equal(restored.solarSpanIndex, 6);
-  assert.equal(restored.drawerDateIso, '2026-11-24');
-  assert.equal(restored.sangrandYear, 2084);
-  assert.equal(restored.directoryQuery, 'Nanak');
-  assert.equal(restored.directoryCategory, 'gurpurab');
-  assert.equal(restored.directorySambat, '2083');
-  assert.equal(restored.directoryUpcomingOnly, true);
-  assert.equal(restored.lookupInput, '2027-04-14');
+  const restoredFresh = parsePersistedState(saved, defaults);
+  assert.equal(restoredFresh.activeView, 'sangrands');
+  assert.equal(restoredFresh.lang, 'pa');
+  assert.equal(restoredFresh.gridMode, 'gregorian');
+  // Fresh visit without sessionNavRaw always opens on today's Desi month
+  assert.equal(restoredFresh.solarSpanIndex, defaults.solarSpanIndex);
+  assert.equal(restoredFresh.viewYear, defaults.viewYear);
+  assert.equal(restoredFresh.viewMonth0, defaults.viewMonth0);
+  assert.equal(restoredFresh.drawerDateIso, '2026-11-24');
+  assert.equal(restoredFresh.sangrandYear, 2084);
+  assert.equal(restoredFresh.directoryQuery, 'Nanak');
+  assert.equal(restoredFresh.directoryCategory, 'gurpurab');
+  assert.equal(restoredFresh.directorySambat, '2083');
+  assert.equal(restoredFresh.directoryUpcomingOnly, true);
+  assert.equal(restoredFresh.lookupInput, '2027-04-14');
+
+  // Explicit navigation within the current session restores solarSpanIndex/viewYear/viewMonth0
+  const restoredSession = parsePersistedState(
+    saved,
+    defaults,
+    null,
+    null,
+    JSON.stringify({solarSpanIndex: 6, viewYear: 2027, viewMonth0: 3}),
+  );
+  assert.equal(restoredSession.solarSpanIndex, 6);
+  assert.equal(restoredSession.viewYear, 2027);
+  assert.equal(restoredSession.viewMonth0, 3);
+
+  // 'print' view is never restored across reloads — always resets to 'jantri'
+  const restoredPrint = parsePersistedState(JSON.stringify({activeView: 'print'}), defaults);
+  assert.equal(restoredPrint.activeView, 'jantri');
 
   // Corrupt JSON and invalid ranges fall back safely to defaults (preserving legacy lang if valid)
   const recovered = parsePersistedState('{broken json', defaults, 'bi');
@@ -405,6 +424,9 @@ test('App state persistence defaults Sangrands to Sambat 2083, round-trips all f
       drawerDateIso: '2099-01-01',
     }),
     defaults,
+    null,
+    null,
+    JSON.stringify({solarSpanIndex: 999, viewYear: 1999, viewMonth0: 99}),
   );
   assert.equal(sanitized.activeView, 'jantri');
   assert.equal(sanitized.sangrandYear, 2083);
@@ -412,7 +434,7 @@ test('App state persistence defaults Sangrands to Sambat 2083, round-trips all f
   assert.equal(sanitized.drawerDateIso, null);
 });
 
-test('Every historical citation across Sambat 2083–2084 resolves to full Gurmukhi text, English translation, and exact Granth deep link', () => {
+test('Every historical citation across Sambat 2082–2084 routes strictly to pothi.tatkhalsa.in with zero third-party scriptural links', () => {
   let totalChecked = 0;
   for (const ev of HISTORICAL_EVENTS) {
     assert.ok(ev.citations.length > 0, `Event ${ev.id} has no citations`);
@@ -423,24 +445,33 @@ test('Every historical citation across Sambat 2083–2084 resolves to full Gurmu
       assert.ok(reader.gurmukhiLines.length >= 1, `Missing Gurmukhi lines for ${ev.id}`);
       assert.ok(reader.translationEn.length > 25, `Missing English translation for ${ev.id}`);
       assert.ok(
-        reader.exactGranthUrl.startsWith('https://'),
-        `Invalid exactGranthUrl for ${ev.id}: ${reader.exactGranthUrl}`,
+        reader.exactGranthUrl.startsWith('https://pothi.tatkhalsa.in'),
+        `Non-pothi exactGranthUrl for ${ev.id}: ${reader.exactGranthUrl}`,
       );
+      assert.ok(
+        !reader.exactGranthUrl.includes('searchgurbani') &&
+          !reader.exactGranthUrl.includes('archive.org'),
+        `Third-party URL leaked for ${ev.id}: ${reader.exactGranthUrl}`,
+      );
+      if (cit.pothiUrl) {
+        assert.ok(
+          cit.pothiUrl.startsWith('https://pothi.tatkhalsa.in'),
+          `Non-pothi citation pothiUrl for ${ev.id}: ${cit.pothiUrl}`,
+        );
+      }
     }
   }
-  assert.ok(totalChecked >= 90, `Expected >= 90 citations verified, got ${totalChecked}`);
+  assert.ok(totalChecked >= 200, `Expected >= 200 citations verified, got ${totalChecked}`);
 
   // Spot-check Bandi Chhor citations (Suraj Prakash Raas 5 + Bhai Gurdas Vaar 19 Pauri 6)
   const bandiChhor = HISTORICAL_EVENTS.find((e) => e.id === '2083-bandi-chhor-divas')!;
   const surajReader = resolveCitationReader(bandiChhor.citations[0], bandiChhor);
   assert.match(surajReader.headingEn, /Raas 5, Ansu 26–32/i);
   assert.ok(surajReader.gurmukhiLines.length >= 4);
+  assert.ok(surajReader.exactGranthUrl.startsWith('https://pothi.tatkhalsa.in'));
 
   const gurdasReader = resolveCitationReader(bandiChhor.citations[1], bandiChhor);
-  assert.equal(
-    gurdasReader.exactGranthUrl,
-    'https://www.searchgurbani.com/bhai-gurdas-vaaran/vaar/19/pauri/6',
-  );
+  assert.ok(gurdasReader.exactGranthUrl.startsWith('https://pothi.tatkhalsa.in'));
   assert.ok(gurdasReader.gurmukhiLines.length >= 6);
 });
 
@@ -804,6 +835,129 @@ test('Full Sambat 2082 (365 days) and Complete Sambat 2083 (366 days) are contig
   const lookup2082 = lookupGregorianToBikrami('2025-11-05');
   assert.equal(lookup2082.ok, true);
 });
+
+test('Sambat 2082, 2083, and 2084 achieve full category, subGroup, and unique-ID observance parity', () => {
+  const seenIds = new Set<string>();
+  for (const ev of HISTORICAL_EVENTS) {
+    assert.ok(!seenIds.has(ev.id), `Duplicate HISTORICAL_EVENTS id: ${ev.id}`);
+    seenIds.add(ev.id);
+    const solar = getBikramiSolarDate(ev.date);
+    assert.equal(
+      solar.sambat,
+      ev.sambat,
+      `Event ${ev.id} (${ev.date}) belongs to solar Sambat ${solar.sambat}, not ${ev.sambat}`,
+    );
+  }
+
+  for (const sambat of [2082, 2083, 2084] as const) {
+    const yearEvents = HISTORICAL_EVENTS.filter((e) => e.sambat === sambat);
+    assert.ok(yearEvents.length >= 65, `Sambat ${sambat} has only ${yearEvents.length} events`);
+    for (const cat of ['gurpurab', 'shaheedi', 'khalsa', 'barsi'] as const) {
+      const catCount = yearEvents.filter((e) => e.category === cat).length;
+      assert.ok(catCount >= 5, `Sambat ${sambat} missing category ${cat} (got ${catCount})`);
+    }
+    for (const sub of ['guru-ghar', 'bhagat-bhatt', 'gursikh'] as const) {
+      const subCount = yearEvents.filter((e) => e.subGroups?.includes(sub)).length;
+      assert.ok(subCount >= 10, `Sambat ${sambat} missing subGroup ${sub} (got ${subCount})`);
+    }
+    // Verify Shaheedi Hafta (6–13 Poh) and Bhagat/Bhatt/Panj Pyare coverage in every year
+    const blob = yearEvents
+      .map((e) => `${e.titleEn} ${e.shortLabelEn} ${e.summaryEn}`)
+      .join(' ')
+      .toLowerCase();
+    for (const required of [
+      'bhagat kabir',
+      'bhatt',
+      'bhai daya singh',
+      'qila chhodna',
+      'sarsa',
+      'chamkaur',
+    ]) {
+      assert.ok(blob.includes(required), `Sambat ${sambat} missing "${required}"`);
+    }
+  }
+
+  // Full 2082–2084 daily ICS export spans exactly 1,096 days
+  const allDaily = generateJantriIcs({
+    includeDaily: true,
+    includeSangrands: true,
+    includePuranmashi: true,
+    includeMasya: true,
+    includeGurpurabs: true,
+    includeShaheedi: true,
+    includeKhalsa: true,
+    includeBarsis: true,
+    includePersonalDates: false,
+    sambatScope: 'all',
+    language: 'en',
+  });
+  assert.equal(allDaily.eventCount, 1096);
+});
+
+test('Personal Desi Dates in .ics export sanitize CRLF, control characters, and RFC 5545 punctuation safely', () => {
+  assert.equal(
+    sanitizePersonalIcsField('Bebe Ji\r\nSUMMARY:INJECTED\u0007\tName'),
+    'Bebe Ji SUMMARY:INJECTED Name',
+  );
+
+  const maliciousPersonal = [
+    {
+      id: 'pd-sec-1',
+      title: 'Family Path\r\nBEGIN:VALARM\nTRIGGER:-PT5M;comma,slash\\end',
+      kind: 'barsi' as const,
+      monthId: 9,
+      day: 9,
+      notes: 'Line1\r\nACTION:DISPLAY\r\nDESCRIPTION:evil;note,with\\chars\u0000',
+      createdAt: '2026-11-22T00:00:00Z',
+    },
+  ];
+
+  for (const includeDaily of [false, true]) {
+    const ics = generateJantriIcs({
+      includeDaily,
+      includeSangrands: false,
+      includePuranmashi: false,
+      includeMasya: false,
+      includeGurpurabs: false,
+      includeShaheedi: false,
+      includeKhalsa: false,
+      includeBarsis: false,
+      includePersonalDates: true,
+      personalDates: maliciousPersonal,
+      sambatScope: '2083',
+      language: 'en',
+    });
+
+    const lines = ics.content.split('\r\n');
+    // No injected raw VCALENDAR property lines from user input
+    assert.equal(lines.some((l) => l.startsWith('BEGIN:VALARM')), false);
+    assert.equal(lines.some((l) => l.startsWith('ACTION:DISPLAY')), false);
+    assert.equal(lines.some((l) => l.startsWith('TRIGGER:')), false);
+    // Punctuation escaped properly inside SUMMARY/DESCRIPTION
+    assert.ok(ics.content.includes('comma\\,slash\\\\end'));
+    assert.ok(ics.content.includes('evil\\;note\\,with\\\\chars'));
+  }
+});
+
+test('Live clock and dual-time formatters emit consistent uppercase AM/PM across IST and local zones', () => {
+  const sampleDates = [
+    new Date('2026-11-22T04:15:30Z'), // 09:45:30 AM IST, 11:15:30 PM EST (prev day)
+    new Date('2026-11-22T15:05:09Z'), // 08:35:09 PM IST, 10:05:09 AM EST
+  ];
+
+  for (const dt of sampleDates) {
+    const clock = formatLiveClockSnapshot(dt, 'America/New_York');
+    assert.match(clock.anandpurTime, /^\d{2}:\d{2}:\d{2} (AM|PM)$/);
+    assert.match(clock.localTime, /^\d{2}:\d{2}:\d{2} (AM|PM)$/);
+
+    const dual = formatDualTime(dt.toISOString(), 'America/New_York');
+    assert.match(dual.amritsarTime, /\b(AM|PM)$/);
+    assert.match(dual.localTime, /\b(AM|PM)$/);
+    assert.equal(/\b(am|pm)\b/.test(dual.amritsarTime), false);
+    assert.equal(/\b(am|pm)\b/.test(dual.localTime), false);
+  }
+});
+
 
 
 
