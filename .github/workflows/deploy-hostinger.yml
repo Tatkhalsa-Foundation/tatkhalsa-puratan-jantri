@@ -24,6 +24,16 @@ jobs:
       - name: Install dependencies and build
         run: npm install --legacy-peer-deps && npm run build
 
+      - name: Zip dist
+        run: cd dist && zip -r ../tatkhalsa-puratan-jantri-dist.zip .
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          name: "Release v1.0.${{ github.run_number }}"
+          files: tatkhalsa-puratan-jantri-dist.zip
+          generate_release_notes: true
+
       - name: Push dist contents to deploy branch
         run: |
           cd dist
