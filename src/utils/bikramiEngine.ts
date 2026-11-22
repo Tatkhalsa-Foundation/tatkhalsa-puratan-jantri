@@ -25,15 +25,15 @@ import {computeLunarInfoForDate} from './astronomy';
 
 const GURMUKHI_DIGITS = ['੦', '੧', '੨', '੩', '੪', '੫', '੬', '੭', '੮', '੯'] as const;
 
-export const SUPPORTED_MIN_MONTH = {year: 2026, monthIndex0: 10}; // November 2026
+export const SUPPORTED_MIN_MONTH = {year: 2025, monthIndex0: 2}; // March 2025
 export const SUPPORTED_MAX_MONTH = {year: 2028, monthIndex0: 2}; // March 2028
 
-/** All browseable Punjabi solar months covering Sambat 2083 (Katak–Phagun) & full Sambat 2084 (Chet–Phagun). */
+/** All browseable Punjabi solar months covering full Sambat 2082, 2083 & 2084 (Chet–Phagun each year). */
 export const BROWSEABLE_SOLAR_SPANS: readonly SolarMonthSpan[] = SOLAR_MONTH_SPANS.filter(
-  (s) => s.sambat === 2083 || s.sambat === 2084,
+  (s) => s.sambat === 2082 || s.sambat === 2083 || s.sambat === 2084,
 );
 
-export const LOOKUP_MIN_ISO = SOLAR_MONTH_SPANS[0].startDate; // 2026-10-17
+export const LOOKUP_MIN_ISO = SOLAR_MONTH_SPANS[0].startDate; // 2025-03-14
 export const LOOKUP_MAX_ISO = SOLAR_MONTH_SPANS[SOLAR_MONTH_SPANS.length - 1].endDate; // 2028-04-12
 
 const lunarCache = new Map<string, LunarInfo>();
@@ -298,8 +298,8 @@ export function lookupGregorianToBikrami(
   if (trimmed < LOOKUP_MIN_ISO || trimmed > LOOKUP_MAX_ISO) {
     return {
       ok: false,
-      errorEn: 'Verified Puratan Sambat 2083–2084 data covers 17 Oct 2026 to 12 Apr 2028.',
-      errorPa: 'ਪ੍ਰਮਾਣਿਕ ਸੰਮਤ ੨੦੮੩–੨੦੮੪ ਡਾਟਾ ੧੭ ਅਕਤੂਬਰ ੨੦੨੬ ਤੋਂ ੧੨ ਅਪ੍ਰੈਲ ੨੦੨੮ ਤੱਕ ਉਪਲਬਧ ਹੈ।',
+      errorEn: 'Verified Puratan Sambat 2082–2084 data covers 14 Mar 2025 to 12 Apr 2028.',
+      errorPa: 'ਪ੍ਰਮਾਣਿਕ ਸੰਮਤ ੨੦੮੨–੨੦੮੪ ਡਾਟਾ ੧੪ ਮਾਰਚ ੨੦੨੫ ਤੋਂ ੧੨ ਅਪ੍ਰੈਲ ੨੦੨੮ ਤੱਕ ਉਪਲਬਧ ਹੈ।',
     };
   }
   return {ok: true, day: getJantriDay(trimmed, true)};
@@ -358,8 +358,8 @@ export function getAllDirectoryObservances(): readonly DirectoryObservance[] {
     });
   }
 
-  // 3. All Puranmashi and Masya dates across Sambat 2083–2084 (1 Katak 2083 / Oct 17, 2026 – 30 Phagun 2084 / Mar 13, 2028)
-  let cursor = '2026-10-17';
+  // 3. All Puranmashi and Masya dates across Sambat 2082–2084 (1 Chet 2082 / Mar 14, 2025 – 30 Phagun 2084 / Mar 13, 2028)
+  let cursor = '2025-03-14';
   const endDate = '2028-03-13';
   while (cursor <= endDate) {
     const solar = getBikramiSolarDate(cursor);
@@ -565,15 +565,15 @@ export function formatGregorianDate(isoDate: string, lang: LanguageMode, include
   return includeWeekday ? `${wd.fullEn}, ${core}` : core;
 }
 
-/** Resolve the best default "Ajj Da Din" date inside the Sambat 2083–2084 window. */
+/** Resolve the best default "Ajj Da Din" date inside the Sambat 2082–2084 window. */
 export function getEffectiveTodayIso(referenceDate: Date = new Date()): string {
   const y = referenceDate.getFullYear();
   const m = referenceDate.getMonth() + 1;
   const d = referenceDate.getDate();
   const iso = toIsoDate(y, m, d);
-  // If browser clock is within our verified Sambat 2083–2084 span (Oct 17, 2026 – Mar 31, 2028), use exact today;
+  // If browser clock is within our verified Sambat 2082–2084 span (Mar 14, 2025 – Mar 31, 2028), use exact today;
   // otherwise clamp gracefully to Nov 21, 2026 (3 days before 557th Parkash Purab of Sri Guru Nanak Dev Ji).
-  if (iso >= '2026-10-17' && iso <= '2028-03-31') {
+  if (iso >= '2025-03-14' && iso <= '2028-03-31') {
     return iso;
   }
   return '2026-11-21';

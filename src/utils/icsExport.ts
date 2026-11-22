@@ -20,9 +20,10 @@ import {
  */
 
 const SCOPE_RANGES: Record<IcsExportOptions['sambatScope'], {start: string; end: string}> = {
-  '2083': {start: '2026-10-17', end: '2027-03-14'}, // 1 Katak 2083 – 30 Phagun 2083 (149 days)
+  '2082': {start: '2025-03-14', end: '2026-03-13'}, // 1 Chet 2082 – 30 Phagun 2082 (365 days)
+  '2083': {start: '2026-03-14', end: '2027-03-14'}, // 1 Chet 2083 – 30 Phagun 2083 (366 days)
   '2084': {start: '2027-03-15', end: '2028-03-13'}, // 1 Chet 2084 – 30 Phagun 2084 (365 days)
-  all: {start: '2026-10-17', end: '2028-03-13'}, // Full Sambat 2083–2084 coverage (514 days)
+  all: {start: '2025-03-14', end: '2028-03-13'}, // Full Sambat 2082–2084 coverage (1,096 days)
 };
 
 function escapeIcsText(text: string): string {
@@ -364,7 +365,7 @@ export function generateJantriIcs(
     'PRODID:-//Tatkhalsa Foundation//Tat Khalsa Puratan Jantri//EN',
     'CALSCALE:GREGORIAN',
     'METHOD:PUBLISH',
-    `X-WR-CALNAME:${isPa ? 'ਤੱਤਖ਼ਾਲਸਾ ਪੁਰਾਤਨ ਜੰਤਰੀ (੨੦੮੩–੨੦੮੪)' : 'Tat Khalsa Puratan Jantri (Sambat 2083–2084)'}`,
+    `X-WR-CALNAME:${isPa ? 'ਤੱਤਖ਼ਾਲਸਾ ਪੁਰਾਤਨ ਜੰਤਰੀ (੨੦੮੨–੨੦੮੪)' : 'Tat Khalsa Puratan Jantri (Sambat 2082–2084)'}`,
     'X-WR-TIMEZONE:Asia/Kolkata',
   ];
 

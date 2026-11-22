@@ -50,7 +50,7 @@ interface MonthlyJantriGridProps {
   onPrevMonth: () => void;
   onNextMonth: () => void;
   onGoToday: () => void;
-  onJumpSambat: (sambat: 2083 | 2084) => void;
+  onJumpSambat: (sambat: 2082 | 2083 | 2084) => void;
   onSelectFilter: (filter: CalendarFilter) => void;
   onSelectDay: (day: JantriDay) => void;
   onOpenIcsModal: () => void;
@@ -164,9 +164,13 @@ export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
     : year < SUPPORTED_MAX_MONTH.year ||
       (year === SUPPORTED_MAX_MONTH.year && monthIndex0 < SUPPORTED_MAX_MONTH.monthIndex0);
 
-  const isSambat2084View = isSolarMode
-    ? currentSolarSpan.sambat === 2084
-    : year > 2027 || (year === 2027 && monthIndex0 >= 2);
+  const activeSambatView: 2082 | 2083 | 2084 = isSolarMode
+    ? (currentSolarSpan.sambat as 2082 | 2083 | 2084)
+    : year > 2027 || (year === 2027 && monthIndex0 >= 2)
+      ? 2084
+      : year > 2026 || (year === 2026 && monthIndex0 >= 2)
+        ? 2083
+        : 2082;
 
   const inMonthHighlights = days.filter((d) => {
     if (!d.inCurrentGridMonth) return false;
@@ -351,28 +355,27 @@ export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
                 aria-label={isPa ? 'ਸੰਮਤ ਚੁਣੋ' : 'Select Sambat year'}
                 className="inline-flex items-center rounded-md border border-[var(--border-subtle)] bg-[var(--bg-canvas)] p-0.5"
               >
-                <button
-                  type="button"
-                  onClick={() => onJumpSambat(2083)}
-                  className={`min-h-[34px] px-2.5 text-xs font-medium rounded-sm transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
-                    !isSambat2084View
-                      ? 'bg-[var(--bg-surface)] text-[var(--text-heading)] shadow-xs'
-                      : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
-                  }`}
-                >
-                  {isPa ? 'ਸੰਮਤ ੨੦੮੩' : 'Sambat 2083'}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => onJumpSambat(2084)}
-                  className={`min-h-[34px] px-2.5 text-xs font-medium rounded-sm transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
-                    isSambat2084View
-                      ? 'bg-[var(--bg-surface)] text-[var(--text-heading)] shadow-xs'
-                      : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
-                  }`}
-                >
-                  {isPa ? 'ਸੰਮਤ ੨੦੮੪' : 'Sambat 2084'}
-                </button>
+                {(
+                  [
+                    {year: 2082 as const, en: 'Sambat 2082', pa: 'ਸੰਮਤ ੨੦੮੨'},
+                    {year: 2083 as const, en: 'Sambat 2083', pa: 'ਸੰਮਤ ੨੦੮੩'},
+                    {year: 2084 as const, en: 'Sambat 2084', pa: 'ਸੰਮਤ ੨੦੮੪'},
+                  ] as const
+                ).map((opt) => (
+                  <button
+                    key={opt.year}
+                    type="button"
+                    onClick={() => onJumpSambat(opt.year)}
+                    aria-pressed={activeSambatView === opt.year}
+                    className={`min-h-[34px] px-2.5 text-xs font-medium rounded-sm transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+                      activeSambatView === opt.year
+                        ? 'bg-[var(--bg-surface)] text-[var(--text-heading)] shadow-xs'
+                        : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+                    }`}
+                  >
+                    {isPa ? opt.pa : opt.en}
+                  </button>
+                ))}
               </div>
 
               {isSolarMode && (

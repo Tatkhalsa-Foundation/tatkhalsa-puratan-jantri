@@ -1,10 +1,11 @@
 import {EXPANDED_PANTHIC_EVENTS} from './expandedPanthicEvents';
+import {SAMBAT_2082_AND_2083_EVENTS} from './sambat2082And2083Events';
 import {POTHI_BARAH_MAHA_URL} from './sambatData';
 import type {HistoricalEvent, HistoricalSubGroup} from './types';
 
 /**
  * Verified Puratan Bikrami Gurpurabs, Shaheedi Divases, Barsis, and Khalsa/Sampardai historical events
- * for Sambat 2083 (Oct 2026 – Mar 2027) and full Sambat 2084 (Mar 2027 – Mar 2028).
+ * for full Sambat 2082 (Mar 2025 – Mar 2026), full Sambat 2083 (Mar 2026 – Mar 2027), and full Sambat 2084 (Mar 2027 – Mar 2028).
  *
  * All dates strictly follow Puratan luni-solar Bikrami chronology (Purnimanta tithis & sidereal solar dates).
  * Zero fixed Nanakshahi dates and zero astrology/rashifal/muhurat entries.
@@ -2076,8 +2077,9 @@ const BASE_EVENT_SUBGROUPS: Partial<Record<string, readonly HistoricalSubGroup[]
   '2084-maghi-chali-mukte': ['gursikh'],
 };
 
-/** Unified chronologically sorted historical events across Sambat 2083–2084. */
+/** Unified chronologically sorted historical events across Sambat 2082–2084. */
 export const HISTORICAL_EVENTS: readonly HistoricalEvent[] = [
+  ...SAMBAT_2082_AND_2083_EVENTS,
   ...BASE_HISTORICAL_EVENTS.map((ev) => {
     const extra = BASE_EVENT_SUBGROUPS[ev.id];
     return extra ? {...ev, subGroups: extra} : ev;

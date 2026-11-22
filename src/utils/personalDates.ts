@@ -116,18 +116,18 @@ export function getPersonalDatesForSolarDay(
 }
 
 /**
- * Resolve all Gregorian ISO dates in Sambat 2083–2084 matching a given Desi Month + Day.
+ * Resolve all Gregorian ISO dates in Sambat 2082–2084 matching a given Desi Month + Day.
  * Handles 31/32-day months gracefully by clamping to the span's final day if a year's solar month is 1 day shorter.
  */
 export function resolveGregorianOccurrencesForPersonalDate(
   pd: PersonalDesiDate,
-  sambatScope: 'all' | '2083' | '2084' = 'all',
+  sambatScope: 'all' | '2082' | '2083' | '2084' = 'all',
 ): {isoDate: string; sambat: number; actualDay: number}[] {
   const matches: {isoDate: string; sambat: number; actualDay: number}[] = [];
   for (const span of SOLAR_MONTH_SPANS) {
     if (sambatScope !== 'all' && String(span.sambat) !== sambatScope) continue;
     if (span.monthId !== pd.monthId) continue;
-    if (span.sambat < 2083 || span.sambat > 2084) continue;
+    if (span.sambat < 2082 || span.sambat > 2084) continue;
     const actualDay = Math.min(pd.day, span.days);
     const isoDate = addDaysIso(span.startDate, actualDay - 1);
     matches.push({isoDate, sambat: span.sambat, actualDay});

@@ -1,7 +1,6 @@
-import {Download, Share, Smartphone, WifiOff, X} from 'lucide-react';
+import {Download, Share, Smartphone, X} from 'lucide-react';
 import React, {useEffect, useState} from 'react';
 import type {LanguageMode} from '../data/types';
-import {useOnlineStatus} from '../hooks/useOnlineStatus';
 import {usePWAInstall} from '../hooks/usePWAInstall';
 
 interface PWAInstallButtonProps {
@@ -181,43 +180,5 @@ export const PWAInstallButton: React.FC<PWAInstallButtonProps> = ({
         </div>
       )}
     </>
-  );
-};
-
-export const OfflineIndicator: React.FC<{lang: LanguageMode}> = ({lang}) => {
-  const isOnline = useOnlineStatus();
-  const [dismissed, setDismissed] = useState(false);
-
-  // Reset dismissal whenever the browser comes back online so future offline events notify again
-  useEffect(() => {
-    if (isOnline) {
-      setDismissed(false);
-    }
-  }, [isOnline]);
-
-  // Only render when genuinely offline and not dismissed
-  if (isOnline || dismissed) return null;
-
-  return (
-    <div
-      role="status"
-      aria-live="polite"
-      className="no-print fixed bottom-20 lg:bottom-4 left-4 z-40 inline-flex items-center gap-2 rounded-md border border-[var(--accent-primary)]/45 bg-[var(--bg-surface-elevated)] pl-3 pr-1.5 py-1.5 text-xs font-medium text-[var(--text-primary)] shadow-md max-w-[calc(100vw-2rem)]"
-    >
-      <WifiOff className="w-3.5 h-3.5 text-[var(--accent-primary-text)] shrink-0" aria-hidden="true" />
-      <span>
-        {lang === 'pa'
-          ? 'ਆਫ਼ਲਾਈਨ ਮੋਡ — ਪੁਰਾਤਨ ਜੰਤਰੀ ਕੈਸ਼ ਤੋਂ ਚੱਲ ਰਹੀ ਹੈ'
-          : 'Offline mode — using cached Puratan Jantri'}
-      </span>
-      <button
-        type="button"
-        onClick={() => setDismissed(true)}
-        aria-label={lang === 'pa' ? 'ਆਫ਼ਲਾਈਨ ਸੂਚਨਾ ਬੰਦ ਕਰੋ' : 'Dismiss offline notice'}
-        className="ml-1 inline-flex h-6 w-6 items-center justify-center rounded-sm text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)] transition-colors shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[var(--accent-primary)]"
-      >
-        <X className="w-3.5 h-3.5" aria-hidden="true" />
-      </button>
-    </div>
   );
 };

@@ -14,7 +14,7 @@ export const LEGACY_LANG_STORAGE_KEY = 'tatkhalsa_jantri_lang';
 export const THEME_STORAGE_KEY = 'tatkhalsa_jantri_theme';
 
 export type DirectoryFilterState = DirectoryFilterKey;
-export type DirectorySambatState = 'all' | '2083' | '2084';
+export type DirectorySambatState = 'all' | '2082' | '2083' | '2084';
 
 export interface PersistedJantriState {
   activeView: AppView;
@@ -28,7 +28,7 @@ export interface PersistedJantriState {
   selectedIso: string;
   drawerDateIso: string | null;
   activeFilter: CalendarFilter;
-  sangrandYear: 2083 | 2084;
+  sangrandYear: 2082 | 2083 | 2084;
   directoryQuery: string;
   directoryCategory: DirectoryFilterState;
   directorySambat: DirectorySambatState;
@@ -58,7 +58,7 @@ const VALID_DIRECTORY_CATEGORIES: readonly DirectoryFilterState[] = [
   'barsi',
   'sangrand-tithi',
 ];
-const VALID_DIRECTORY_SAMBATS: readonly DirectorySambatState[] = ['all', '2083', '2084'];
+const VALID_DIRECTORY_SAMBATS: readonly DirectorySambatState[] = ['all', '2082', '2083', '2084'];
 
 function isValidIsoInRange(value: unknown): value is string {
   if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
@@ -179,7 +179,7 @@ export function parsePersistedState(
   ) {
     result.activeFilter = obj.activeFilter as CalendarFilter;
   }
-  if (obj.sangrandYear === 2083 || obj.sangrandYear === 2084) {
+  if (obj.sangrandYear === 2082 || obj.sangrandYear === 2083 || obj.sangrandYear === 2084) {
     result.sangrandYear = obj.sangrandYear;
   }
   if (typeof obj.directoryQuery === 'string') {

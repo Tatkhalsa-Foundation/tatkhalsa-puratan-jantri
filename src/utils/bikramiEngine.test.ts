@@ -241,7 +241,22 @@ test('RFC 5545 .ics export supports selective mode AND full 365-day daily Bikram
   assert.ok(selective.content.includes('DTSTART;VALUE=DATE:20261124'));
   assert.ok(selective.content.includes('Sri Anandpur Sahib IST'));
 
-  // Full daily mode: Sambat 2084 = 365 days, Sambat 2083 = 149 days, All = 514 days
+  // Full daily mode: Sambat 2082 = 365 days, Sambat 2083 = 366 days, Sambat 2084 = 365 days, All = 1096 days
+  const daily2082 = generateJantriIcs({
+    includeDaily: true,
+    includeSangrands: true,
+    includePuranmashi: true,
+    includeMasya: true,
+    includeGurpurabs: true,
+    includeShaheedi: true,
+    includeKhalsa: true,
+    includeBarsis: true,
+    sambatScope: '2082',
+    language: 'en',
+  });
+  assert.equal(daily2082.eventCount, 365);
+  assert.ok(daily2082.content.includes('556th Parkash Guru Nanak Ji'));
+
   const daily2084 = generateJantriIcs({
     includeDaily: true,
     includeSangrands: true,
@@ -268,7 +283,7 @@ test('RFC 5545 .ics export supports selective mode AND full 365-day daily Bikram
     sambatScope: '2083',
     language: 'en',
   });
-  assert.equal(daily2083.eventCount, 149);
+  assert.equal(daily2083.eventCount, 366);
   assert.ok(
     daily2083.content.includes(
       'SUMMARY:9 Maghar 2083 · Katak Puranmashi — 557th Parkash Sri Guru Nanak Dev Ji',
@@ -289,19 +304,20 @@ test('RFC 5545 .ics export supports selective mode AND full 365-day daily Bikram
     sambatScope: 'all',
     language: 'en',
   });
-  assert.equal(dailyAll.eventCount, 514);
+  assert.equal(dailyAll.eventCount, 1096);
 
   const single = generateSingleDayIcs('2026-11-24', 'Katak Puranmashi', '9 Maghar, Sambat 2083');
   assert.ok(single.includes('BEGIN:VEVENT'));
   assert.ok(single.includes('SUMMARY:Katak Puranmashi'));
 });
 
-test('All 12 months have complete Barah Maha Majh pauris and pothi.tatkhalsa.in/tabs/pothi deep links', () => {
+test('All 12 months have complete Barah Maha Majh pauris and https://pothi.tatkhalsa.in/ links', () => {
+  assert.equal(POTHI_BARAH_MAHA_URL, 'https://pothi.tatkhalsa.in/');
   for (const month of BIKRAMI_MONTHS) {
     assert.equal(
       month.pothiUrl,
-      POTHI_BARAH_MAHA_URL,
-      `Expected ${POTHI_BARAH_MAHA_URL} for ${month.nameEn}, got ${month.pothiUrl}`,
+      'https://pothi.tatkhalsa.in/',
+      `Expected https://pothi.tatkhalsa.in/ for ${month.nameEn}, got ${month.pothiUrl}`,
     );
     const pauri = BARAH_MAHA_PAURIS[month.key];
     assert.ok(pauri, `Missing Barah Maha pauri for ${month.key}`);
@@ -312,8 +328,8 @@ test('All 12 months have complete Barah Maha Majh pauris and pothi.tatkhalsa.in/
   assert.ok(linkedEvents.length >= 8);
   for (const ev of linkedEvents) {
     assert.ok(
-      ev.pothiUrl!.startsWith(`${POTHI_BASE_URL}/`) && ev.pothiUrl!.length > POTHI_BASE_URL.length + 1,
-      `Event ${ev.id} should deep-link past root homepage: ${ev.pothiUrl}`,
+      ev.pothiUrl!.startsWith(`${POTHI_BASE_URL}/`),
+      `Event ${ev.id} should point to pothi.tatkhalsa.in: ${ev.pothiUrl}`,
     );
   }
 });
@@ -504,9 +520,11 @@ test('Personal Desi Dates parse, resolve across Sambat 2083–2084, and export c
   assert.equal(matched.length, 1);
 
   const occurrences = resolveGregorianOccurrencesForPersonalDate(parsed[0]);
-  assert.equal(occurrences.length, 2); // Sambat 2083 (2026-11-24) and Sambat 2084 (2027-11-24)
-  assert.equal(occurrences[0].isoDate, '2026-11-24');
-  assert.equal(occurrences[0].sambat, 2083);
+  assert.equal(occurrences.length, 3); // Sambat 2082 (2025-11-24), Sambat 2083 (2026-11-24), Sambat 2084 (2027-11-24)
+  assert.equal(occurrences[0].isoDate, '2025-11-24');
+  assert.equal(occurrences[0].sambat, 2082);
+  assert.equal(occurrences[1].isoDate, '2026-11-24');
+  assert.equal(occurrences[1].sambat, 2083);
 
   const nextOcc = resolveNextOccurrenceForPersonalDate(parsed[0], '2026-11-22');
   assert.ok(nextOcc);
@@ -527,7 +545,7 @@ test('Personal Desi Dates parse, resolve across Sambat 2083–2084, and export c
     sambatScope: 'all',
     language: 'en',
   });
-  assert.equal(selectiveWithPersonal.eventCount, 2);
+  assert.equal(selectiveWithPersonal.eventCount, 3);
   assert.ok(selectiveWithPersonal.content.includes('Mata Ji Janam Din'));
   assert.ok(selectiveWithPersonal.content.includes('DTSTART;VALUE=DATE:20261124'));
 
@@ -545,7 +563,7 @@ test('Personal Desi Dates parse, resolve across Sambat 2083–2084, and export c
     sambatScope: '2083',
     language: 'en',
   });
-  assert.equal(dailyWithPersonal.eventCount, 149);
+  assert.equal(dailyWithPersonal.eventCount, 366);
   assert.ok(dailyWithPersonal.content.includes('Mata Ji Janam Din'));
 });
 
@@ -723,7 +741,70 @@ test('Expanded Panthic dataset includes all 15 Bhagats, 11 Bhatts, Gursikh Bani-
     parsePersistedState(JSON.stringify({directoryCategory: 'puranmashi'}), defaults).directoryCategory,
     'sangrand-tithi',
   );
+  assert.equal(
+    parsePersistedState(JSON.stringify({sangrandYear: 2082, directorySambat: '2082'}), defaults)
+      .sangrandYear,
+    2082,
+  );
 });
+
+test('Full Sambat 2082 (365 days) and Complete Sambat 2083 (366 days) are contiguous with verified Puratan dates', () => {
+  const s2082 = SOLAR_MONTH_SPANS.filter((s) => s.sambat === 2082);
+  const s2083 = SOLAR_MONTH_SPANS.filter((s) => s.sambat === 2083);
+  assert.equal(s2082.length, 12);
+  assert.equal(s2083.length, 12);
+  assert.equal(BROWSEABLE_SOLAR_SPANS.length, 36);
+
+  let days2082 = 0;
+  for (let i = 0; i < s2082.length; i++) {
+    assert.equal(diffDaysIso(s2082[i].startDate, s2082[i].endDate) + 1, s2082[i].days);
+    days2082 += s2082[i].days;
+    if (i > 0) assert.equal(addDaysIso(s2082[i - 1].endDate, 1), s2082[i].startDate);
+  }
+  assert.equal(days2082, 365);
+
+  let days2083 = 0;
+  for (let i = 0; i < s2083.length; i++) {
+    assert.equal(diffDaysIso(s2083[i].startDate, s2083[i].endDate) + 1, s2083[i].days);
+    days2083 += s2083[i].days;
+    if (i > 0) assert.equal(addDaysIso(s2083[i - 1].endDate, 1), s2083[i].startDate);
+  }
+  assert.equal(days2083, 366);
+  assert.equal(addDaysIso(s2082[11].endDate, 1), s2083[0].startDate);
+
+  // Verify 556th Parkash Purab of Sri Guru Nanak Dev Ji (5 Nov 2025)
+  const parkash556 = getJantriDay('2025-11-05');
+  assert.equal(parkash556.solar.sambat, 2082);
+  assert.equal(parkash556.solar.monthMeta.nameEn, 'Katak');
+  assert.equal(parkash556.solar.day, 20);
+  assert.equal(parkash556.lunar.isPuranmashi, true);
+  assert.ok(parkash556.events.some((e) => e.id === '2082-parkash-guru-nanak-dev-556'));
+
+  // Verify 350th Shaheedi Divas of Sri Guru Tegh Bahadur Ji (25 Nov 2025)
+  const shaheedi350 = getJantriDay('2025-11-25');
+  assert.equal(shaheedi350.solar.sambat, 2082);
+  assert.equal(shaheedi350.lunar.paksh, 'Sudhi');
+  assert.equal(shaheedi350.lunar.pakshDay, 5);
+  assert.ok(shaheedi350.events.some((e) => e.id === '2082-shaheedi-guru-tegh-bahadur-350'));
+
+  // Verify Sambat 2083 Vaisakhi (14 Apr 2026) and Shuddh Jeth Sudhi 4 Shaheedi Guru Arjan Dev Ji (18 Jun 2026)
+  const vaisakhi2083 = getJantriDay('2026-04-14');
+  assert.equal(vaisakhi2083.solar.isSangrand, true);
+  assert.equal(vaisakhi2083.solar.monthMeta.nameEn, 'Vaisakh');
+  assert.equal(vaisakhi2083.solar.sambat, 2083);
+  assert.ok(vaisakhi2083.events.some((e) => e.id === '2083-vaisakhi-khalsa-sajna'));
+
+  const guruArjan2083 = getJantriDay('2026-06-18');
+  assert.equal(guruArjan2083.solar.sambat, 2083);
+  assert.equal(guruArjan2083.lunar.paksh, 'Sudhi');
+  assert.equal(guruArjan2083.lunar.pakshDay, 4);
+  assert.ok(guruArjan2083.events.some((e) => e.id === '2083-shaheedi-guru-arjan-dev'));
+
+  // Verify Gregorian lookup accepts 2025-11-05
+  const lookup2082 = lookupGregorianToBikrami('2025-11-05');
+  assert.equal(lookup2082.ok, true);
+});
+
 
 
 

@@ -11,8 +11,8 @@ import {
 
 interface SangrandsTableViewProps {
   lang: LanguageMode;
-  selectedSambat: 2083 | 2084;
-  onSelectSambat: (year: 2083 | 2084) => void;
+  selectedSambat: 2082 | 2083 | 2084;
+  onSelectSambat: (year: 2082 | 2083 | 2084) => void;
   onSelectDate: (isoDate: string) => void;
 }
 
@@ -50,34 +50,31 @@ export const SangrandsTableView: React.FC<SangrandsTableViewProps> = ({
         <div
           role="group"
           aria-label={isPa ? 'ਸੰਮਤ ਚੋਣ' : 'Select Sambat year'}
-          className="grid grid-cols-1 xs:grid-cols-2 sm:inline-flex items-center gap-1 rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-1 w-full sm:w-auto"
+          className="grid grid-cols-3 sm:inline-flex items-center gap-1 rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-1 w-full sm:w-auto"
         >
-          <button
-            type="button"
-            onClick={() => onSelectSambat(2083)}
-            aria-pressed={selectedSambat === 2083}
-            data-testid="sangrand-tab-2083"
-            className={`min-h-[38px] px-3 sm:px-3.5 text-xs font-medium rounded-sm transition-colors text-center whitespace-nowrap cursor-pointer ${
-              selectedSambat === 2083
-                ? 'bg-[var(--bg-surface-elevated)] text-[var(--text-heading)] shadow-xs'
-                : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
-            }`}
-          >
-            {isPa ? 'ਸੰਮਤ ੨੦੮੩ (ਕੱਤਕ–ਫੱਗਣ)' : 'Sambat 2083 (Oct ’26–Mar ’27)'}
-          </button>
-          <button
-            type="button"
-            onClick={() => onSelectSambat(2084)}
-            aria-pressed={selectedSambat === 2084}
-            data-testid="sangrand-tab-2084"
-            className={`min-h-[38px] px-3 sm:px-3.5 text-xs font-medium rounded-sm transition-colors text-center whitespace-nowrap cursor-pointer ${
-              selectedSambat === 2084
-                ? 'bg-[var(--bg-surface-elevated)] text-[var(--text-heading)] shadow-xs'
-                : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
-            }`}
-          >
-            {isPa ? 'ਸੰਮਤ ੨੦੮੪ (ਪੂਰਾ ਸਾਲ)' : 'Sambat 2084 (Full Year)'}
-          </button>
+          {(
+            [
+              {year: 2082 as const, en: '2082 (2025–26)', shortEn: '2082', pa: '੨੦੮੨ (੨੦੨੫–੨੬)', shortPa: '੨੦੮੨'},
+              {year: 2083 as const, en: '2083 (2026–27)', shortEn: '2083', pa: '੨੦੮੩ (੨੦੨੬–੨੭)', shortPa: '੨੦੮੩'},
+              {year: 2084 as const, en: '2084 (2027–28)', shortEn: '2084', pa: '੨੦੮੪ (੨੦੨੭–੨੮)', shortPa: '੨੦੮੪'},
+            ] as const
+          ).map((opt) => (
+            <button
+              key={opt.year}
+              type="button"
+              onClick={() => onSelectSambat(opt.year)}
+              aria-pressed={selectedSambat === opt.year}
+              data-testid={`sangrand-tab-${opt.year}`}
+              className={`min-h-[38px] px-2 sm:px-3.5 text-xs font-medium rounded-sm transition-colors text-center whitespace-nowrap cursor-pointer ${
+                selectedSambat === opt.year
+                  ? 'bg-[var(--bg-surface-elevated)] text-[var(--text-heading)] shadow-xs'
+                  : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+              }`}
+            >
+              <span className="sm:hidden">{isPa ? `ਸੰਮਤ ${opt.shortPa}` : `Sambat ${opt.shortEn}`}</span>
+              <span className="hidden sm:inline">{isPa ? `ਸੰਮਤ ${opt.pa}` : `Sambat ${opt.en}`}</span>
+            </button>
+          ))}
         </div>
       </div>
 

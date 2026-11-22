@@ -110,7 +110,7 @@ export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
         <header className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b-2 border-[#1B263B] pb-3.5">
           <div className="flex items-center gap-3.5">
             <img
-              src="./logo.png?v=2"
+              src="./logo.png?v=3"
               alt="Tat Khalsa Puratan Jantri Seal"
               width={48}
               height={48}

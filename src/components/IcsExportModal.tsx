@@ -80,7 +80,7 @@ export const IcsExportModal: React.FC<IcsExportModalProps> = ({
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    const scopeSuffix = sambatScope === 'all' ? '2083-2084' : sambatScope;
+    const scopeSuffix = sambatScope === 'all' ? '2082-2084' : sambatScope;
     const modeSuffix = includeDaily ? '-daily-full' : '';
     link.download = `tatkhalsa-puratan-jantri-sambat-${scopeSuffix}${modeSuffix}.ics`;
     document.body.appendChild(link);
@@ -208,10 +208,11 @@ export const IcsExportModal: React.FC<IcsExportModalProps> = ({
             <span className="block text-xs font-medium text-[var(--text-muted)] mb-2">
               {isPa ? 'ਸੰਮਤ ਦੀ ਚੋਣ' : 'Sambat Year Scope'}
             </span>
-            <div className="grid grid-cols-3 gap-1.5 rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-1">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-1">
               {(
                 [
-                  {id: 'all', en: '2083 & 2084', pa: '੨੦੮੩–੨੦੮੪'},
+                  {id: 'all', en: '2082–2084', pa: '੨੦੮੨–੨੦੮੪'},
+                  {id: '2082', en: 'Sambat 2082', pa: 'ਸੰਮਤ ੨੦੮੨'},
                   {id: '2083', en: 'Sambat 2083', pa: 'ਸੰਮਤ ੨੦੮੩'},
                   {id: '2084', en: 'Sambat 2084', pa: 'ਸੰਮਤ ੨੦੮੪'},
                 ] as const

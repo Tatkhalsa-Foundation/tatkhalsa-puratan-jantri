@@ -45,6 +45,7 @@ const CATEGORY_TABS: readonly {id: DirectoryFilter; en: string; pa: string}[] = 
 ];
 
 const QUICK_LOOKUPS: readonly {iso: string; en: string; pa: string}[] = [
+  {iso: '2025-11-05', en: '5 Nov 2025 · 556th Parkash', pa: '੫ ਨਵੰ ੨੦੨੫ · ੫੫੬ਵਾਂ ਪ੍ਰਕਾਸ਼'},
   {iso: '2026-11-24', en: '24 Nov 2026 · 557th Parkash', pa: '੨੪ ਨਵੰ ੨੦੨੬ · ੫੫੭ਵਾਂ ਪ੍ਰਕਾਸ਼'},
   {iso: '2027-04-14', en: '14 Apr 2027 · Vaisakhi 2084', pa: '੧੪ ਅਪ੍ਰੈ ੨੦੨੭ · ਵੈਸਾਖੀ ੨੦੮੪'},
   {iso: '2027-09-08', en: '8 Sep 2027 · Chaupai Colophon', pa: '੮ ਸਤੰ ੨੦੨੭ · ਚੌਪਈ ਹਵਾਲਾ'},
@@ -159,7 +160,7 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
               id="date-lookup-heading"
               className="mt-0.5 font-display text-2xl font-semibold text-[var(--text-heading)]"
             >
-              {isPa ? 'ਕਿਸੇ ਵੀ ਤਾਰੀਖ਼ ਦਾ ਦੇਸੀ ਮਹੀਨਾ ਅਤੇ ਤਿਥੀ ਵੇਖੋ' : 'Convert Any Date in Sambat 2083–2084'}
+              {isPa ? 'ਕਿਸੇ ਵੀ ਤਾਰੀਖ਼ ਦਾ ਦੇਸੀ ਮਹੀਨਾ ਅਤੇ ਤਿਥੀ ਵੇਖੋ' : 'Convert Any Date in Sambat 2082–2084'}
             </h2>
           </div>
 
@@ -294,7 +295,7 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-xs text-[var(--text-faint)]">
-              {isPa ? 'ਸੰਮਤ ੨੦੮੩ – ੨੦੮੪ ਬਿਕ੍ਰਮੀ' : 'Sambat 2083 – 2084 Bikrami'}
+              {isPa ? 'ਸੰਮਤ ੨੦੮੨ – ੨੦੮੪ ਬਿਕ੍ਰਮੀ' : 'Sambat 2082 – 2084 Bikrami'}
             </p>
             <h1
               id="events-directory-heading"
@@ -307,7 +308,7 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
             <p className="mt-1.5 text-sm text-[var(--text-muted)] max-w-2xl">
               {isPa
                 ? 'ਕਿਸੇ ਵੀ ਦਿਹਾੜੇ ’ਤੇ ਕਲਿੱਕ ਕਰਕੇ ਉਸ ਦਾ ਇਤਿਹਾਸਕ ਪ੍ਰਸੰਗ, ਤਿਥੀ ਸਮਾਂ ਅਤੇ ਗ੍ਰੰਥਾਂ/ਭੱਟ ਵਹੀਆਂ ਦੇ ਪ੍ਰਮਾਣਿਕ ਹਵਾਲੇ ਪੜ੍ਹੋ।'
-                : 'Filter Gurpurabs, Shaheedi Divases, manuscript colophons, Sangrands, Puranmashi, and Masya dates across Sambat 2083–2084.'}
+                : 'Filter Gurpurabs, Shaheedi Divases, manuscript colophons, Sangrands, Puranmashi, and Masya dates across Sambat 2082–2084.'}
             </p>
           </div>
           <p className="text-xs font-mono-tabular text-[var(--text-muted)] whitespace-nowrap">
@@ -350,7 +351,8 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
               >
                 {(
                   [
-                    {id: 'all', en: '2083–84', pa: '੨੦੮੩–੮੪'},
+                    {id: 'all', en: '2082–84', pa: '੨੦੮੨–੮੪'},
+                    {id: '2082', en: '2082', pa: '੨੦੮੨'},
                     {id: '2083', en: '2083', pa: '੨੦੮੩'},
                     {id: '2084', en: '2084', pa: '੨੦੮੪'},
                   ] as const

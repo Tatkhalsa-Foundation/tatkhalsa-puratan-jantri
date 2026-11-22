@@ -130,7 +130,7 @@ export function dispatchTomorrowPurabNotification(
   try {
     new Notification(isPa ? summary.titlePa : summary.titleEn, {
       body: isPa ? summary.bodyPa : summary.bodyEn,
-      icon: './logo.png?v=2',
+      icon: './logo.png?v=3',
       tag: `tatkhalsa-purab-${summary.tomorrowIso}`,
     });
     setLastNotifiedTomorrowIso(summary.tomorrowIso);

@@ -1,7 +1,7 @@
 import type {BikramiMonthMeta, SolarMonthSpan} from './types';
 
 export const POTHI_BASE_URL = 'https://pothi.tatkhalsa.in';
-export const POTHI_BARAH_MAHA_URL = 'https://pothi.tatkhalsa.in/tabs/pothi';
+export const POTHI_BARAH_MAHA_URL = 'https://pothi.tatkhalsa.in/';
 
 export const BIKRAMI_MONTHS: readonly BikramiMonthMeta[] = [
   {
@@ -165,11 +165,166 @@ export const BIKRAMI_MONTHS: readonly BikramiMonthMeta[] = [
 /**
  * Verified Puratan Bikrami Solar Month Spans (Sidereal Sankranti Udaya in Punjab / Sri Anandpur Sahib IST).
  * True Punjabi solar months vary naturally between 29 and 32 days according to Earth's orbital velocity.
- * Covers Sambat 2083 (Katak–Phagun, Oct 2026 – Mar 2027), full Sambat 2084 (Chet–Phagun, Mar 2027 – Mar 2028),
+ * Covers full Sambat 2082 (Chet–Phagun, 14 Mar 2025 – 13 Mar 2026), full Sambat 2083 (Chet–Phagun,
+ * 14 Mar 2026 – 14 Mar 2027), full Sambat 2084 (Chet–Phagun, 15 Mar 2027 – 13 Mar 2028),
  * and Chet 2085 opening anchor for smooth boundary calculations.
  */
 export const SOLAR_MONTH_SPANS: readonly SolarMonthSpan[] = [
-  // Sambat 2083 (Katak through Phagun — covers Nov 2026 – Mar 2027 completely)
+  // Full Sambat 2082 (1 Chet 2082 to 29 Phagun 2082 — 14 Mar 2025 – 13 Mar 2026, 365 days)
+  {
+    sambat: 2082,
+    monthId: 1, // Chet (Sambat 2082 New Year)
+    startDate: '2025-03-14',
+    endDate: '2025-04-13',
+    days: 31,
+    sankrantiUtc: '2025-03-14T06:54:00Z', // Mar 14 12:24 IST
+  },
+  {
+    sambat: 2082,
+    monthId: 2, // Vaisakh (Vaisakhi / 326th Khalsa Sajna Divas)
+    startDate: '2025-04-14',
+    endDate: '2025-05-14',
+    days: 31,
+    sankrantiUtc: '2025-04-13T15:16:00Z', // Apr 13 20:46 IST -> Udaya Apr 14
+  },
+  {
+    sambat: 2082,
+    monthId: 3, // Jeth
+    startDate: '2025-05-15',
+    endDate: '2025-06-14',
+    days: 31,
+    sankrantiUtc: '2025-05-14T18:25:00Z', // May 14 23:55 IST -> Udaya May 15
+  },
+  {
+    sambat: 2082,
+    monthId: 4, // Harh
+    startDate: '2025-06-15',
+    endDate: '2025-07-15',
+    days: 31,
+    sankrantiUtc: '2025-06-14T18:30:00Z', // Jun 15 00:00 IST
+  },
+  {
+    sambat: 2082,
+    monthId: 5, // Sawan (32 days near solar aphelion)
+    startDate: '2025-07-16',
+    endDate: '2025-08-16',
+    days: 32,
+    sankrantiUtc: '2025-07-16T05:21:00Z', // Jul 16 10:51 IST
+  },
+  {
+    sambat: 2082,
+    monthId: 6, // Bhadon
+    startDate: '2025-08-17',
+    endDate: '2025-09-16',
+    days: 31,
+    sankrantiUtc: '2025-08-16T13:48:00Z', // Aug 16 19:18 IST -> Udaya Aug 17
+  },
+  {
+    sambat: 2082,
+    monthId: 7, // Assu
+    startDate: '2025-09-17',
+    endDate: '2025-10-16',
+    days: 30,
+    sankrantiUtc: '2025-09-16T13:50:00Z', // Sep 16 19:20 IST -> Udaya Sep 17
+  },
+  {
+    sambat: 2082,
+    monthId: 8, // Katak
+    startDate: '2025-10-17',
+    endDate: '2025-11-15',
+    days: 30,
+    sankrantiUtc: '2025-10-17T01:55:00Z', // Oct 17 07:25 IST
+  },
+  {
+    sambat: 2082,
+    monthId: 9, // Maghar
+    startDate: '2025-11-16',
+    endDate: '2025-12-15',
+    days: 30,
+    sankrantiUtc: '2025-11-16T01:50:00Z', // Nov 16 07:20 IST
+  },
+  {
+    sambat: 2082,
+    monthId: 10, // Poh
+    startDate: '2025-12-16',
+    endDate: '2026-01-13',
+    days: 29,
+    sankrantiUtc: '2025-12-15T16:33:00Z', // Dec 15 22:03 IST -> Udaya Dec 16
+  },
+  {
+    sambat: 2082,
+    monthId: 11, // Magh (Makara Sankranti / Maghi)
+    startDate: '2026-01-14',
+    endDate: '2026-02-12',
+    days: 30,
+    sankrantiUtc: '2026-01-14T03:18:00Z', // Jan 14 08:48 IST
+  },
+  {
+    sambat: 2082,
+    monthId: 12, // Phagun
+    startDate: '2026-02-13',
+    endDate: '2026-03-13',
+    days: 29,
+    sankrantiUtc: '2026-02-12T16:14:00Z', // Feb 12 21:44 IST -> Udaya Feb 13
+  },
+
+  // Full Sambat 2083 (1 Chet 2083 to 30 Phagun 2083 — 14 Mar 2026 – 14 Mar 2027, 366 days)
+  {
+    sambat: 2083,
+    monthId: 1, // Chet (Sambat 2083 New Year)
+    startDate: '2026-03-14',
+    endDate: '2026-04-13',
+    days: 31,
+    sankrantiUtc: '2026-03-14T13:01:00Z', // Mar 14 18:31 IST
+  },
+  {
+    sambat: 2083,
+    monthId: 2, // Vaisakh (Vaisakhi / 327th Khalsa Sajna Divas)
+    startDate: '2026-04-14',
+    endDate: '2026-05-14',
+    days: 31,
+    sankrantiUtc: '2026-04-13T21:22:00Z', // Apr 14 02:52 IST
+  },
+  {
+    sambat: 2083,
+    monthId: 3, // Jeth
+    startDate: '2026-05-15',
+    endDate: '2026-06-14',
+    days: 31,
+    sankrantiUtc: '2026-05-14T18:07:00Z', // May 14 23:37 IST -> Udaya May 15
+  },
+  {
+    sambat: 2083,
+    monthId: 4, // Harh
+    startDate: '2026-06-15',
+    endDate: '2026-07-15',
+    days: 31,
+    sankrantiUtc: '2026-06-15T00:37:00Z', // Jun 15 06:07 IST
+  },
+  {
+    sambat: 2083,
+    monthId: 5, // Sawan (32 days near solar aphelion)
+    startDate: '2026-07-16',
+    endDate: '2026-08-16',
+    days: 32,
+    sankrantiUtc: '2026-07-16T11:28:00Z', // Jul 16 16:58 IST
+  },
+  {
+    sambat: 2083,
+    monthId: 6, // Bhadon
+    startDate: '2026-08-17',
+    endDate: '2026-09-16',
+    days: 31,
+    sankrantiUtc: '2026-08-16T19:55:00Z', // Aug 17 01:25 IST
+  },
+  {
+    sambat: 2083,
+    monthId: 7, // Assu
+    startDate: '2026-09-17',
+    endDate: '2026-10-16',
+    days: 30,
+    sankrantiUtc: '2026-09-16T19:57:00Z', // Sep 17 01:27 IST
+  },
   {
     sambat: 2083,
     monthId: 8, // Katak

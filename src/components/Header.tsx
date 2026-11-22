@@ -127,7 +127,7 @@ export const Header: React.FC<HeaderProps> = ({
             }
           >
             <img
-              src="./logo.png?v=2"
+              src="./logo.png?v=3"
               alt={isPa ? 'ਤੱਤਖ਼ਾਲਸਾ ਪੁਰਾਤਨ ਜੰਤਰੀ ਮੋਹਰ' : 'Tat Khalsa Puratan Jantri Logo'}
               width={36}
               height={36}

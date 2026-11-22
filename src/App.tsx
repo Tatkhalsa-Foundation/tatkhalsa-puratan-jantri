@@ -12,7 +12,7 @@ import {IcsExportModal} from './components/IcsExportModal';
 import {LicenseCreditsModal} from './components/LicenseCreditsModal';
 import {MonthlyJantriGrid, type CalendarFilter} from './components/MonthlyJantriGrid';
 import {PersonalDatesDrawer} from './components/PersonalDatesDrawer';
-import {OfflineIndicator, PWAInstallButton} from './components/PWAInstallButton';
+import {PWAInstallButton} from './components/PWAInstallButton';
 import {PrintJantriView} from './components/PrintJantriView';
 import {PurabReminderStrip} from './components/PurabReminderStrip';
 import {SangrandsTableView} from './components/SangrandsTableView';
@@ -97,7 +97,9 @@ export default function App() {
     initialPersisted.drawerDateIso,
   );
   const [activeFilter, setActiveFilter] = useState<CalendarFilter>(initialPersisted.activeFilter);
-  const [sangrandYear, setSangrandYear] = useState<2083 | 2084>(initialPersisted.sangrandYear);
+  const [sangrandYear, setSangrandYear] = useState<2082 | 2083 | 2084>(
+    initialPersisted.sangrandYear,
+  );
   const [directoryQuery, setDirectoryQuery] = useState<string>(initialPersisted.directoryQuery);
   const [directoryCategory, setDirectoryCategory] = useState<DirectoryFilterState>(
     initialPersisted.directoryCategory,
@@ -386,19 +388,26 @@ export default function App() {
     setSelectedIso(todayIso);
   };
 
-  const handleJumpSambat = (sambat: 2083 | 2084) => {
-    if (sambat === 2083) {
-      const magharIdx = BROWSEABLE_SOLAR_SPANS.findIndex(
-        (s) => s.sambat === 2083 && s.monthId === 9,
+  const handleJumpSambat = (sambat: 2082 | 2083 | 2084) => {
+    if (sambat === 2082) {
+      const chet2082Idx = BROWSEABLE_SOLAR_SPANS.findIndex(
+        (s) => s.sambat === 2082 && s.monthId === 1,
       );
-      setSolarSpanIndex(magharIdx >= 0 ? magharIdx : 0);
+      setSolarSpanIndex(chet2082Idx >= 0 ? chet2082Idx : 0);
+      setViewYear(2025);
+      setViewMonth0(2);
+    } else if (sambat === 2083) {
+      const chet2083Idx = BROWSEABLE_SOLAR_SPANS.findIndex(
+        (s) => s.sambat === 2083 && s.monthId === 1,
+      );
+      setSolarSpanIndex(chet2083Idx >= 0 ? chet2083Idx : 0);
       setViewYear(2026);
-      setViewMonth0(10);
+      setViewMonth0(2);
     } else {
-      const chetIdx = BROWSEABLE_SOLAR_SPANS.findIndex(
+      const chet2084Idx = BROWSEABLE_SOLAR_SPANS.findIndex(
         (s) => s.sambat === 2084 && s.monthId === 1,
       );
-      setSolarSpanIndex(chetIdx >= 0 ? chetIdx : 0);
+      setSolarSpanIndex(chet2084Idx >= 0 ? chet2084Idx : 0);
       setViewYear(2027);
       setViewMonth0(2);
     }
@@ -551,8 +560,8 @@ export default function App() {
             </p>
             <p>
               {isPa
-                ? 'ਪ੍ਰਮਾਣਿਕ ਚੰਦਰ-ਸੂਰਜੀ ਬਿਕ੍ਰਮੀ ਸੰਮਤ (੨੦੮੩–੨੦੮੪) · ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ (IST) ਅਨੁਸਾਰ · ਕੋਈ ਜੋਤਿਸ਼ ਜਾਂ ਰਾਸ਼ੀਫ਼ਲ ਨਹੀਂ।'
-                : 'Authentic Luni-Solar Puratan Bikrami Chronology (Sambat 2083–2084) · Anchored to Sri Anandpur Sahib (IST) · Zero astrology or fixed Nanakshahi dates.'}
+                ? 'ਪ੍ਰਮਾਣਿਕ ਚੰਦਰ-ਸੂਰਜੀ ਬਿਕ੍ਰਮੀ ਸੰਮਤ (੨੦੮੨–੨੦੮੪) · ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ (IST) ਅਨੁਸਾਰ · ਕੋਈ ਜੋਤਿਸ਼ ਜਾਂ ਰਾਸ਼ੀਫ਼ਲ ਨਹੀਂ।'
+                : 'Authentic Luni-Solar Puratan Bikrami Chronology (Sambat 2082–2084) · Anchored to Sri Anandpur Sahib (IST) · Zero astrology or fixed Nanakshahi dates.'}
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 shrink-0">
@@ -655,8 +664,6 @@ export default function App() {
         lang={lang}
         onClose={() => setIsLicenseOpen(false)}
       />
-
-      <OfflineIndicator lang={lang} />
     </div>
   );
 }
