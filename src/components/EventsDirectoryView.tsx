@@ -39,9 +39,9 @@ const CATEGORY_TABS: readonly {id: DirectoryFilter; en: string; pa: string}[] = 
   {id: 'shaheedi', en: 'Shaheedi', pa: 'ਸ਼ਹੀਦੀ'},
   {id: 'khalsa', en: 'Khalsa & Colophons', pa: 'ਖ਼ਾਲਸਾ / ਹਵਾਲੇ'},
   {id: 'barsi', en: 'Barsis & Mahapurakhs', pa: 'ਬਰਸੀਆਂ / ਮਹਾਂਪੁਰਖ'},
-  {id: 'sangrand', en: 'Sangrands', pa: 'ਸੰਗਰਾਂਦਾਂ'},
-  {id: 'puranmashi', en: 'Puranmashi', pa: 'ਪੂਰਨਮਾਸ਼ੀ'},
-  {id: 'masya', en: 'Masya', pa: 'ਮੱਸਿਆ'},
+  {id: 'sangrand', en: 'Sangrand (Month Start)', pa: 'ਸੰਗਰਾਂਦਾਂ'},
+  {id: 'puranmashi', en: 'Puranmashi (Full Moon)', pa: 'ਪੂਰਨਮਾਸ਼ੀ'},
+  {id: 'masya', en: 'Masya (New Moon)', pa: 'ਮੱਸਿਆ'},
 ];
 
 const QUICK_LOOKUPS: readonly {iso: string; en: string; pa: string}[] = [
@@ -67,20 +67,20 @@ function categoryLabel(cat: DirectoryCategory, isPa: boolean): string {
     case 'barsi':
       return isPa ? 'ਬਰਸੀ / ਮਹਾਂਪੁਰਖ' : 'Barsi / Mahapurakh';
     case 'sangrand':
-      return isPa ? 'ਸੰਗਰਾਂਦ' : 'Sangrand';
+      return isPa ? 'ਸੰਗਰਾਂਦ (ਮਹੀਨੇ ਦਾ ਆਰੰਭ)' : 'Sangrand (Month Start)';
     case 'puranmashi':
-      return isPa ? 'ਪੂਰਨਮਾਸ਼ੀ' : 'Puranmashi';
+      return isPa ? 'ਪੂਰਨਮਾਸ਼ੀ (ਪੂਰਾ ਚੰਨ)' : 'Puranmashi (Full Moon)';
     case 'masya':
-      return isPa ? 'ਮੱਸਿਆ' : 'Masya';
+      return isPa ? 'ਮੱਸਿਆ (ਅਮਾਵਸਿਆ)' : 'Masya (New Moon)';
   }
 }
 
 function categoryColor(cat: DirectoryObservance['category']): string {
-  if (cat === 'shaheedi') return 'text-[#8F1D1D]';
-  if (cat === 'khalsa' || cat === 'masya') return 'text-[#1B263B]';
-  if (cat === 'barsi') return 'text-[#6B4E16]';
-  if (cat === 'puranmashi') return 'text-[#8A6305]';
-  return 'text-[#9E4F00]';
+  if (cat === 'shaheedi') return 'text-[var(--accent-shaheedi)]';
+  if (cat === 'khalsa' || cat === 'masya') return 'text-[var(--text-heading)]';
+  if (cat === 'barsi') return 'text-[var(--accent-barsi)]';
+  if (cat === 'puranmashi') return 'text-[var(--accent-gold-text)]';
+  return 'text-[var(--accent-primary-text)]';
 }
 
 export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
@@ -130,11 +130,11 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
       {/* Gregorian-to-Bikrami Date Lookup Card */}
       <div
         aria-labelledby="date-lookup-heading"
-        className="rounded-xl border border-[#D8CBB4] bg-[#F3ECE0]/70 p-5 sm:p-6 space-y-4"
+        className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-soft)] p-5 sm:p-6 space-y-4"
       >
         <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="text-xs font-semibold text-[#9E4F00]">
+            <p className="text-xs font-semibold text-[var(--accent-primary-text)]">
               {isPa
                 ? 'ਗ੍ਰੈਗੋਰੀਅਨ ਤੋਂ ਪੁਰਾਤਨ ਬਿਕ੍ਰਮੀ ਤਾਰੀਖ਼ ਖੋਜ'
                 : isBi
@@ -143,7 +143,7 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
             </p>
             <h2
               id="date-lookup-heading"
-              className="mt-0.5 font-display text-2xl font-semibold text-[#1B263B]"
+              className="mt-0.5 font-display text-2xl font-semibold text-[var(--text-heading)]"
             >
               {isPa ? 'ਕਿਸੇ ਵੀ ਤਾਰੀਖ਼ ਦਾ ਦੇਸੀ ਮਹੀਨਾ ਅਤੇ ਤਿਥੀ ਵੇਖੋ' : 'Convert Any Date in Sambat 2083–2084'}
             </h2>
@@ -152,14 +152,14 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 w-full lg:w-auto">
             <label
               htmlFor="gregorian-lookup-input"
-              className="text-xs font-medium text-[#44403C] whitespace-nowrap"
+              className="text-xs font-medium text-[var(--text-secondary)] whitespace-nowrap"
             >
               {isPa ? 'ਅੰਗਰੇਜ਼ੀ ਤਾਰੀਖ਼:' : 'Gregorian Date:'}
             </label>
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 w-full sm:w-auto">
               <div className="relative flex items-center w-full sm:w-auto min-w-[205px]">
                 <CalendarSearch
-                  className="w-4 h-4 text-[#1B263B] absolute left-3.5 pointer-events-none shrink-0"
+                  className="w-4 h-4 text-[var(--text-heading)] absolute left-3.5 pointer-events-none shrink-0"
                   aria-hidden="true"
                 />
                 <input
@@ -169,13 +169,13 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
                   max={LOOKUP_MAX_ISO}
                   value={lookupInput}
                   onChange={(e) => onLookupInputChange(e.target.value)}
-                  className="w-full sm:w-auto min-w-[205px] min-h-[44px] pl-10 pr-3.5 py-2 text-sm font-mono-tabular rounded-md border border-[#C6B9A3] bg-[#FAF6EE] text-[#1C1917] focus:outline-2 focus:outline-[#1B263B]"
+                  className="w-full sm:w-auto min-w-[205px] min-h-[44px] pl-10 pr-3.5 py-2 text-sm font-mono-tabular rounded-md border border-[var(--border-strong)] bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] focus:outline-2 focus:outline-[var(--accent-primary)]"
                 />
               </div>
               {lookupResult.ok && (
                 <span
                   data-testid="lookup-formatted-date"
-                  className="inline-flex items-center px-2.5 py-1 rounded-md border border-[#DDD2BE] bg-[#FAF6EE] text-xs font-mono-tabular font-medium text-[#1B263B] whitespace-nowrap self-start sm:self-auto"
+                  className="inline-flex items-center px-2.5 py-1 rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-xs font-mono-tabular font-medium text-[var(--text-heading)] whitespace-nowrap self-start sm:self-auto"
                 >
                   {isPa
                     ? formatGregorianDate(lookupResult.day.isoDate, 'pa', false)
@@ -188,7 +188,7 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
 
         {/* Quick Reference Lookup Presets */}
         <div className="flex flex-wrap items-center gap-2 text-xs">
-          <span className="text-[#78716C]">{isPa ? 'ਤੁਰੰਤ ਉਦਾਹਰਨਾਂ:' : 'Quick examples:'}</span>
+          <span className="text-[var(--text-faint)]">{isPa ? 'ਤੁਰੰਤ ਉਦਾਹਰਨਾਂ:' : 'Quick examples:'}</span>
           {QUICK_LOOKUPS.map((preset) => (
             <button
               key={preset.iso}
@@ -196,8 +196,8 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
               onClick={() => onLookupInputChange(preset.iso)}
               className={`min-h-[32px] px-2.5 py-1 rounded-sm border transition-colors whitespace-nowrap cursor-pointer ${
                 lookupInput === preset.iso
-                  ? 'border-[#1B263B] bg-[#1B263B] text-[#FAF6EE]'
-                  : 'border-[#D8CBB4] bg-[#FAF6EE] text-[#44403C] hover:bg-[#EBE2D2]'
+                  ? 'border-[var(--accent-navy)] bg-[var(--accent-navy)] text-[var(--accent-on-navy)]'
+                  : 'border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]'
               }`}
             >
               {isPa ? preset.pa : preset.en}
@@ -207,7 +207,7 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
 
         {/* Conversion Result or Validation Error */}
         {lookupResult.ok ? (
-          <div className="rounded-lg border border-[#DDD2BE] bg-[#FAF6EE] p-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] p-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div className="flex items-start gap-4 min-w-0">
               <MoonPhaseIcon
                 elongationDeg={lookupResult.day.lunar.elongationDeg}
@@ -215,30 +215,30 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
                 className="shrink-0 mt-0.5"
               />
               <div className="min-w-0 space-y-1">
-                <p className="text-xs text-[#57534E]">
+                <p className="text-xs text-[var(--text-muted)]">
                   {formatGregorianDate(lookupResult.day.isoDate, lang, true)}
                   <span aria-hidden="true"> · </span>
                   {isPa
                     ? `ਵਾਰ: ${WEEKDAYS[lookupResult.day.weekdayIndex].fullPa}`
                     : `Vaar: ${WEEKDAYS[lookupResult.day.weekdayIndex].fullEn} (${WEEKDAYS[lookupResult.day.weekdayIndex].fullPa})`}
                 </p>
-                <p className="font-display text-xl sm:text-2xl font-semibold text-[#1B263B] leading-tight">
+                <p className="font-display text-xl sm:text-2xl font-semibold text-[var(--text-heading)] leading-tight">
                   {isPa
                     ? `${toGurmukhiNumerals(lookupResult.day.solar.day)} ${lookupResult.day.solar.monthMeta.namePa}, ਸੰਮਤ ${toGurmukhiNumerals(lookupResult.day.solar.sambat)}`
                     : isBi
                       ? `${lookupResult.day.solar.day} ${lookupResult.day.solar.monthMeta.nameEn}, Sambat ${lookupResult.day.solar.sambat} · ${toGurmukhiNumerals(lookupResult.day.solar.day)} ${lookupResult.day.solar.monthMeta.namePa}`
                       : `${lookupResult.day.solar.day} ${lookupResult.day.solar.monthMeta.nameEn}, Sambat ${lookupResult.day.solar.sambat}`}
                 </p>
-                <p className="text-sm font-medium text-[#9E4F00]">
+                <p className="text-sm font-medium text-[var(--accent-primary-text)]">
                   {isPa
                     ? `${lookupResult.day.lunar.lunarMonthPa} ${lookupResult.day.lunar.pakshPa} ${toGurmukhiNumerals(lookupResult.day.lunar.pakshDay)} · ${lookupResult.day.lunar.tithiNamePa}`
                     : `${lookupResult.day.lunar.lunarMonthEn} ${lookupResult.day.lunar.paksh} ${lookupResult.day.lunar.pakshDay} · ${lookupResult.day.lunar.tithiNameEn}`}
                   {lookupResult.day.solar.isSangrand && (
-                    <span> · {isPa ? 'ਸੰਗਰਾਂਦ' : 'Sangrand'}</span>
+                    <span> · {isPa ? 'ਸੰਗਰਾਂਦ (ਮਹੀਨੇ ਦਾ ਆਰੰਭ)' : 'Sangrand (Month Start)'}</span>
                   )}
                 </p>
                 {lookupResult.day.events.length > 0 && (
-                  <p className="text-xs font-semibold text-[#1B263B]">
+                  <p className="text-xs font-semibold text-[var(--text-heading)]">
                     {lookupResult.day.events
                       .map((ev) => (isPa ? ev.titlePa : ev.titleEn))
                       .join(' · ')}
@@ -251,14 +251,14 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
               <button
                 type="button"
                 onClick={() => onSelectDate(lookupResult.day.isoDate)}
-                className="min-h-[40px] px-4 py-2 text-xs font-medium rounded-md bg-[#1B263B] text-[#FAF6EE] hover:bg-[#111A2B] transition-colors whitespace-nowrap cursor-pointer"
+                className="min-h-[40px] px-4 py-2 text-xs font-medium rounded-md bg-[var(--accent-navy)] text-[var(--accent-on-navy)] hover:bg-[var(--accent-navy-hover)] transition-colors whitespace-nowrap cursor-pointer"
               >
                 {isPa ? 'ਵਿਸਥਾਰ ਵੇਖੋ' : 'Inspect Colophon'}
               </button>
               <button
                 type="button"
                 onClick={() => onJumpToGridDate(lookupResult.day.isoDate)}
-                className="inline-flex items-center gap-1 min-h-[40px] px-3.5 py-2 text-xs font-medium rounded-md border border-[#C6B9A3] bg-[#FAF6EE] text-[#1B263B] hover:bg-[#EBE2D2] transition-colors whitespace-nowrap cursor-pointer"
+                className="inline-flex items-center gap-1 min-h-[40px] px-3.5 py-2 text-xs font-medium rounded-md border border-[var(--border-strong)] bg-[var(--bg-surface)] text-[var(--text-heading)] hover:bg-[var(--bg-hover)] transition-colors whitespace-nowrap cursor-pointer"
               >
                 <span>{isPa ? 'ਜੰਤਰੀ ਵਿੱਚ ਖੋਲ੍ਹੋ' : 'View in Jantri'}</span>
                 <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
@@ -268,7 +268,7 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
         ) : (
           <div
             role="alert"
-            className="rounded-lg border border-[#8F1D1D]/30 bg-[#8F1D1D]/5 px-4 py-3 text-xs font-medium text-[#8F1D1D]"
+            className="rounded-lg border border-[var(--accent-shaheedi)]/35 bg-[var(--accent-shaheedi-tint)] px-4 py-3 text-xs font-medium text-[var(--accent-shaheedi)]"
           >
             {isPa ? lookupResult.errorPa : lookupResult.errorEn}
           </div>
@@ -276,27 +276,27 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
       </div>
 
       {/* Unified Purabs, Sangrands & Lunar Dates Directory */}
-      <div className="border-b border-[#DDD2BE] pb-5 space-y-4">
+      <div className="border-b border-[var(--border-subtle)] pb-5 space-y-4">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-xs text-[#78716C]">
+            <p className="text-xs text-[var(--text-faint)]">
               {isPa ? 'ਸੰਮਤ ੨੦੮੩ – ੨੦੮੪ ਬਿਕ੍ਰਮੀ' : 'Sambat 2083 – 2084 Bikrami'}
             </p>
             <h1
               id="events-directory-heading"
-              className="mt-1 font-display text-3xl sm:text-4xl font-semibold text-[#1B263B]"
+              className="mt-1 font-display text-3xl sm:text-4xl font-semibold text-[var(--text-heading)]"
             >
               {isPa
                 ? 'ਗੁਰਪੁਰਬ, ਸ਼ਹੀਦੀ, ਸੰਗਰਾਂਦਾਂ, ਪੂਰਨਮਾਸ਼ੀ ਅਤੇ ਮੱਸਿਆ'
                 : 'Purabs, Sangrands & Lunar Observances'}
             </h1>
-            <p className="mt-1.5 text-sm text-[#57534E] max-w-2xl">
+            <p className="mt-1.5 text-sm text-[var(--text-muted)] max-w-2xl">
               {isPa
                 ? 'ਕਿਸੇ ਵੀ ਦਿਹਾੜੇ ’ਤੇ ਕਲਿੱਕ ਕਰਕੇ ਉਸ ਦਾ ਇਤਿਹਾਸਕ ਪ੍ਰਸੰਗ, ਤਿਥੀ ਸਮਾਂ ਅਤੇ ਗ੍ਰੰਥਾਂ/ਭੱਟ ਵਹੀਆਂ ਦੇ ਪ੍ਰਮਾਣਿਕ ਹਵਾਲੇ ਪੜ੍ਹੋ।'
                 : 'Filter Gurpurabs, Shaheedi Divases, manuscript colophons, Sangrands, Puranmashi, and Masya dates across Sambat 2083–2084.'}
             </p>
           </div>
-          <p className="text-xs font-mono-tabular text-[#57534E] whitespace-nowrap">
+          <p className="text-xs font-mono-tabular text-[var(--text-muted)] whitespace-nowrap">
             {isPa
               ? `${toGurmukhiNumerals(filtered.length)} ਦਿਹਾੜੇ`
               : `${filtered.length} observances`}
@@ -308,7 +308,7 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div className="relative flex-1 max-w-md">
               <Search
-                className="w-4 h-4 text-[#78716C] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+                className="w-4 h-4 text-[var(--text-faint)] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
                 aria-hidden="true"
               />
               <label htmlFor="event-search-input" className="sr-only">
@@ -324,7 +324,7 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
                     ? 'ਗੁਰਪੁਰਬ, ਪੂਰਨਮਾਸ਼ੀ, ਤਿਥੀ ਜਾਂ ਗ੍ਰੰਥ ਖੋਜੋ...'
                     : 'Search Gurpurab, Puranmashi, tithi, or source...'
                 }
-                className="w-full min-h-[42px] pl-9 pr-3 py-2 text-sm rounded-md border border-[#C6B9A3] bg-[#FAF6EE] text-[#1C1917] placeholder:text-[#78716C] focus:outline-2 focus:outline-[#1B263B]"
+                className="w-full min-h-[42px] pl-9 pr-3 py-2 text-sm rounded-md border border-[var(--border-strong)] bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] placeholder:text-[var(--text-faint)] focus:outline-2 focus:outline-[var(--accent-primary)]"
               />
             </div>
 
@@ -332,7 +332,7 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
               <div
                 role="group"
                 aria-label={isPa ? 'ਸੰਮਤ ਫਿਲਟਰ' : 'Filter by Sambat'}
-                className="inline-flex items-center rounded-md border border-[#DDD2BE] bg-[#F3ECE0] p-1"
+                className="inline-flex items-center rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-1"
               >
                 {(
                   [
@@ -348,8 +348,8 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
                     aria-pressed={sambat === opt.id}
                     className={`min-h-[36px] px-3 text-xs font-medium rounded-sm transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
                       sambat === opt.id
-                        ? 'bg-[#FAF6EE] text-[#1B263B] shadow-xs'
-                        : 'text-[#57534E] hover:text-[#1C1917]'
+                        ? 'bg-[var(--bg-surface-elevated)] text-[var(--text-heading)] shadow-xs'
+                        : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
                     }`}
                   >
                     {isPa ? opt.pa : opt.en}
@@ -363,8 +363,8 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
                 aria-pressed={upcomingOnly}
                 className={`min-h-[42px] px-3.5 text-xs font-medium rounded-md border transition-colors whitespace-nowrap cursor-pointer ${
                   upcomingOnly
-                    ? 'border-[#1B263B] bg-[#1B263B] text-[#FAF6EE]'
-                    : 'border-[#C6B9A3] bg-[#FAF6EE] text-[#1C1917] hover:bg-[#EBE2D2]'
+                    ? 'border-[var(--accent-navy)] bg-[var(--accent-navy)] text-[var(--accent-on-navy)]'
+                    : 'border-[var(--border-strong)] bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] hover:bg-[var(--bg-hover)]'
                 }`}
               >
                 {isPa ? 'ਸਿਰਫ਼ ਆਉਣ ਵਾਲੇ' : 'Upcoming Only'}
@@ -372,11 +372,11 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
             </div>
           </div>
 
-          {/* 7 Category Filter Tabs (Gurpurabs, Shaheedi, Khalsa/Colophons, Sangrands, Puranmashi, Masya) */}
+          {/* 7 Category Filter Tabs */}
           <div
             role="group"
             aria-label={isPa ? 'ਸ਼੍ਰੇਣੀ ਚੁਣੋ' : 'Filter by observance category'}
-            className="flex items-center gap-1 overflow-x-auto rounded-md border border-[#DDD2BE] bg-[#F3ECE0] p-1 max-w-full"
+            className="flex items-center gap-1 overflow-x-auto rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-1 max-w-full"
           >
             {CATEGORY_TABS.map((opt) => (
               <button
@@ -386,8 +386,8 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
                 aria-pressed={category === opt.id}
                 className={`min-h-[36px] px-3 text-xs font-medium rounded-sm transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
                   category === opt.id
-                    ? 'bg-[#FAF6EE] text-[#1B263B] shadow-xs'
-                    : 'text-[#57534E] hover:text-[#1C1917]'
+                    ? 'bg-[var(--bg-surface-elevated)] text-[var(--text-heading)] shadow-xs'
+                    : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
                 }`}
               >
                 {isPa ? opt.pa : opt.en}
@@ -399,15 +399,15 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
 
       {/* Results List */}
       {filtered.length === 0 ? (
-        <div className="rounded-xl border border-[#DDD2BE] bg-[#F3ECE0]/50 p-8 text-center">
-          <p className="text-sm text-[#57534E]">
+        <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-soft)] p-8 text-center">
+          <p className="text-sm text-[var(--text-muted)]">
             {isPa
               ? 'ਤੁਹਾਡੀ ਖੋਜ ਨਾਲ ਕੋਈ ਦਿਹਾੜਾ ਨਹੀਂ ਮਿਲਿਆ।'
               : 'No observances match your current search or filter.'}
           </p>
         </div>
       ) : (
-        <ul className="divide-y divide-[#DDD2BE] border border-[#DDD2BE] rounded-xl bg-[#FAF6EE] overflow-hidden">
+        <ul className="divide-y divide-[var(--border-subtle)] border border-[var(--border-subtle)] rounded-xl bg-[var(--bg-surface-elevated)] overflow-hidden">
           {filtered.map((item) => {
             const solar = getBikramiSolarDate(item.date);
             return (
@@ -415,21 +415,25 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
                 <button
                   type="button"
                   onClick={() => onSelectDate(item.date)}
-                  className="w-full p-4 sm:p-5 text-left hover:bg-[#F3ECE0]/70 transition-colors flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between cursor-pointer"
+                  className="w-full p-4 sm:p-5 text-left hover:bg-[var(--bg-hover)] transition-colors flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between cursor-pointer"
                 >
                   <div className="space-y-1 min-w-0">
                     <div className="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-xs">
                       <span className={`font-semibold ${categoryColor(item.category)}`}>
                         {categoryLabel(item.category, isPa)}
                       </span>
-                      <span aria-hidden="true" className="text-[#B8860B]">·</span>
-                      <span className="font-medium text-[#44403C]">
+                      <span aria-hidden="true" className="text-[var(--accent-gold)]">
+                        ·
+                      </span>
+                      <span className="font-medium text-[var(--text-secondary)]">
                         {isPa ? item.rulePa : item.ruleEn}
                       </span>
                       {item.citationCount > 0 && (
                         <>
-                          <span aria-hidden="true" className="text-[#B8860B]">·</span>
-                          <span className="text-[#78716C] inline-flex items-center gap-1">
+                          <span aria-hidden="true" className="text-[var(--accent-gold)]">
+                            ·
+                          </span>
+                          <span className="text-[var(--text-faint)] inline-flex items-center gap-1">
                             <BookMarked className="w-3 h-3" aria-hidden="true" />
                             {isPa
                               ? `${toGurmukhiNumerals(item.citationCount)} ਹਵਾਲੇ`
@@ -439,24 +443,24 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
                       )}
                     </div>
 
-                    <h2 className="font-display text-xl font-semibold text-[#1B263B] leading-snug">
+                    <h2 className="font-display text-xl font-semibold text-[var(--text-heading)] leading-snug">
                       {isPa ? item.titlePa : item.titleEn}
                     </h2>
                     {isBi && (
-                      <p className="font-gurmukhi text-sm font-medium text-[#44403C]">
+                      <p className="font-gurmukhi text-sm font-medium text-[var(--text-secondary)]">
                         {item.titlePa}
                       </p>
                     )}
-                    <p className="text-sm text-[#57534E] leading-relaxed max-w-3xl">
+                    <p className="text-sm text-[var(--text-muted)] leading-relaxed max-w-3xl">
                       {isPa ? item.summaryPa : item.summaryEn}
                     </p>
                   </div>
 
                   <div className="sm:text-right shrink-0 pt-1 sm:pt-0 sm:pl-4">
-                    <p className="text-sm font-semibold text-[#1C1917] whitespace-nowrap">
+                    <p className="text-sm font-semibold text-[var(--text-primary)] whitespace-nowrap">
                       {formatGregorianDate(item.date, lang, false)}
                     </p>
-                    <p className="text-xs font-medium text-[#9E4F00] whitespace-nowrap">
+                    <p className="text-xs font-medium text-[var(--accent-primary-text)] whitespace-nowrap">
                       {isPa
                         ? `${toGurmukhiNumerals(solar.day)} ${solar.monthMeta.namePa}, ਸੰਮਤ ${toGurmukhiNumerals(solar.sambat)}`
                         : `${solar.day} ${solar.monthMeta.nameEn}, Sambat ${solar.sambat}`}

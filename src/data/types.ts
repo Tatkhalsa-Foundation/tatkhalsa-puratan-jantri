@@ -1,5 +1,19 @@
 export type LanguageMode = 'en' | 'pa' | 'bi';
 
+export type ThemeId = 'parchment' | 'surmai' | 'kesri';
+
+export type PersonalDateKind = 'janam-din' | 'anand-karaj' | 'barsi' | 'ardaas' | 'other';
+
+export interface PersonalDesiDate {
+  id: string;
+  title: string;
+  kind: PersonalDateKind;
+  monthId: number; // 1 = Chet ... 12 = Phagun
+  day: number; // 1..32
+  notes?: string;
+  createdAt: string;
+}
+
 export type CalendarGridMode = 'solar' | 'gregorian';
 
 export type LunarPaksh = 'Sudhi' | 'Vadhi';
@@ -181,6 +195,8 @@ export interface IcsExportOptions {
   includeShaheedi: boolean;
   includeKhalsa: boolean;
   includeBarsis: boolean;
+  includePersonalDates?: boolean;
+  personalDates?: PersonalDesiDate[];
   sambatScope: 'all' | '2083' | '2084';
   language: LanguageMode;
 }

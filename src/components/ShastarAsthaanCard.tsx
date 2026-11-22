@@ -261,40 +261,46 @@ export const ShastarAsthaanCard: React.FC<ShastarAsthaanCardProps> = ({monthKey,
   return (
     <section
       aria-labelledby="shastar-asthaan-heading"
-      className="no-print relative rounded-xl border-2 border-[#B8860B]/70 bg-[#FAF6EE] p-1.5 shadow-xs"
+      className="no-print relative rounded-xl border-2 border-[var(--accent-gold)]/70 bg-[var(--bg-surface-elevated)] p-1.5 shadow-xs"
     >
-      {/* Inner Surmai Double-Rule Puratan Frame */}
-      <div className="relative rounded-lg border border-[#1B263B]/35 bg-gradient-to-br from-[#F6EFE2] via-[#FAF6EE] to-[#F2E8D6] px-5 py-5 sm:px-7 sm:py-6 overflow-hidden">
+      {/* Inner Double-Rule Puratan Frame */}
+      <div
+        className="relative rounded-lg border border-[var(--border-strong)] px-5 py-5 sm:px-7 sm:py-6 overflow-hidden"
+        style={{
+          backgroundImage:
+            'linear-gradient(135deg, var(--heritage-from), var(--heritage-via), var(--heritage-to))',
+        }}
+      >
         {/* Corner Filigree Ornaments */}
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute top-2 left-2 h-4 w-4 border-t-2 border-l-2 border-[#B8860B]"
+          className="pointer-events-none absolute top-2 left-2 h-4 w-4 border-t-2 border-l-2 border-[var(--accent-gold)]"
         />
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute top-2 right-2 h-4 w-4 border-t-2 border-r-2 border-[#B8860B]"
+          className="pointer-events-none absolute top-2 right-2 h-4 w-4 border-t-2 border-r-2 border-[var(--accent-gold)]"
         />
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute bottom-2 left-2 h-4 w-4 border-b-2 border-l-2 border-[#B8860B]"
+          className="pointer-events-none absolute bottom-2 left-2 h-4 w-4 border-b-2 border-l-2 border-[var(--accent-gold)]"
         />
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute bottom-2 right-2 h-4 w-4 border-b-2 border-r-2 border-[#B8860B]"
+          className="pointer-events-none absolute bottom-2 right-2 h-4 w-4 border-b-2 border-r-2 border-[var(--accent-gold)]"
         />
 
         <div className="grid grid-cols-1 gap-5 md:grid-cols-12 md:items-center">
           {/* Left: Custom Copyright-Free Khalsa Shastar SVG */}
-          <div className="md:col-span-4 lg:col-span-3 flex flex-col items-center justify-center rounded-lg border border-[#D8CBB4] bg-[#FAF6EE]/85 p-3">
+          <div className="md:col-span-4 lg:col-span-3 flex flex-col items-center justify-center rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-canvas)]/85 p-3">
             <ShastarIllustration
               kind={item.shastarKind}
               title={isPa ? item.shastarNamePa : item.shastarNameEn}
             />
-            <p className="mt-1 text-center text-[11px] font-semibold text-[#1B263B]">
+            <p className="mt-1 text-center text-[11px] font-semibold text-[var(--text-heading)]">
               {isPa ? item.shastarNamePa : item.shastarNameEn}
             </p>
             {isBi && (
-              <p className="text-center font-gurmukhi text-[11px] text-[#9E4F00]">
+              <p className="text-center font-gurmukhi text-[11px] text-[var(--accent-primary-text)]">
                 {item.shastarNamePa}
               </p>
             )}
@@ -303,41 +309,43 @@ export const ShastarAsthaanCard: React.FC<ShastarAsthaanCardProps> = ({monthKey,
           {/* Right: Takhat Sachkhand Sri Hazur Sahib Asthaan & Sampardai Caption */}
           <div className="md:col-span-8 lg:col-span-9 space-y-2.5">
             <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs">
-              <span className="font-semibold tracking-wide uppercase text-[#8A6305]">
+              <span className="font-semibold tracking-wide uppercase text-[var(--accent-gold-text)]">
                 {isPa
                   ? `ਸ਼ਸਤਰ ਅਤੇ ਅਸਥਾਨ ਦਰਸ਼ਨ · ${monthMeta.namePa}`
                   : isBi
                     ? `Shastar & Asthaan Darshan · ${monthMeta.nameEn} (${monthMeta.namePa})`
                     : `Monthly Shastar & Asthaan Darshan · ${monthMeta.nameEn}`}
               </span>
-              <span aria-hidden="true" className="text-[#B8860B]">
+              <span aria-hidden="true" className="text-[var(--accent-gold)]">
                 ·
               </span>
-              <span className="font-medium text-[#1B263B]">
+              <span className="font-medium text-[var(--text-heading)]">
                 {isPa ? 'ਪੁਰਾਤਨ ਖ਼ਾਲਸਾ ਵਿਰਾਸਤ' : 'Puratan Khalsa Heritage'}
               </span>
             </div>
 
             <h3
               id="shastar-asthaan-heading"
-              className="font-display text-xl sm:text-2xl font-semibold text-[#1B263B] leading-snug"
+              className="font-display text-xl sm:text-2xl font-semibold text-[var(--text-heading)] leading-snug"
             >
               {isPa ? item.asthaanPa : item.asthaanEn}
             </h3>
             {isBi && (
-              <p className="font-gurmukhi text-sm font-medium text-[#9E4F00]">{item.asthaanPa}</p>
+              <p className="font-gurmukhi text-sm font-medium text-[var(--accent-primary-text)]">
+                {item.asthaanPa}
+              </p>
             )}
 
-            <p className="text-sm text-[#292524] leading-relaxed">
+            <p className="text-sm text-[var(--text-primary)] leading-relaxed">
               {isPa ? item.captionPa : item.captionEn}
             </p>
             {isBi && (
-              <p className="font-gurmukhi text-sm text-[#44403C] leading-relaxed">
+              <p className="font-gurmukhi text-sm text-[var(--text-secondary)] leading-relaxed">
                 {item.captionPa}
               </p>
             )}
 
-            <p className="pt-2 border-t border-[#DDD2BE]/90 text-xs font-medium text-[#57534E]">
+            <p className="pt-2 border-t border-[var(--border-subtle)] text-xs font-medium text-[var(--text-muted)]">
               {isPa
                 ? item.sampardaiNotePa
                 : isBi

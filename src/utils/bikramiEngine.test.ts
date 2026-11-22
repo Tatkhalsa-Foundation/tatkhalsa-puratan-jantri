@@ -22,6 +22,15 @@ import {
   toGurmukhiNumerals,
 } from './bikramiEngine';
 import {generateJantriIcs, generateSingleDayIcs} from './icsExport';
+import {
+  getMaxDaysForBikramiMonth,
+  getPersonalDatesForSolarDay,
+  parsePersonalDates,
+  resolveGregorianOccurrencesForPersonalDate,
+  resolveNextOccurrenceForPersonalDate,
+} from './personalDates';
+import {getTomorrowObservances, shouldDispatchReminderForDate} from './purabReminders';
+import {buildDailyShareText, JANTRI_SHARE_URL} from './shareDailyJantri';
 import {createDefaultPersistedState, parsePersistedState} from './statePersistence';
 
 test('Tuesday Nov 24, 2026 resolves to 9 Maghar, Sambat 2083, Katak Puranmashi & 557th Parkash Purab of Sri Guru Nanak Dev Ji', () => {
@@ -422,4 +431,157 @@ test('Every historical citation across Sambat 2083–2084 resolves to full Gurmu
   );
   assert.ok(gurdasReader.gurmukhiLines.length >= 6);
 });
+
+test('Theme (parchment/surmai/kesri) and 1-day-before reminder toggle persist and sanitize safely', () => {
+  const defaults = createDefaultPersistedState('2026-11-22', 1, 2026, 10);
+  assert.equal(defaults.theme, 'parchment');
+  assert.equal(defaults.remindersEnabled, false);
+  assert.equal(defaults.lang, 'en');
+
+  const restored = parsePersistedState(
+    JSON.stringify({theme: 'surmai', remindersEnabled: true, lang: 'pa'}),
+    defaults,
+  );
+  assert.equal(restored.theme, 'surmai');
+  assert.equal(restored.remindersEnabled, true);
+  assert.equal(restored.lang, 'pa');
+
+  const kesri = parsePersistedState(
+    JSON.stringify({theme: 'kesri', remindersEnabled: false}),
+    defaults,
+  );
+  assert.equal(kesri.theme, 'kesri');
+
+  const invalid = parsePersistedState(
+    JSON.stringify({theme: 'neon-invalid', remindersEnabled: 'yes'}),
+    defaults,
+    null,
+    'surmai',
+  );
+  assert.equal(invalid.theme, 'surmai');
+  assert.equal(invalid.remindersEnabled, false);
+});
+
+test('buildDailyShareText formats clean bilingual daily summary for WhatsApp / Instagram', () => {
+  const gurpurabDay = getJantriDay('2026-11-24', true);
+  const text = buildDailyShareText(gurpurabDay, [
+    {
+      id: 'pd-1',
+      title: 'Mata Ji Janam Din',
+      kind: 'janam-din',
+      monthId: 9,
+      day: 9,
+      createdAt: '2026-11-22T00:00:00Z',
+    },
+  ]);
+
+  assert.match(text, /9 Maghar, Sambat 2083/);
+  assert.match(text, /੯ ਮੱਘਰ, ਸੰਮਤ ੨੦੮੩/);
+  assert.match(text, /Katak Puranmashi \(Full Moon\)/);
+  assert.match(text, /557th Parkash Purab/i);
+  assert.match(text, /Mata Ji Janam Din — Janam Din \(Birthday\)/);
+  assert.ok(text.includes(JANTRI_SHARE_URL));
+});
+
+test('Personal Desi Dates parse, resolve across Sambat 2083–2084, and export cleanly to .ics', () => {
+  assert.equal(getMaxDaysForBikramiMonth(4), 32); // Harh
+  assert.equal(getMaxDaysForBikramiMonth(9), 30); // Maghar
+
+  const parsed = parsePersonalDates(
+    JSON.stringify([
+      {
+        id: 'pd-1',
+        title: 'Mata Ji Janam Din',
+        kind: 'janam-din',
+        monthId: 9,
+        day: 9,
+        notes: 'Sri Sukhmani Sahib Path',
+        createdAt: '2026-11-22T00:00:00Z',
+      },
+      {id: 'bad', title: '', kind: 'janam-din', monthId: 99, day: 50},
+    ]),
+  );
+  assert.equal(parsed.length, 1);
+  assert.equal(parsed[0].title, 'Mata Ji Janam Din');
+
+  const matched = getPersonalDatesForSolarDay(parsed, 9, 9);
+  assert.equal(matched.length, 1);
+
+  const occurrences = resolveGregorianOccurrencesForPersonalDate(parsed[0]);
+  assert.equal(occurrences.length, 2); // Sambat 2083 (2026-11-24) and Sambat 2084 (2027-11-24)
+  assert.equal(occurrences[0].isoDate, '2026-11-24');
+  assert.equal(occurrences[0].sambat, 2083);
+
+  const nextOcc = resolveNextOccurrenceForPersonalDate(parsed[0], '2026-11-22');
+  assert.ok(nextOcc);
+  assert.equal(nextOcc.isoDate, '2026-11-24');
+
+  // Verify selective & daily .ics exports include personal dates
+  const selectiveWithPersonal = generateJantriIcs({
+    includeDaily: false,
+    includeSangrands: false,
+    includePuranmashi: false,
+    includeMasya: false,
+    includeGurpurabs: false,
+    includeShaheedi: false,
+    includeKhalsa: false,
+    includeBarsis: false,
+    includePersonalDates: true,
+    personalDates: parsed,
+    sambatScope: 'all',
+    language: 'en',
+  });
+  assert.equal(selectiveWithPersonal.eventCount, 2);
+  assert.ok(selectiveWithPersonal.content.includes('Mata Ji Janam Din'));
+  assert.ok(selectiveWithPersonal.content.includes('DTSTART;VALUE=DATE:20261124'));
+
+  const dailyWithPersonal = generateJantriIcs({
+    includeDaily: true,
+    includeSangrands: true,
+    includePuranmashi: true,
+    includeMasya: true,
+    includeGurpurabs: true,
+    includeShaheedi: true,
+    includeKhalsa: true,
+    includeBarsis: true,
+    includePersonalDates: true,
+    personalDates: parsed,
+    sambatScope: '2083',
+    language: 'en',
+  });
+  assert.equal(dailyWithPersonal.eventCount, 149);
+  assert.ok(dailyWithPersonal.content.includes('Mata Ji Janam Din'));
+});
+
+test('1-day-before Purab reminder engine detects tomorrow Sangrand, Puranmashi, Gurpurab & Personal Desi Dates', () => {
+  // On 2026-11-23, tomorrow is 2026-11-24: Katak Puranmashi + 557th Parkash Sri Guru Nanak Dev Ji
+  const summary = getTomorrowObservances('2026-11-23', [
+    {
+      id: 'pd-1',
+      title: 'Mata Ji Janam Din',
+      kind: 'janam-din',
+      monthId: 9,
+      day: 9,
+      createdAt: '2026-11-22T00:00:00Z',
+    },
+  ]);
+  assert.equal(summary.tomorrowIso, '2026-11-24');
+  assert.equal(summary.hasReminderItems, true);
+  assert.ok(summary.items.some((i) => i.kind === 'puranmashi'));
+  assert.ok(summary.items.some((i) => i.kind === 'purab'));
+  assert.ok(summary.items.some((i) => i.kind === 'personal'));
+  assert.match(summary.bodyEn, /Katak Puranmashi \(Full Moon\)/);
+  assert.match(summary.bodyEn, /Mata Ji Janam Din/);
+
+  // Deduplication check
+  assert.equal(shouldDispatchReminderForDate(null, '2026-11-24'), true);
+  assert.equal(shouldDispatchReminderForDate('2026-11-23', '2026-11-24'), true);
+  assert.equal(shouldDispatchReminderForDate('2026-11-24', '2026-11-24'), false);
+
+  // On 2026-12-15, tomorrow is 2026-12-16: Poh Sangrand
+  const sangrandEve = getTomorrowObservances('2026-12-15');
+  assert.equal(sangrandEve.hasReminderItems, true);
+  assert.ok(sangrandEve.items.some((i) => i.kind === 'sangrand'));
+});
+
 

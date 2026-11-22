@@ -1,6 +1,6 @@
 import {HISTORICAL_EVENTS} from '../data/eventsData';
 import {getBikramiMonthMeta, SOLAR_MONTH_SPANS} from '../data/sambatData';
-import type {HistoricalEvent, IcsExportOptions} from '../data/types';
+import type {HistoricalEvent, IcsExportOptions, PersonalDesiDate} from '../data/types';
 import {
   addDaysIso,
   formatDualTime,
@@ -8,11 +8,15 @@ import {
   getLunarInfoCached,
   toGurmukhiNumerals,
 } from './bikramiEngine';
+import {
+  getPersonalDateKindLabel,
+  resolveGregorianOccurrencesForPersonalDate,
+} from './personalDates';
 
 /**
  * Pure RFC 5545 iCalendar (.ics) generator for Tatkhalsa Puratan Jantri.
  * Supports both selective observance export AND full 365-day daily Bikrami + Lunar date export
- * (combining same-day Purabs, Sangrands, Puranmashi, Masya, Shaheedi Divases, and Barsis cleanly into each daily VEVENT).
+ * (combining same-day Purabs, Sangrands, Puranmashi, Masya, Shaheedi Divases, Barsis, and Personal Desi Dates cleanly into each daily VEVENT).
  */
 
 const SCOPE_RANGES: Record<IcsExportOptions['sambatScope'], {start: string; end: string}> = {
@@ -123,14 +127,29 @@ export function generateJantriIcs(
     selectedEventsByDate.set(ev.date, list);
   }
 
+  // Index selected personal Desi dates by Gregorian ISO date
+  const personalByDate = new Map<string, PersonalDesiDate[]>();
+  if (options.includePersonalDates && options.personalDates && options.personalDates.length > 0) {
+    for (const pd of options.personalDates) {
+      const occurrences = resolveGregorianOccurrencesForPersonalDate(pd, options.sambatScope);
+      for (const occ of occurrences) {
+        if (occ.isoDate < range.start || occ.isoDate > range.end) continue;
+        const list = personalByDate.get(occ.isoDate) ?? [];
+        list.push(pd);
+        personalByDate.set(occ.isoDate, list);
+      }
+    }
+  }
+
   if (options.includeDaily) {
     // Full Daily Mode: generate one all-day VEVENT for EVERY calendar day in scope,
-    // combining any matching Sangrand, Puranmashi, Masya, Gurpurab, Shaheedi, Khalsa, or Barsi into that day's SUMMARY & DESCRIPTION.
+    // combining any matching Sangrand, Puranmashi, Masya, Gurpurab, Shaheedi, Khalsa, Barsi, or Personal Desi Date into that day's SUMMARY & DESCRIPTION.
     let cursor = range.start;
     while (cursor <= range.end) {
       const solar = getBikramiSolarDate(cursor);
       const lunar = getLunarInfoCached(cursor);
       const dayEvents = selectedEventsByDate.get(cursor) ?? [];
+      const dayPersonal = personalByDate.get(cursor) ?? [];
       const tithiDual = formatDualTime(lunar.tithiEndsAtUtc, 'Asia/Kolkata');
 
       const solarBaseEn = `${solar.day} ${solar.monthMeta.nameEn} ${solar.sambat}`;
@@ -157,6 +176,10 @@ export function generateJantriIcs(
       for (const ev of dayEvents) {
         highlights.push(isPa ? ev.shortLabelPa : ev.shortLabelEn);
         categories.add(ev.category.toUpperCase());
+      }
+      for (const pd of dayPersonal) {
+        highlights.push(`${pd.title} (${getPersonalDateKindLabel(pd.kind, isPa)})`);
+        categories.add('Personal Desi Date');
       }
 
       const baseSummary = isPa
@@ -191,6 +214,14 @@ export function generateJantriIcs(
           `${ev.titleEn} / ${ev.titlePa}`,
           `${ev.tithiRuleEn} · ${ev.summaryEn}`,
           ...(citationsLine ? [`Sources: ${citationsLine}`] : []),
+        );
+      }
+
+      for (const pd of dayPersonal) {
+        descLines.push(
+          '',
+          `My Desi Date: ${pd.title} (${getPersonalDateKindLabel(pd.kind, false)})`,
+          ...(pd.notes ? [pd.notes] : []),
         );
       }
 
@@ -295,6 +326,33 @@ export function generateJantriIcs(
           : `${solar.day} ${solar.monthMeta.nameEn} ${solar.sambat} · ${ev.tithiRuleEn}\nTithi ends (Sri Anandpur Sahib IST): ${tithiDual.amritsarTime}, ${tithiDual.amritsarDate}\n${ev.summaryEn}\nSources: ${citationsLine}\nhttps://calendar.tatkhalsa.in/`,
         categories: `${ev.category.toUpperCase()},Tatkhalsa Puratan Jantri`,
       });
+    }
+
+    // 4. Personal Desi/Bikrami Family Dates
+    if (options.includePersonalDates && options.personalDates && options.personalDates.length > 0) {
+      for (const pd of options.personalDates) {
+        const meta = getBikramiMonthMeta(pd.monthId);
+        const occurrences = resolveGregorianOccurrencesForPersonalDate(pd, options.sambatScope);
+        for (const occ of occurrences) {
+          if (occ.isoDate < range.start || occ.isoDate > range.end) continue;
+          const kindLabel = getPersonalDateKindLabel(pd.kind, isPa);
+          records.push({
+            uid: `personal-${pd.id}-${occ.sambat}`,
+            date: occ.isoDate,
+            summary: isPa
+              ? `${pd.title} (${kindLabel}) · ${toGurmukhiNumerals(occ.actualDay)} ${meta.namePa}`
+              : `${pd.title} (${kindLabel}) · ${occ.actualDay} ${meta.nameEn}`,
+            description: [
+              isPa
+                ? `ਮੇਰੀ ਦੇਸੀ ਤਾਰੀਖ਼: ${toGurmukhiNumerals(occ.actualDay)} ${meta.namePa}, ਸੰਮਤ ${toGurmukhiNumerals(occ.sambat)}`
+                : `Personal Desi Date: ${occ.actualDay} ${meta.nameEn}, Sambat ${occ.sambat}`,
+              ...(pd.notes ? [pd.notes] : []),
+              'https://calendar.tatkhalsa.in/',
+            ].join('\n'),
+            categories: 'Personal Desi Date,Tatkhalsa Puratan Jantri',
+          });
+        }
+      }
     }
   }
 

@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   --font-sans: "Source Serif 4", "Noto Sans Gurmukhi", ui-sans-serif, system-ui, sans-serif;
@@ -22,18 +23,191 @@
   --color-shaheedi: #8F1D1D;
 }
 
+/* =========================================================================
+   3 Curated Themes matching the Tatkhalsa Pothi Sahib App
+   1. Puratan Parchment (Light Default)
+   2. Surmai Night (Dark / Amritvela Mode)
+   3. Hazuri Kesri (Warm Heritage)
+   ========================================================================= */
+
+:root,
+[data-theme="parchment"] {
+  --bg-canvas: #FAF6EE;
+  --bg-surface: #F3ECE0;
+  --bg-surface-soft: rgba(243, 236, 224, 0.72);
+  --bg-surface-elevated: #FAF6EE;
+  --bg-hover: #EBE2D2;
+  --bg-header: rgba(250, 246, 238, 0.96);
+  --bg-today-cell: rgba(200, 100, 0, 0.1);
+  --bg-outside-cell: rgba(243, 236, 224, 0.52);
+  --bg-backdrop: rgba(27, 38, 59, 0.48);
+
+  --border-subtle: #DDD2BE;
+  --border-strong: #C6B9A3;
+  --border-divider: #E3D9C6;
+
+  --text-primary: #1C1917;
+  --text-heading: #1B263B;
+  --text-secondary: #44403C;
+  --text-muted: #57534E;
+  --text-faint: #78716C;
+  --text-outside: #A8A29E;
+
+  --accent-primary: #C86400;
+  --accent-primary-hover: #9E4F00;
+  --accent-primary-text: #9E4F00;
+  --accent-primary-tint: rgba(200, 100, 0, 0.12);
+  --accent-on-primary: #FAF6EE;
+
+  --accent-gold: #B8860B;
+  --accent-gold-text: #8A6305;
+  --accent-gold-tint: rgba(184, 134, 11, 0.15);
+
+  --accent-navy: #1B263B;
+  --accent-navy-hover: #111A2B;
+  --accent-navy-tint: rgba(27, 38, 59, 0.1);
+  --accent-on-navy: #FAF6EE;
+
+  --accent-shaheedi: #8F1D1D;
+  --accent-shaheedi-tint: rgba(143, 29, 29, 0.1);
+
+  --accent-barsi: #6B4E16;
+  --accent-barsi-tint: rgba(184, 134, 11, 0.15);
+
+  --accent-personal: #1E6B52;
+  --accent-personal-tint: rgba(30, 107, 82, 0.13);
+
+  --grid-header-bg: #1B263B;
+  --grid-header-text: #FAF6EE;
+  --grain-dot: rgba(120, 113, 108, 0.055);
+  --heritage-from: #F6EFE2;
+  --heritage-via: #FAF6EE;
+  --heritage-to: #F2E8D6;
+  color-scheme: light;
+}
+
+[data-theme="surmai"] {
+  --bg-canvas: #071524;
+  --bg-surface: #0B192C;
+  --bg-surface-soft: rgba(11, 25, 44, 0.92);
+  --bg-surface-elevated: #0F223A;
+  --bg-hover: #162E4D;
+  --bg-header: rgba(7, 21, 36, 0.95);
+  --bg-today-cell: rgba(229, 169, 60, 0.15);
+  --bg-outside-cell: rgba(7, 21, 36, 0.65);
+  --bg-backdrop: rgba(3, 9, 17, 0.72);
+
+  --border-subtle: #1D3554;
+  --border-strong: #2C4C75;
+  --border-divider: #19304D;
+
+  --text-primary: #FAF6EE;
+  --text-heading: #FAF6EE;
+  --text-secondary: #D8E0EB;
+  --text-muted: #AFC0D6;
+  --text-faint: #8FA4BF;
+  --text-outside: #5C728F;
+
+  --accent-primary: #E5A93C;
+  --accent-primary-hover: #F2BC57;
+  --accent-primary-text: #E5A93C;
+  --accent-primary-tint: rgba(229, 169, 60, 0.16);
+  --accent-on-primary: #071524;
+
+  --accent-gold: #E5A93C;
+  --accent-gold-text: #F2C464;
+  --accent-gold-tint: rgba(229, 169, 60, 0.16);
+
+  --accent-navy: #E5A93C;
+  --accent-navy-hover: #F2BC57;
+  --accent-navy-tint: rgba(147, 197, 253, 0.14);
+  --accent-on-navy: #071524;
+
+  --accent-shaheedi: #FCA5A5;
+  --accent-shaheedi-tint: rgba(248, 113, 113, 0.16);
+
+  --accent-barsi: #F2C464;
+  --accent-barsi-tint: rgba(229, 169, 60, 0.16);
+
+  --accent-personal: #5EEAD4;
+  --accent-personal-tint: rgba(94, 234, 212, 0.16);
+
+  --grid-header-bg: #112742;
+  --grid-header-text: #FAF6EE;
+  --grain-dot: rgba(229, 169, 60, 0.045);
+  --heritage-from: #0B192C;
+  --heritage-via: #0F223A;
+  --heritage-to: #091626;
+  color-scheme: dark;
+}
+
+[data-theme="kesri"] {
+  --bg-canvas: #FFFBF2;
+  --bg-surface: #F9EEDB;
+  --bg-surface-soft: rgba(249, 238, 219, 0.78);
+  --bg-surface-elevated: #FFFBF2;
+  --bg-hover: #F2E1C4;
+  --bg-header: rgba(255, 251, 242, 0.96);
+  --bg-today-cell: rgba(200, 100, 0, 0.12);
+  --bg-outside-cell: rgba(249, 238, 219, 0.56);
+  --bg-backdrop: rgba(42, 24, 16, 0.52);
+
+  --border-subtle: #E5CFAF;
+  --border-strong: #CFAF82;
+  --border-divider: #EAD8BC;
+
+  --text-primary: #2A1810;
+  --text-heading: #2A1810;
+  --text-secondary: #4A2E20;
+  --text-muted: #644332;
+  --text-faint: #815D49;
+  --text-outside: #B0927D;
+
+  --accent-primary: #C86400;
+  --accent-primary-hover: #A45000;
+  --accent-primary-text: #B45300;
+  --accent-primary-tint: rgba(200, 100, 0, 0.14);
+  --accent-on-primary: #FFFBF2;
+
+  --accent-gold: #B8730B;
+  --accent-gold-text: #945605;
+  --accent-gold-tint: rgba(184, 115, 11, 0.15);
+
+  --accent-navy: #3D1E13;
+  --accent-navy-hover: #2A1810;
+  --accent-navy-tint: rgba(61, 30, 19, 0.1);
+  --accent-on-navy: #FFFBF2;
+
+  --accent-shaheedi: #991B1B;
+  --accent-shaheedi-tint: rgba(153, 27, 27, 0.11);
+
+  --accent-barsi: #854D0E;
+  --accent-barsi-tint: rgba(184, 115, 11, 0.15);
+
+  --accent-personal: #1D6951;
+  --accent-personal-tint: rgba(29, 105, 81, 0.13);
+
+  --grid-header-bg: #3D1E13;
+  --grid-header-text: #FFFBF2;
+  --grain-dot: rgba(200, 100, 0, 0.055);
+  --heritage-from: #FBF1DF;
+  --heritage-via: #FFFBF2;
+  --heritage-to: #F6E5C9;
+  color-scheme: light;
+}
+
 @layer base {
   html {
     font-family: var(--font-serif);
-    background-color: #FAF6EE;
-    color: #1C1917;
+    background-color: var(--bg-canvas);
+    color: var(--text-primary);
     scroll-behavior: smooth;
     overflow-x: clip;
   }
 
   body {
-    background-color: #FAF6EE;
-    color: #1C1917;
+    background-color: var(--bg-canvas);
+    color: var(--text-primary);
     overflow-x: clip;
   }
 
@@ -61,8 +235,8 @@
 
 /* Subtle archival paper grain texture without obscuring legibility */
 .parchment-surface {
-  background-color: #FAF6EE;
-  background-image: radial-gradient(rgba(120, 113, 108, 0.055) 1px, transparent 0);
+  background-color: var(--bg-canvas);
+  background-image: radial-gradient(var(--grain-dot) 1px, transparent 0);
   background-size: 24px 24px;
 }
 

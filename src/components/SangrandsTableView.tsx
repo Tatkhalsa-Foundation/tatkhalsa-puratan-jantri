@@ -27,30 +27,30 @@ export const SangrandsTableView: React.FC<SangrandsTableViewProps> = ({
 
   return (
     <section aria-labelledby="sangrands-heading" className="no-print space-y-6">
-      <div className="flex flex-col gap-4 border-b border-[#DDD2BE] pb-5 sm:flex-row sm:items-end sm:justify-between">
+      <div className="flex flex-col gap-4 border-b border-[var(--border-subtle)] pb-5 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-xs text-[#78716C]">
+          <p className="text-xs text-[var(--text-faint)]">
             {isPa
               ? 'ਸੂਰਜੀ ਦੇਸੀ ਮਹੀਨੇ (ਚੇਤ ਤੋਂ ਫੱਗਣ — ੨੯ ਤੋਂ ੩੨ ਦਿਨ)'
               : 'True Sidereal Punjabi Solar Months (29–32 Days)'}
           </p>
           <h1
             id="sangrands-heading"
-            className="mt-1 font-display text-3xl sm:text-4xl font-semibold text-[#1B263B]"
+            className="mt-1 font-display text-3xl sm:text-4xl font-semibold text-[var(--text-heading)]"
           >
-            {isPa ? 'ਪੁਰਾਤਨ ਸੰਗਰਾਂਦਾਂ ਅਤੇ ਦੇਸੀ ਮਹੀਨੇ' : 'Puratan Sangrands & Solar Months'}
+            {isPa ? 'ਪੁਰਾਤਨ ਸੰਗਰਾਂਦਾਂ ਅਤੇ ਦੇਸੀ ਮਹੀਨੇ' : 'Puratan Sangrands (Month Starts)'}
           </h1>
-          <p className="mt-1.5 text-sm text-[#57534E] max-w-2xl">
+          <p className="mt-1.5 text-sm text-[var(--text-muted)] max-w-2xl">
             {isPa
               ? 'ਪੁਰਾਤਨ ਬਿਕ੍ਰਮੀ ਜੰਤਰੀ ਵਿੱਚ ਹਰ ਸੰਗਰਾਂਦ ਸੂਰਜ ਦੀ ਅਸਲ ਰਾਸ਼ੀ ਪ੍ਰਵੇਸ਼ (ਸੰਕ੍ਰਾਂਤੀ) ’ਤੇ ਅਧਾਰਿਤ ਹੁੰਦੀ ਹੈ, ਨਾ ਕਿ ਨਾਨਕਸ਼ਾਹੀ ਦੀਆਂ ਪੱਕੀਆਂ ਤਾਰੀਖ਼ਾਂ ’ਤੇ।'
-              : 'Each Sangrand follows true sidereal solar ingress (Sankranti) observed at Sri Anandpur Sahib (IST) sunrise, preserving the natural 29–32 day solar months of Puratan Bikrami chronology.'}
+              : 'Each Sangrand (Month Start) follows true sidereal solar ingress (Sankranti) observed at Sri Anandpur Sahib (IST) sunrise, preserving the natural 29–32 day solar months of Puratan Bikrami chronology.'}
           </p>
         </div>
 
         <div
           role="group"
           aria-label={isPa ? 'ਸੰਮਤ ਚੋਣ' : 'Select Sambat year'}
-          className="grid grid-cols-1 xs:grid-cols-2 sm:inline-flex items-center gap-1 rounded-md border border-[#DDD2BE] bg-[#F3ECE0] p-1 w-full sm:w-auto"
+          className="grid grid-cols-1 xs:grid-cols-2 sm:inline-flex items-center gap-1 rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-1 w-full sm:w-auto"
         >
           <button
             type="button"
@@ -59,8 +59,8 @@ export const SangrandsTableView: React.FC<SangrandsTableViewProps> = ({
             data-testid="sangrand-tab-2083"
             className={`min-h-[38px] px-3 sm:px-3.5 text-xs font-medium rounded-sm transition-colors text-center whitespace-nowrap cursor-pointer ${
               selectedSambat === 2083
-                ? 'bg-[#FAF6EE] text-[#1B263B] shadow-xs'
-                : 'text-[#57534E] hover:text-[#1C1917]'
+                ? 'bg-[var(--bg-surface-elevated)] text-[var(--text-heading)] shadow-xs'
+                : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
             }`}
           >
             {isPa ? 'ਸੰਮਤ ੨੦੮੩ (ਕੱਤਕ–ਫੱਗਣ)' : 'Sambat 2083 (Oct ’26–Mar ’27)'}
@@ -72,8 +72,8 @@ export const SangrandsTableView: React.FC<SangrandsTableViewProps> = ({
             data-testid="sangrand-tab-2084"
             className={`min-h-[38px] px-3 sm:px-3.5 text-xs font-medium rounded-sm transition-colors text-center whitespace-nowrap cursor-pointer ${
               selectedSambat === 2084
-                ? 'bg-[#FAF6EE] text-[#1B263B] shadow-xs'
-                : 'text-[#57534E] hover:text-[#1C1917]'
+                ? 'bg-[var(--bg-surface-elevated)] text-[var(--text-heading)] shadow-xs'
+                : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
             }`}
           >
             {isPa ? 'ਸੰਮਤ ੨੦੮੪ (ਪੂਰਾ ਸਾਲ)' : 'Sambat 2084 (Full Year)'}
@@ -89,7 +89,7 @@ export const SangrandsTableView: React.FC<SangrandsTableViewProps> = ({
           return (
             <article
               key={`mobile-${span.sambat}-${span.monthId}`}
-              className="rounded-xl border border-[#DDD2BE] bg-[#FAF6EE] p-4 shadow-xs space-y-3"
+              className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] p-4 shadow-xs space-y-3"
             >
               {/* Row 1: Solar Month + Days */}
               <div className="flex items-start justify-between gap-3">
@@ -99,45 +99,43 @@ export const SangrandsTableView: React.FC<SangrandsTableViewProps> = ({
                   className="text-left group cursor-pointer min-w-0 flex-1"
                 >
                   <div className="flex items-center gap-1.5">
-                    <span className="font-display text-lg font-semibold text-[#1B263B] group-hover:text-[#9E4F00] leading-snug">
+                    <span className="font-display text-lg font-semibold text-[var(--text-heading)] group-hover:text-[var(--accent-primary-text)] leading-snug">
                       {isPa
                         ? `${toGurmukhiNumerals(meta.id)}. ${meta.namePa}`
                         : `${meta.id}. ${meta.nameEn} (${meta.namePa})`}
                     </span>
                     <ChevronRight
-                      className="w-4 h-4 text-[#A89E8E] group-hover:text-[#9E4F00] shrink-0"
+                      className="w-4 h-4 text-[var(--text-faint)] group-hover:text-[var(--accent-primary-text)] shrink-0"
                       aria-hidden="true"
                     />
                   </div>
-                  <span className="block text-xs text-[#78716C] mt-0.5">
+                  <span className="block text-xs text-[var(--text-faint)] mt-0.5">
                     {isPa ? meta.seasonPa : meta.seasonEn}
                   </span>
                 </button>
 
-                <span className="shrink-0 rounded-md border border-[#DDD2BE] bg-[#F3ECE0] px-2.5 py-1 text-xs font-mono-tabular font-semibold text-[#1B263B]">
-                  {isPa
-                    ? `${toGurmukhiNumerals(span.days)} ਦਿਨ`
-                    : `${span.days} days`}
+                <span className="shrink-0 rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-2.5 py-1 text-xs font-mono-tabular font-semibold text-[var(--text-heading)]">
+                  {isPa ? `${toGurmukhiNumerals(span.days)} ਦਿਨ` : `${span.days} days`}
                 </span>
               </div>
 
               {/* Row 2: Sangrand Date + Sankranti IST */}
-              <div className="grid grid-cols-1 xs:grid-cols-2 gap-2.5 rounded-lg border border-[#E3D9C6] bg-[#F3ECE0]/60 p-3 text-xs">
+              <div className="grid grid-cols-1 xs:grid-cols-2 gap-2.5 rounded-lg border border-[var(--border-divider)] bg-[var(--bg-surface-soft)] p-3 text-xs">
                 <div>
-                  <p className="text-[11px] text-[#78716C]">
-                    {isPa ? 'ਸੰਗਰਾਂਦ (੧ ਤਾਰੀਖ਼)' : 'Sangrand Date'}
+                  <p className="text-[11px] text-[var(--text-faint)]">
+                    {isPa ? 'ਸੰਗਰਾਂਦ (ਮਹੀਨੇ ਦਾ ਆਰੰਭ)' : 'Sangrand (Month Start)'}
                   </p>
-                  <p className="mt-0.5 font-semibold text-[#9E4F00]">
+                  <p className="mt-0.5 font-semibold text-[var(--accent-primary-text)]">
                     {formatGregorianDate(span.startDate, lang, false)}
                   </p>
                 </div>
-                <div className="border-t border-[#E3D9C6] pt-2 xs:border-t-0 xs:pt-0 xs:border-l xs:pl-2.5">
-                  <p className="text-[11px] text-[#78716C]">
+                <div className="border-t border-[var(--border-divider)] pt-2 xs:border-t-0 xs:pt-0 xs:border-l xs:pl-2.5">
+                  <p className="text-[11px] text-[var(--text-faint)]">
                     {isPa
                       ? 'ਸੰਕ੍ਰਾਂਤੀ (ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ IST)'
                       : 'Sankranti (Sri Anandpur Sahib IST)'}
                   </p>
-                  <p className="mt-0.5 font-mono-tabular font-medium text-[#1C1917]">
+                  <p className="mt-0.5 font-mono-tabular font-medium text-[var(--text-primary)]">
                     {dual.amritsarDate} · {dual.amritsarTime}
                   </p>
                 </div>
@@ -145,7 +143,7 @@ export const SangrandsTableView: React.FC<SangrandsTableViewProps> = ({
 
               {/* Row 3: Local Time (if different) + Barah Maha Read Action */}
               <div className="flex flex-wrap items-center justify-between gap-2 pt-0.5">
-                <p className="text-[11px] font-mono-tabular text-[#57534E]">
+                <p className="text-[11px] font-mono-tabular text-[var(--text-muted)]">
                   {dual.isSameZone
                     ? isPa
                       ? 'ਸਥਾਨਕ ਸਮਾਂ: IST ਸਮਾਨ'
@@ -157,7 +155,7 @@ export const SangrandsTableView: React.FC<SangrandsTableViewProps> = ({
                   href={meta.pothiUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 min-h-[36px] px-3 py-1.5 rounded-md border border-[#C6B9A3] bg-[#F3ECE0] text-xs font-semibold text-[#1B263B] hover:border-[#9E4F00] hover:text-[#9E4F00] transition-colors whitespace-nowrap"
+                  className="inline-flex items-center gap-1 min-h-[36px] px-3 py-1.5 rounded-md border border-[var(--border-strong)] bg-[var(--bg-surface)] text-xs font-semibold text-[var(--text-heading)] hover:border-[var(--accent-primary)] hover:text-[var(--accent-primary-text)] transition-colors whitespace-nowrap"
                 >
                   <span>{isPa ? 'ਬਾਰਹ ਮਾਹਾ ਪੜ੍ਹੋ' : 'Read Barah Maha'}</span>
                   <ArrowUpRight className="w-3.5 h-3.5" aria-hidden="true" />
@@ -169,12 +167,14 @@ export const SangrandsTableView: React.FC<SangrandsTableViewProps> = ({
       </div>
 
       {/* Desktop Archival Table (md and wider) */}
-      <div className="hidden md:block overflow-x-auto rounded-xl border border-[#DDD2BE] bg-[#FAF6EE]">
+      <div className="hidden md:block overflow-x-auto rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)]">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="border-b border-[#DDD2BE] bg-[#1B263B] text-xs font-medium text-[#FAF6EE]">
+            <tr className="border-b border-[var(--border-subtle)] bg-[var(--grid-header-bg)] text-xs font-medium text-[var(--grid-header-text)]">
               <th className="py-3 px-4">{isPa ? 'ਦੇਸੀ ਮਹੀਨਾ' : 'Solar Month'}</th>
-              <th className="py-3 px-4">{isPa ? 'ਸੰਗਰਾਂਦ (੧ ਤਾਰੀਖ਼)' : 'Sangrand Date'}</th>
+              <th className="py-3 px-4">
+                {isPa ? 'ਸੰਗਰਾਂਦ (ਮਹੀਨੇ ਦਾ ਆਰੰਭ)' : 'Sangrand (Month Start)'}
+              </th>
               <th className="py-3 px-4">{isPa ? 'ਦਿਨ' : 'Days'}</th>
               <th className="py-3 px-4">
                 {isPa
@@ -187,14 +187,14 @@ export const SangrandsTableView: React.FC<SangrandsTableViewProps> = ({
               <th className="py-3 px-4 text-right">{isPa ? 'ਬਾਰਹ ਮਾਹਾ' : 'Barah Maha'}</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#E3D9C6] text-sm">
+          <tbody className="divide-y divide-[var(--border-divider)] text-sm">
             {spans.map((span) => {
               const meta = getBikramiMonthMeta(span.monthId);
               const dual = formatDualTime(span.sankrantiUtc);
               return (
                 <tr
                   key={`${span.sambat}-${span.monthId}`}
-                  className="hover:bg-[#F3ECE0]/55 transition-colors"
+                  className="hover:bg-[var(--bg-hover)] transition-colors"
                 >
                   <td className="py-3.5 px-4">
                     <button
@@ -202,26 +202,26 @@ export const SangrandsTableView: React.FC<SangrandsTableViewProps> = ({
                       onClick={() => onSelectDate(span.startDate)}
                       className="text-left group cursor-pointer"
                     >
-                      <span className="font-semibold text-[#1B263B] group-hover:text-[#9E4F00] underline-offset-4 group-hover:underline">
+                      <span className="font-semibold text-[var(--text-heading)] group-hover:text-[var(--accent-primary-text)] underline-offset-4 group-hover:underline">
                         {isPa
                           ? `${toGurmukhiNumerals(meta.id)}. ${meta.namePa}`
                           : `${meta.id}. ${meta.nameEn} (${meta.namePa})`}
                       </span>
-                      <span className="block text-xs text-[#78716C]">
+                      <span className="block text-xs text-[var(--text-faint)]">
                         {isPa ? meta.seasonPa : meta.seasonEn}
                       </span>
                     </button>
                   </td>
-                  <td className="py-3.5 px-4 font-medium text-[#9E4F00] whitespace-nowrap">
+                  <td className="py-3.5 px-4 font-medium text-[var(--accent-primary-text)] whitespace-nowrap">
                     {formatGregorianDate(span.startDate, lang, false)}
                   </td>
-                  <td className="py-3.5 px-4 font-mono-tabular text-[#1C1917] whitespace-nowrap">
+                  <td className="py-3.5 px-4 font-mono-tabular text-[var(--text-primary)] whitespace-nowrap">
                     {formatNum(span.days, lang)}
                   </td>
-                  <td className="py-3.5 px-4 font-mono-tabular text-xs text-[#44403C] whitespace-nowrap">
+                  <td className="py-3.5 px-4 font-mono-tabular text-xs text-[var(--text-secondary)] whitespace-nowrap">
                     {dual.amritsarDate} · {dual.amritsarTime}
                   </td>
-                  <td className="py-3.5 px-4 font-mono-tabular text-xs text-[#57534E] hidden lg:table-cell whitespace-nowrap">
+                  <td className="py-3.5 px-4 font-mono-tabular text-xs text-[var(--text-muted)] hidden lg:table-cell whitespace-nowrap">
                     {dual.isSameZone
                       ? isPa
                         ? 'ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ IST ਸਮਾਨ'
@@ -233,7 +233,7 @@ export const SangrandsTableView: React.FC<SangrandsTableViewProps> = ({
                       href={meta.pothiUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-xs font-medium text-[#1B263B] hover:text-[#9E4F00] underline underline-offset-4"
+                      className="inline-flex items-center gap-1 text-xs font-medium text-[var(--text-heading)] hover:text-[var(--accent-primary-text)] underline underline-offset-4"
                     >
                       <span>{isPa ? 'ਪੜ੍ਹੋ' : 'Read'}</span>
                       <ArrowUpRight className="w-3.5 h-3.5" aria-hidden="true" />

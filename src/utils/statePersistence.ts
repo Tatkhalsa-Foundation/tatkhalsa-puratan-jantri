@@ -1,6 +1,6 @@
 import type {AppView} from '../components/Header';
 import type {CalendarFilter} from '../components/MonthlyJantriGrid';
-import type {CalendarGridMode, DirectoryCategory, LanguageMode} from '../data/types';
+import type {CalendarGridMode, DirectoryCategory, LanguageMode, ThemeId} from '../data/types';
 import {
   BROWSEABLE_SOLAR_SPANS,
   LOOKUP_MAX_ISO,
@@ -11,6 +11,7 @@ import {
 
 export const APP_STATE_STORAGE_KEY = 'tatkhalsa_jantri_state_v1';
 export const LEGACY_LANG_STORAGE_KEY = 'tatkhalsa_jantri_lang';
+export const THEME_STORAGE_KEY = 'tatkhalsa_jantri_theme';
 
 export type DirectoryFilterState = 'all' | DirectoryCategory;
 export type DirectorySambatState = 'all' | '2083' | '2084';
@@ -18,6 +19,8 @@ export type DirectorySambatState = 'all' | '2083' | '2084';
 export interface PersistedJantriState {
   activeView: AppView;
   lang: LanguageMode;
+  theme: ThemeId;
+  remindersEnabled: boolean;
   gridMode: CalendarGridMode;
   solarSpanIndex: number;
   viewYear: number;
@@ -35,6 +38,7 @@ export interface PersistedJantriState {
 
 const VALID_VIEWS: readonly AppView[] = ['jantri', 'events', 'sangrands', 'print'];
 const VALID_LANGS: readonly LanguageMode[] = ['en', 'pa', 'bi'];
+const VALID_THEMES: readonly ThemeId[] = ['parchment', 'surmai', 'kesri'];
 const VALID_GRID_MODES: readonly CalendarGridMode[] = ['solar', 'gregorian'];
 const VALID_CALENDAR_FILTERS: readonly CalendarFilter[] = [
   'all',
@@ -82,6 +86,8 @@ export function createDefaultPersistedState(
   return {
     activeView: 'jantri',
     lang: 'en',
+    theme: 'parchment',
+    remindersEnabled: false,
     gridMode: 'solar',
     solarSpanIndex: todaySolarIndex,
     viewYear: todayYear,
@@ -106,11 +112,15 @@ export function parsePersistedState(
   raw: string | null,
   defaults: PersistedJantriState,
   legacyLangRaw?: string | null,
+  standaloneThemeRaw?: string | null,
 ): PersistedJantriState {
   const result: PersistedJantriState = {...defaults};
 
   if (legacyLangRaw && (VALID_LANGS as readonly string[]).includes(legacyLangRaw)) {
     result.lang = legacyLangRaw as LanguageMode;
+  }
+  if (standaloneThemeRaw && (VALID_THEMES as readonly string[]).includes(standaloneThemeRaw)) {
+    result.theme = standaloneThemeRaw as ThemeId;
   }
 
   if (!raw) return result;
@@ -130,6 +140,12 @@ export function parsePersistedState(
   }
   if (typeof obj.lang === 'string' && (VALID_LANGS as readonly string[]).includes(obj.lang)) {
     result.lang = obj.lang as LanguageMode;
+  }
+  if (typeof obj.theme === 'string' && (VALID_THEMES as readonly string[]).includes(obj.theme)) {
+    result.theme = obj.theme as ThemeId;
+  }
+  if (typeof obj.remindersEnabled === 'boolean') {
+    result.remindersEnabled = obj.remindersEnabled;
   }
   if (
     typeof obj.gridMode === 'string' &&
@@ -196,7 +212,8 @@ export function loadPersistedState(defaults: PersistedJantriState): PersistedJan
   try {
     const raw = window.localStorage.getItem(APP_STATE_STORAGE_KEY);
     const legacyLang = window.localStorage.getItem(LEGACY_LANG_STORAGE_KEY);
-    return parsePersistedState(raw, defaults, legacyLang);
+    const standaloneTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
+    return parsePersistedState(raw, defaults, legacyLang, standaloneTheme);
   } catch {
     return defaults;
   }
@@ -207,6 +224,7 @@ export function savePersistedState(state: PersistedJantriState): void {
   try {
     window.localStorage.setItem(APP_STATE_STORAGE_KEY, JSON.stringify(state));
     window.localStorage.setItem(LEGACY_LANG_STORAGE_KEY, state.lang);
+    window.localStorage.setItem(THEME_STORAGE_KEY, state.theme);
   } catch {
     // Ignore storage quota or private-browsing restrictions
   }

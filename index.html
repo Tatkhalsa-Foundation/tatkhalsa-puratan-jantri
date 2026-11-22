@@ -74,8 +74,21 @@
         }
       }
     </script>
+
+    <!-- Pre-paint theme bootstrap to avoid flash in Surmai Night / Hazuri Kesri -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('tatkhalsa_jantri_theme');
+          if (t === 'surmai' || t === 'kesri' || t === 'parchment') {
+            document.documentElement.dataset.theme = t;
+            if (t === 'surmai') document.documentElement.classList.add('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
-  <body class="bg-[#FAF6EE] text-[#1C1917] antialiased selection:bg-[#C86400]/20 selection:text-[#1C1917]">
+  <body class="bg-[var(--bg-canvas)] text-[var(--text-primary)] antialiased selection:bg-[var(--accent-primary-tint)] selection:text-[var(--text-primary)]">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

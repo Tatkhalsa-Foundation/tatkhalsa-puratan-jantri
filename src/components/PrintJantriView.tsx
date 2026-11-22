@@ -63,12 +63,12 @@ export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
   return (
     <section aria-labelledby="print-sheet-heading" className="space-y-5">
       {/* Screen-only Print Controls */}
-      <div className="no-print flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[#DDD2BE] bg-[#F3ECE0] p-4">
+      <div className="no-print flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-4">
         <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={onBackToInteractive}
-            className="inline-flex items-center gap-1.5 min-h-[40px] px-3.5 text-xs font-medium rounded-md border border-[#C6B9A3] bg-[#FAF6EE] text-[#1C1917] hover:bg-[#EBE2D2] cursor-pointer"
+            className="inline-flex items-center gap-1.5 min-h-[40px] px-3.5 text-xs font-medium rounded-md border border-[var(--border-strong)] bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] hover:bg-[var(--bg-hover)] cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" aria-hidden="true" />
             <span>{isPa ? 'ਜੰਤਰੀ ’ਤੇ ਵਾਪਸ' : 'Back to Jantri'}</span>
@@ -79,7 +79,7 @@ export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
             onClick={onPrevMonth}
             disabled={!canGoPrev}
             aria-label={isPa ? 'ਪਿਛਲਾ ਮਹੀਨਾ' : 'Previous month'}
-            className="min-h-[40px] min-w-[40px] flex items-center justify-center rounded-md border border-[#C6B9A3] bg-[#FAF6EE] disabled:opacity-40 cursor-pointer"
+            className="min-h-[40px] min-w-[40px] flex items-center justify-center rounded-md border border-[var(--border-strong)] bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] hover:bg-[var(--bg-hover)] disabled:opacity-40 cursor-pointer"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
@@ -88,7 +88,7 @@ export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
             onClick={onNextMonth}
             disabled={!canGoNext}
             aria-label={isPa ? 'ਅਗਲਾ ਮਹੀਨਾ' : 'Next month'}
-            className="min-h-[40px] min-w-[40px] flex items-center justify-center rounded-md border border-[#C6B9A3] bg-[#FAF6EE] disabled:opacity-40 cursor-pointer"
+            className="min-h-[40px] min-w-[40px] flex items-center justify-center rounded-md border border-[var(--border-strong)] bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] hover:bg-[var(--bg-hover)] disabled:opacity-40 cursor-pointer"
           >
             <ChevronRight className="w-4 h-4" />
           </button>
@@ -97,7 +97,7 @@ export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
         <button
           type="button"
           onClick={() => window.print()}
-          className="inline-flex items-center gap-2 min-h-[44px] px-5 py-2.5 text-sm font-medium rounded-md bg-[#1B263B] text-[#FAF6EE] hover:bg-[#111A2B] transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+          className="inline-flex items-center gap-2 min-h-[44px] px-5 py-2.5 text-sm font-medium rounded-md bg-[var(--accent-navy)] text-[var(--accent-on-navy)] hover:bg-[var(--accent-navy-hover)] transition-colors whitespace-nowrap shrink-0 cursor-pointer"
         >
           <Printer className="w-4 h-4" aria-hidden="true" />
           <span>{isPa ? 'A4 ਜੰਤਰੀ ਪ੍ਰਿੰਟ ਕਰੋ' : 'Print A4 Jantri Sheet'}</span>

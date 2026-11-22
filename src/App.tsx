@@ -3,20 +3,28 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {ArrowUpRight} from 'lucide-react';
-import {useEffect, useMemo, useState} from 'react';
+import {ArrowUpRight, Check, X} from 'lucide-react';
+import {useEffect, useMemo, useRef, useState} from 'react';
 import {EventColophonDrawer} from './components/EventColophonDrawer';
 import {EventsDirectoryView} from './components/EventsDirectoryView';
 import {Header, type AppView} from './components/Header';
 import {IcsExportModal} from './components/IcsExportModal';
 import {MonthlyJantriGrid, type CalendarFilter} from './components/MonthlyJantriGrid';
+import {PersonalDatesDrawer} from './components/PersonalDatesDrawer';
 import {OfflineIndicator} from './components/PWAInstallButton';
 import {PrintJantriView} from './components/PrintJantriView';
+import {PurabReminderStrip} from './components/PurabReminderStrip';
 import {SangrandsTableView} from './components/SangrandsTableView';
 import {ShastarAsthaanCard} from './components/ShastarAsthaanCard';
 import {TodayHero} from './components/TodayHero';
 import {getBikramiMonthMeta, POTHI_BARAH_MAHA_URL} from './data/sambatData';
-import type {CalendarGridMode, JantriDay, LanguageMode} from './data/types';
+import type {
+  CalendarGridMode,
+  JantriDay,
+  LanguageMode,
+  PersonalDesiDate,
+  ThemeId,
+} from './data/types';
 import {useLiveClock} from './hooks/useLiveClock';
 import {
   BROWSEABLE_SOLAR_SPANS,
@@ -29,12 +37,32 @@ import {
   SUPPORTED_MIN_MONTH,
 } from './utils/bikramiEngine';
 import {
+  getPersonalDatesForSolarDay,
+  loadPersonalDates,
+  savePersonalDates,
+} from './utils/personalDates';
+import {dispatchTomorrowPurabNotification, getTomorrowObservances} from './utils/purabReminders';
+import {shareDailyJantri} from './utils/shareDailyJantri';
+import {
   createDefaultPersistedState,
   loadPersistedState,
   savePersistedState,
   type DirectoryFilterState,
   type DirectorySambatState,
 } from './utils/statePersistence';
+
+const THEME_META_COLOR: Record<ThemeId, string> = {
+  parchment: '#FAF6EE',
+  surmai: '#071524',
+  kesri: '#FFFBF2',
+};
+
+function getInitialNotificationPermission(): NotificationPermission | 'unsupported' {
+  if (typeof window === 'undefined' || typeof Notification === 'undefined') {
+    return 'unsupported';
+  }
+  return Notification.permission;
+}
 
 export default function App() {
   const liveClock = useLiveClock();
@@ -55,6 +83,10 @@ export default function App() {
   }, []);
 
   const [lang, setLang] = useState<LanguageMode>(initialPersisted.lang);
+  const [theme, setTheme] = useState<ThemeId>(initialPersisted.theme);
+  const [remindersEnabled, setRemindersEnabled] = useState<boolean>(
+    initialPersisted.remindersEnabled,
+  );
   const [activeView, setActiveView] = useState<AppView>(initialPersisted.activeView);
   const [gridMode, setGridMode] = useState<CalendarGridMode>(initialPersisted.gridMode);
   const [solarSpanIndex, setSolarSpanIndex] = useState<number>(initialPersisted.solarSpanIndex);
@@ -79,14 +111,41 @@ export default function App() {
   const [lookupInput, setLookupInput] = useState<string>(initialPersisted.lookupInput);
   const [isIcsOpen, setIsIcsOpen] = useState<boolean>(false);
 
+  // Personal Desi/Bikrami Family Dates (localStorage)
+  const [personalDates, setPersonalDates] = useState<PersonalDesiDate[]>(() => loadPersonalDates());
+  const [isPersonalDatesOpen, setIsPersonalDatesOpen] = useState<boolean>(false);
+  const [personalDateDraft, setPersonalDateDraft] = useState<{
+    monthId: number;
+    day: number;
+  } | null>(null);
+
+  // Share toast & 1-day-before reminder status
+  const [shareToast, setShareToast] = useState<string | null>(null);
+  const shareToastTimerRef = useRef<number | null>(null);
+  const [notificationPermission, setNotificationPermission] = useState<
+    NotificationPermission | 'unsupported'
+  >(getInitialNotificationPermission);
+  const [reminderFeedback, setReminderFeedback] = useState<string | null>(null);
+
   useEffect(() => {
     document.documentElement.lang = lang === 'pa' ? 'pa' : 'en';
   }, [lang]);
 
   useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.classList.toggle('dark', theme === 'surmai');
+    const metaTheme = document.querySelector('meta[name="theme-color"]');
+    if (metaTheme) {
+      metaTheme.setAttribute('content', THEME_META_COLOR[theme]);
+    }
+  }, [theme]);
+
+  useEffect(() => {
     savePersistedState({
       activeView,
       lang,
+      theme,
+      remindersEnabled,
       gridMode,
       solarSpanIndex,
       viewYear,
@@ -104,6 +163,8 @@ export default function App() {
   }, [
     activeView,
     lang,
+    theme,
+    remindersEnabled,
     gridMode,
     solarSpanIndex,
     viewYear,
@@ -120,10 +181,43 @@ export default function App() {
   ]);
 
   useEffect(() => {
+    savePersonalDates(personalDates);
+  }, [personalDates]);
+
+  useEffect(() => {
+    return () => {
+      if (shareToastTimerRef.current !== null) {
+        window.clearTimeout(shareToastTimerRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
     window.scrollTo({top: 0, behavior: 'auto'});
   }, [activeView]);
 
   const todayRecord = useMemo(() => getJantriDay(todayIso, true), [todayIso]);
+  const todayPersonalDates = useMemo(
+    () =>
+      getPersonalDatesForSolarDay(
+        personalDates,
+        todayRecord.solar.monthId,
+        todayRecord.solar.day,
+      ),
+    [personalDates, todayRecord.solar.monthId, todayRecord.solar.day],
+  );
+  const tomorrowSummary = useMemo(
+    () => getTomorrowObservances(todayIso, personalDates),
+    [todayIso, personalDates],
+  );
+
+  // Check on app open and on midnight rollover if tomorrow has a Sangrand, Puranmashi, Masya, Gurpurab, or Personal Desi Date
+  useEffect(() => {
+    if (!remindersEnabled) return;
+    if (!tomorrowSummary.hasReminderItems) return;
+    dispatchTomorrowPurabNotification(tomorrowSummary, lang === 'pa');
+  }, [remindersEnabled, tomorrowSummary, lang]);
+
   const milestones = useMemo(() => getNextMilestones(todayIso), [todayIso]);
   const drawerDay = useMemo(
     () => (drawerDateIso ? getJantriDay(drawerDateIso, true) : null),
@@ -146,6 +240,111 @@ export default function App() {
       monthGrid.find((d) => d.inCurrentGridMonth && d.gregorianDay === 15) ?? monthGrid[15];
     return midDay ? midDay.solar.monthMeta.key : todayRecord.solar.monthMeta.key;
   }, [gridMode, solarSpanIndex, monthGrid, todayRecord]);
+
+  const showShareToast = (message: string) => {
+    setShareToast(message);
+    if (shareToastTimerRef.current !== null) {
+      window.clearTimeout(shareToastTimerRef.current);
+    }
+    shareToastTimerRef.current = window.setTimeout(() => {
+      setShareToast(null);
+      shareToastTimerRef.current = null;
+    }, 3400);
+  };
+
+  const handleShareToday = async () => {
+    const outcome = await shareDailyJantri(todayRecord, todayPersonalDates);
+    if (outcome === 'copied') {
+      showShareToast(lang === 'pa' ? 'WhatsApp ਲਈ ਕਾਪੀ ਹੋ ਗਿਆ!' : 'Copied for WhatsApp!');
+    } else if (outcome === 'shared') {
+      showShareToast(lang === 'pa' ? 'ਅੱਜ ਦੀ ਜੰਤਰੀ ਸਾਂਝੀ ਕੀਤੀ ਗਈ!' : 'Shared today’s Jantri!');
+    } else if (outcome === 'failed') {
+      showShareToast(
+        lang === 'pa' ? 'ਕਾਪੀ ਨਹੀਂ ਹੋ ਸਕਿਆ — ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।' : 'Could not copy — please try again.',
+      );
+    }
+  };
+
+  const handleToggleReminders = async () => {
+    setReminderFeedback(null);
+    if (remindersEnabled) {
+      setRemindersEnabled(false);
+      return;
+    }
+
+    if (typeof window === 'undefined' || typeof Notification === 'undefined') {
+      setNotificationPermission('unsupported');
+      setRemindersEnabled(true);
+      setReminderFeedback(
+        lang === 'pa'
+          ? 'ਯਾਦ-ਦਹਾਨੀ ਚਾਲੂ — ਇਸ ਬ੍ਰਾਊਜ਼ਰ ਵਿੱਚ ਸਿਸਟਮ ਸੂਚਨਾ ਉਪਲਬਧ ਨਹੀਂ, ਪਰ ਕੱਲ੍ਹ ਦਾ ਪੁਰਬ ਇੱਥੇ ਦਿਖਾਈ ਦੇਵੇਗਾ।'
+          : 'Reminders saved — browser notifications are unavailable here, so tomorrow’s Purab preview will show right below.',
+      );
+      return;
+    }
+
+    const currentPerm = Notification.permission;
+    setNotificationPermission(currentPerm);
+
+    if (currentPerm === 'granted') {
+      setRemindersEnabled(true);
+      dispatchTomorrowPurabNotification(tomorrowSummary, lang === 'pa');
+      return;
+    }
+
+    if (currentPerm === 'denied') {
+      setRemindersEnabled(false);
+      setReminderFeedback(
+        lang === 'pa'
+          ? 'ਬ੍ਰਾਊਜ਼ਰ ਸੂਚਨਾਵਾਂ ਬੰਦ ਹਨ — ਕਿਰਪਾ ਕਰਕੇ ਬ੍ਰਾਊਜ਼ਰ ਸੈਟਿੰਗਾਂ ਵਿੱਚ Notifications ਦੀ ਇਜਾਜ਼ਤ ਦਿਓ।'
+          : 'Notifications are blocked by your browser — allow Notifications in site settings to turn on alerts.',
+      );
+      return;
+    }
+
+    try {
+      const requested = await Notification.requestPermission();
+      setNotificationPermission(requested);
+      if (requested === 'granted') {
+        setRemindersEnabled(true);
+        dispatchTomorrowPurabNotification(tomorrowSummary, lang === 'pa');
+      } else if (requested === 'denied') {
+        setRemindersEnabled(false);
+        setReminderFeedback(
+          lang === 'pa'
+            ? 'ਸੂਚਨਾ ਦੀ ਇਜਾਜ਼ਤ ਨਹੀਂ ਮਿਲੀ — ਤੁਸੀਂ ਬ੍ਰਾਊਜ਼ਰ ਸੈਟਿੰਗਾਂ ਤੋਂ ਬਾਅਦ ਵਿੱਚ ਚਾਲੂ ਕਰ ਸਕਦੇ ਹੋ।'
+            : 'Notification permission was declined — you can re-enable it anytime in browser settings.',
+        );
+      } else {
+        setRemindersEnabled(false);
+      }
+    } catch {
+      setRemindersEnabled(true);
+    }
+  };
+
+  const handleAddPersonalDate = (entry: Omit<PersonalDesiDate, 'id' | 'createdAt'>) => {
+    const id =
+      typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+        ? crypto.randomUUID()
+        : `pd-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    const nextItem: PersonalDesiDate = {
+      ...entry,
+      id,
+      createdAt: new Date().toISOString(),
+    };
+    setPersonalDates((prev) => [nextItem, ...prev]);
+  };
+
+  const handleDeletePersonalDate = (id: string) => {
+    setPersonalDates((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const handleOpenPersonalDatesForDay = (monthId: number, day: number) => {
+    setPersonalDateDraft({monthId, day});
+    setDrawerDateIso(null);
+    setIsPersonalDatesOpen(true);
+  };
 
   const handleSelectSolarSpan = (idx: number) => {
     const clamped = Math.max(0, Math.min(BROWSEABLE_SOLAR_SPANS.length - 1, idx));
@@ -241,24 +440,28 @@ export default function App() {
 
   return (
     <div
-      className={`min-h-screen flex flex-col parchment-surface text-[#1C1917] ${isPa ? 'lang-pa' : ''}`}
+      className={`min-h-screen flex flex-col parchment-surface text-[var(--text-primary)] ${isPa ? 'lang-pa' : ''}`}
     >
       <Header
         activeView={activeView}
         onSelectView={setActiveView}
         lang={lang}
         onSelectLang={setLang}
+        theme={theme}
+        onSelectTheme={setTheme}
       />
 
-      <main className="flex-1 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-24 lg:pb-12 space-y-8">
+      <main className="flex-1 mx-auto w-full max-w-7xl px-3.5 sm:px-6 lg:px-8 py-4 sm:py-6 pb-24 lg:pb-12 space-y-5 sm:space-y-6">
         {activeView === 'jantri' && (
           <>
             <TodayHero
               today={todayRecord}
+              todayPersonalDates={todayPersonalDates}
               liveClock={liveClock}
               milestones={milestones}
               lang={lang}
               onJumpToDate={handleJumpToDateAndOpen}
+              onShareToday={handleShareToday}
             />
 
             <MonthlyJantriGrid
@@ -270,6 +473,7 @@ export default function App() {
               todayIso={todayIso}
               selectedIso={selectedIso}
               activeFilter={activeFilter}
+              personalDates={personalDates}
               lang={lang}
               onChangeGridMode={setGridMode}
               onSelectSolarSpan={handleSelectSolarSpan}
@@ -280,7 +484,24 @@ export default function App() {
               onSelectFilter={setActiveFilter}
               onSelectDay={handleSelectDay}
               onOpenIcsModal={() => setIsIcsOpen(true)}
+              onOpenPersonalDates={() => {
+                setPersonalDateDraft({
+                  monthId: todayRecord.solar.monthId,
+                  day: todayRecord.solar.day,
+                });
+                setIsPersonalDatesOpen(true);
+              }}
               onOpenPrintView={() => setActiveView('print')}
+            />
+
+            <PurabReminderStrip
+              lang={lang}
+              enabled={remindersEnabled}
+              permissionStatus={notificationPermission}
+              statusFeedback={reminderFeedback}
+              tomorrowSummary={tomorrowSummary}
+              onToggleReminders={handleToggleReminders}
+              onInspectTomorrow={handleJumpToDateAndOpen}
             />
 
             <ShastarAsthaanCard monthKey={activeSolarMonthKey} lang={lang} />
@@ -331,10 +552,10 @@ export default function App() {
       </main>
 
       {/* Quiet Archival Institutional Footer */}
-      <footer className="no-print border-t border-[#DDD2BE] bg-[#F3ECE0]/60 py-6 pb-24 lg:pb-6">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between text-xs text-[#57534E]">
+      <footer className="no-print border-t border-[var(--border-subtle)] bg-[var(--bg-surface-soft)] py-6 pb-24 lg:pb-6">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between text-xs text-[var(--text-muted)]">
           <div className="space-y-0.5">
-            <p className="font-semibold text-[#1B263B]">
+            <p className="font-semibold text-[var(--text-heading)]">
               {isPa
                 ? 'ਤੱਤਖ਼ਾਲਸਾ ਫ਼ਾਊਂਡੇਸ਼ਨ · ਤੱਤਖ਼ਾਲਸਾ ਪੁਰਾਤਨ ਜੰਤਰੀ'
                 : 'Tatkhalsa Foundation · Tatkhalsa Puratan Jantri'}
@@ -350,7 +571,7 @@ export default function App() {
               href={POTHI_BARAH_MAHA_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 font-medium text-[#1B263B] hover:text-[#9E4F00] hover:underline underline-offset-4"
+              className="inline-flex items-center gap-1 font-medium text-[var(--text-heading)] hover:text-[var(--accent-primary-text)] hover:underline underline-offset-4"
             >
               <span>{isPa ? 'ਪੋਥੀ ਸਾਹਿਬ (ਬਾਰਹ ਮਾਹਾ)' : 'pothi.tatkhalsa.in'}</span>
               <ArrowUpRight className="w-3.5 h-3.5" aria-hidden="true" />
@@ -358,7 +579,7 @@ export default function App() {
             <button
               type="button"
               onClick={() => setIsIcsOpen(true)}
-              className="font-medium text-[#1C1917] hover:text-[#9E4F00] hover:underline underline-offset-4 cursor-pointer"
+              className="font-medium text-[var(--text-primary)] hover:text-[var(--accent-primary-text)] hover:underline underline-offset-4 cursor-pointer"
             >
               {isPa ? '.ics ਡਾਊਨਲੋਡ' : 'Export .ics'}
             </button>
@@ -366,13 +587,57 @@ export default function App() {
         </div>
       </footer>
 
+      {/* 1-Tap Share Confirmation Toast */}
+      {shareToast && (
+        <div
+          role="status"
+          aria-live="polite"
+          data-testid="share-toast"
+          className="no-print fixed bottom-20 lg:bottom-5 right-4 z-50 flex items-center gap-2 rounded-lg border border-[var(--border-strong)] bg-[var(--accent-navy)] text-[var(--accent-on-navy)] px-3.5 py-2.5 text-xs font-medium shadow-xl"
+        >
+          <Check className="w-4 h-4 shrink-0" aria-hidden="true" />
+          <span>{shareToast}</span>
+          <button
+            type="button"
+            onClick={() => setShareToast(null)}
+            aria-label={isPa ? 'ਸੂਚਨਾ ਬੰਦ ਕਰੋ' : 'Dismiss share notification'}
+            className="ml-1 inline-flex h-6 w-6 items-center justify-center rounded-sm opacity-80 hover:opacity-100 cursor-pointer"
+          >
+            <X className="w-3.5 h-3.5" aria-hidden="true" />
+          </button>
+        </div>
+      )}
+
       <EventColophonDrawer
         day={drawerDay}
+        personalDates={personalDates}
         liveClock={liveClock}
         lang={lang}
+        onAddPersonalDateForDay={handleOpenPersonalDatesForDay}
         onClose={() => setDrawerDateIso(null)}
       />
-      <IcsExportModal isOpen={isIcsOpen} lang={lang} onClose={() => setIsIcsOpen(false)} />
+
+      <PersonalDatesDrawer
+        isOpen={isPersonalDatesOpen}
+        lang={lang}
+        todayIso={todayIso}
+        initialMonthId={personalDateDraft?.monthId ?? todayRecord.solar.monthId}
+        initialDay={personalDateDraft?.day ?? todayRecord.solar.day}
+        personalDates={personalDates}
+        onAddPersonalDate={handleAddPersonalDate}
+        onDeletePersonalDate={handleDeletePersonalDate}
+        onJumpToDate={handleJumpToGridDate}
+        onOpenIcsModal={() => setIsIcsOpen(true)}
+        onClose={() => setIsPersonalDatesOpen(false)}
+      />
+
+      <IcsExportModal
+        isOpen={isIcsOpen}
+        lang={lang}
+        personalDates={personalDates}
+        onClose={() => setIsIcsOpen(false)}
+      />
+
       <OfflineIndicator lang={lang} />
     </div>
   );
