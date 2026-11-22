@@ -1,6 +1,7 @@
 import type {BikramiMonthMeta, SolarMonthSpan} from './types';
 
 export const POTHI_BASE_URL = 'https://pothi.tatkhalsa.in';
+export const POTHI_BARAH_MAHA_URL = 'https://pothi.tatkhalsa.in/tabs/pothi';
 
 export const BIKRAMI_MONTHS: readonly BikramiMonthMeta[] = [
   {
@@ -14,7 +15,7 @@ export const BIKRAMI_MONTHS: readonly BikramiMonthMeta[] = [
     barahMahaRefPa: 'ਬਾਰਹ ਮਾਹਾ ਮਾਂਝ · ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ ਅੰਗ ੧੩੩',
     barahMahaOpeningPa: 'ਚੇਤਿ ਗੋਵਿੰਦੁ ਅਰਾਧੀਐ ਹੋਵੈ ਅਨੰਦੁ ਘਣਾ ॥',
     barahMahaOpeningTranslit: 'Chet Govind araadheeai hovai anand ghanaa.',
-    pothiUrl: `${POTHI_BASE_URL}/sundar-gutka/barah-maha?ang=133`,
+    pothiUrl: POTHI_BARAH_MAHA_URL,
   },
   {
     id: 2,
@@ -27,7 +28,7 @@ export const BIKRAMI_MONTHS: readonly BikramiMonthMeta[] = [
     barahMahaRefPa: 'ਬਾਰਹ ਮਾਹਾ ਮਾਂਝ · ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ ਅੰਗ ੧੩੩',
     barahMahaOpeningPa: 'ਵੈਸਾਖਿ ਧੀਰਨਿ ਕਿਉ ਵਾਢੀਆ ਜਿਨਾ ਪ੍ਰੇਮ ਬਿਛੋਹੁ ॥',
     barahMahaOpeningTranslit: 'Vaisaakh dheeran kio vaadheeaa jinaa prem bichhoh.',
-    pothiUrl: `${POTHI_BASE_URL}/sundar-gutka/barah-maha?ang=133`,
+    pothiUrl: POTHI_BARAH_MAHA_URL,
   },
   {
     id: 3,
@@ -40,7 +41,7 @@ export const BIKRAMI_MONTHS: readonly BikramiMonthMeta[] = [
     barahMahaRefPa: 'ਬਾਰਹ ਮਾਹਾ ਮਾਂਝ · ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ ਅੰਗ ੧੩੪',
     barahMahaOpeningPa: 'ਮਾਹਿ ਜੇਠਿ ਹਰਿ ਪ੍ਰਭੁ ਮਿਲੈ ਤਿਸੁ ਆਗੈ ਨਿਵਿ ਲਾਗਉ ॥',
     barahMahaOpeningTranslit: 'Maah Jeth Har Prabh milai tis aagai niv laagau.',
-    pothiUrl: `${POTHI_BASE_URL}/sundar-gutka/barah-maha?ang=134`,
+    pothiUrl: POTHI_BARAH_MAHA_URL,
   },
   {
     id: 4,
@@ -53,7 +54,7 @@ export const BIKRAMI_MONTHS: readonly BikramiMonthMeta[] = [
     barahMahaRefPa: 'ਬਾਰਹ ਮਾਹਾ ਮਾਂਝ · ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ ਅੰਗ ੧੩੪',
     barahMahaOpeningPa: 'ਆਸਾੜੁ ਤਪੰਦਾ ਤਿਸੁ ਲਗੈ ਹਰਿ ਨਾਹੁ ਨ ਜਿੰਨਾ ਪਾਸਿ ॥',
     barahMahaOpeningTranslit: 'Aasaarh tapandaa tis lagai Har naahu na jinnaa paas.',
-    pothiUrl: `${POTHI_BASE_URL}/sundar-gutka/barah-maha?ang=134`,
+    pothiUrl: POTHI_BARAH_MAHA_URL,
   },
   {
     id: 5,
@@ -66,7 +67,7 @@ export const BIKRAMI_MONTHS: readonly BikramiMonthMeta[] = [
     barahMahaRefPa: 'ਬਾਰਹ ਮਾਹਾ ਮਾਂਝ · ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ ਅੰਗ ੧੩੪',
     barahMahaOpeningPa: 'ਸਾਵਣਿ ਸਰਸੀ ਕਾਮਣੀ ਚਰਨ ਕਮਲ ਸਿਉ ਪਿਆਰੁ ॥',
     barahMahaOpeningTranslit: 'Saavan sarsee kaamnee charan kamal sio piaar.',
-    pothiUrl: `${POTHI_BASE_URL}/sundar-gutka/barah-maha?ang=134`,
+    pothiUrl: POTHI_BARAH_MAHA_URL,
   },
   {
     id: 6,
@@ -79,7 +80,7 @@ export const BIKRAMI_MONTHS: readonly BikramiMonthMeta[] = [
     barahMahaRefPa: 'ਬਾਰਹ ਮਾਹਾ ਮਾਂਝ · ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ ਅੰਗ ੧੩੪',
     barahMahaOpeningPa: 'ਭਾਦੁਇ ਭਰਮਿ ਭੁਲਾਣੀਆ ਦੂਜੈ ਲਗਾ ਹੇਤੁ ॥',
     barahMahaOpeningTranslit: 'Bhaadui bharam bhulaaneeaa doojai lagaa het.',
-    pothiUrl: `${POTHI_BASE_URL}/sundar-gutka/barah-maha?ang=134`,
+    pothiUrl: POTHI_BARAH_MAHA_URL,
   },
   {
     id: 7,
@@ -92,7 +93,7 @@ export const BIKRAMI_MONTHS: readonly BikramiMonthMeta[] = [
     barahMahaRefPa: 'ਬਾਰਹ ਮਾਹਾ ਮਾਂਝ · ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ ਅੰਗ ੧੩੪',
     barahMahaOpeningPa: 'ਅਸੁਨਿ ਪ੍ਰੇਮ ਉਮਾਹੜਾ ਕਿਉ ਮਿਲੀਐ ਹਰਿ ਜਾਇ ॥',
     barahMahaOpeningTranslit: 'Asun prem umaahraa kio mileeai Har jaae.',
-    pothiUrl: `${POTHI_BASE_URL}/sundar-gutka/barah-maha?ang=134`,
+    pothiUrl: POTHI_BARAH_MAHA_URL,
   },
   {
     id: 8,
@@ -105,7 +106,7 @@ export const BIKRAMI_MONTHS: readonly BikramiMonthMeta[] = [
     barahMahaRefPa: 'ਬਾਰਹ ਮਾਹਾ ਮਾਂਝ · ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ ਅੰਗ ੧੩੫',
     barahMahaOpeningPa: 'ਕਤਿਕਿ ਕਰਮ ਕਮਾਵਣੇ ਦੋਸੁ ਨ ਕਾਹੂ ਜੋਗੁ ॥',
     barahMahaOpeningTranslit: 'Katik karam kamaavane dos na kaahoo jog.',
-    pothiUrl: `${POTHI_BASE_URL}/sundar-gutka/barah-maha?ang=135`,
+    pothiUrl: POTHI_BARAH_MAHA_URL,
   },
   {
     id: 9,
@@ -118,7 +119,7 @@ export const BIKRAMI_MONTHS: readonly BikramiMonthMeta[] = [
     barahMahaRefPa: 'ਬਾਰਹ ਮਾਹਾ ਮਾਂਝ · ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ ਅੰਗ ੧੩੫',
     barahMahaOpeningPa: 'ਮੰਘਿਰਿ ਮਾਹਿ ਸੋਹੰਦੀਆ ਹਰਿ ਪਿਰ ਸੰਗਿ ਬੈਠੜੀਆਹ ॥',
     barahMahaOpeningTranslit: 'Manghir maah sohandeeaa Har pir sang baithreeaah.',
-    pothiUrl: `${POTHI_BASE_URL}/sundar-gutka/barah-maha?ang=135`,
+    pothiUrl: POTHI_BARAH_MAHA_URL,
   },
   {
     id: 10,
@@ -131,7 +132,7 @@ export const BIKRAMI_MONTHS: readonly BikramiMonthMeta[] = [
     barahMahaRefPa: 'ਬਾਰਹ ਮਾਹਾ ਮਾਂਝ · ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ ਅੰਗ ੧੩੫',
     barahMahaOpeningPa: 'ਪੋਖਿ ਤੁਖਾਰੁ ਨ ਵਿਆਪਈ ਕੰਠਿ ਮਿਲਿਆ ਹਰਿ ਨਾਹੁ ॥',
     barahMahaOpeningTranslit: 'Pokh tukhaar na viaapaee kanth miliaa Har naahu.',
-    pothiUrl: `${POTHI_BASE_URL}/sundar-gutka/barah-maha?ang=135`,
+    pothiUrl: POTHI_BARAH_MAHA_URL,
   },
   {
     id: 11,
@@ -144,7 +145,7 @@ export const BIKRAMI_MONTHS: readonly BikramiMonthMeta[] = [
     barahMahaRefPa: 'ਬਾਰਹ ਮਾਹਾ ਮਾਂਝ · ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ ਅੰਗ ੧੩੫',
     barahMahaOpeningPa: 'ਮਾਘਿ ਮਜਨੁ ਸੰਗਿ ਸਾਧੂਆ ਧੂੜੀ ਕਰਿ ਇਸਨਾਨੁ ॥',
     barahMahaOpeningTranslit: 'Maagh majan sang saadhooaa dhooree kar isnaan.',
-    pothiUrl: `${POTHI_BASE_URL}/sundar-gutka/barah-maha?ang=135`,
+    pothiUrl: POTHI_BARAH_MAHA_URL,
   },
   {
     id: 12,
@@ -157,12 +158,12 @@ export const BIKRAMI_MONTHS: readonly BikramiMonthMeta[] = [
     barahMahaRefPa: 'ਬਾਰਹ ਮਾਹਾ ਮਾਂਝ · ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ ਅੰਗ ੧੩੬',
     barahMahaOpeningPa: 'ਫਲਗੁਣਿ ਅਨੰਦ ਉਪਾਰਜਨਾ ਹਰਿ ਸਜਣ ਪ੍ਰਗਟੇ ਆਇ ॥',
     barahMahaOpeningTranslit: 'Phalgun anand upaarjanaa Har sajan pragate aae.',
-    pothiUrl: `${POTHI_BASE_URL}/sundar-gutka/barah-maha?ang=136`,
+    pothiUrl: POTHI_BARAH_MAHA_URL,
   },
 ] as const;
 
 /**
- * Verified Puratan Bikrami Solar Month Spans (Sidereal Sankranti Udaya in Punjab / Sri Amritsar Sahib IST).
+ * Verified Puratan Bikrami Solar Month Spans (Sidereal Sankranti Udaya in Punjab / Sri Anandpur Sahib IST).
  * True Punjabi solar months vary naturally between 29 and 32 days according to Earth's orbital velocity.
  * Covers Sambat 2083 (Katak–Phagun, Oct 2026 – Mar 2027), full Sambat 2084 (Chet–Phagun, Mar 2027 – Mar 2028),
  * and Chet 2085 opening anchor for smooth boundary calculations.

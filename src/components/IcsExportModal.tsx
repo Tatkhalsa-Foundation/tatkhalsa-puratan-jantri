@@ -12,12 +12,14 @@ interface IcsExportModalProps {
 
 export const IcsExportModal: React.FC<IcsExportModalProps> = ({isOpen, lang, onClose}) => {
   const isPa = lang === 'pa';
+  const [includeDaily, setIncludeDaily] = useState(false);
   const [includeSangrands, setIncludeSangrands] = useState(true);
   const [includePuranmashi, setIncludePuranmashi] = useState(true);
   const [includeMasya, setIncludeMasya] = useState(true);
   const [includeGurpurabs, setIncludeGurpurabs] = useState(true);
   const [includeShaheedi, setIncludeShaheedi] = useState(true);
   const [includeKhalsa, setIncludeKhalsa] = useState(true);
+  const [includeBarsis, setIncludeBarsis] = useState(true);
   const [sambatScope, setSambatScope] = useState<IcsExportOptions['sambatScope']>('all');
   const [downloadedCount, setDownloadedCount] = useState<number | null>(null);
 
@@ -35,22 +37,26 @@ export const IcsExportModal: React.FC<IcsExportModalProps> = ({isOpen, lang, onC
 
   const preview = useMemo(() => {
     return generateJantriIcs({
+      includeDaily,
       includeSangrands,
       includePuranmashi,
       includeMasya,
       includeGurpurabs,
       includeShaheedi,
       includeKhalsa,
+      includeBarsis,
       sambatScope,
       language: lang,
     });
   }, [
+    includeDaily,
     includeSangrands,
     includePuranmashi,
     includeMasya,
     includeGurpurabs,
     includeShaheedi,
     includeKhalsa,
+    includeBarsis,
     sambatScope,
     lang,
   ]);
@@ -64,7 +70,8 @@ export const IcsExportModal: React.FC<IcsExportModalProps> = ({isOpen, lang, onC
     const link = document.createElement('a');
     link.href = url;
     const scopeSuffix = sambatScope === 'all' ? '2083-2084' : sambatScope;
-    link.download = `tatkhalsa-puratan-jantri-sambat-${scopeSuffix}.ics`;
+    const modeSuffix = includeDaily ? '-daily-full' : '';
+    link.download = `tatkhalsa-puratan-jantri-sambat-${scopeSuffix}${modeSuffix}.ics`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -73,6 +80,16 @@ export const IcsExportModal: React.FC<IcsExportModalProps> = ({isOpen, lang, onC
   };
 
   const toggles = [
+    {
+      id: 'ics-daily',
+      checked: includeDaily,
+      onChange: setIncludeDaily,
+      labelEn: 'All Daily Bikrami & Lunar Dates (Every Day)',
+      labelPa: 'ਹਰ ਰੋਜ਼ ਦੀਆਂ ਸਾਰੀਆਂ ਬਿਕ੍ਰਮੀ ਅਤੇ ਚੰਦਰ ਤਿਥੀਆਂ (ਪੂਰਾ ਸਾਲ)',
+      hintEn: 'Generates an all-day entry for every calendar day, merging Purabs & Sangrands directly into that day’s title.',
+      hintPa: 'ਹਰ ਦਿਨ ਦੀ ਦੇਸੀ ਤਾਰੀਖ਼ ਤੇ ਤਿਥੀ ਸਮੇਤ ਗੁਰਪੁਰਬ/ਸੰਗਰਾਂਦ ਨੂੰ ਇੱਕੋ ਇਵੈਂਟ ਵਿੱਚ ਜੋੜਦਾ ਹੈ।',
+      featured: true,
+    },
     {
       id: 'ics-sangrands',
       checked: includeSangrands,
@@ -115,6 +132,13 @@ export const IcsExportModal: React.FC<IcsExportModalProps> = ({isOpen, lang, onC
       labelEn: 'Khalsa & Sampardai Historical Days',
       labelPa: 'ਖ਼ਾਲਸਾ ਅਤੇ ਸੰਪਰਦਾਇ ਇਤਿਹਾਸਕ ਦਿਹਾੜੇ',
     },
+    {
+      id: 'ics-barsis',
+      checked: includeBarsis,
+      onChange: setIncludeBarsis,
+      labelEn: 'Barsis & Mahapurakhs',
+      labelPa: 'ਬਰਸੀਆਂ ਅਤੇ ਮਹਾਂਪੁਰਖ',
+    },
   ];
 
   return (
@@ -127,8 +151,8 @@ export const IcsExportModal: React.FC<IcsExportModalProps> = ({isOpen, lang, onC
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="w-full max-w-lg rounded-xl border border-[#DDD3C0] bg-[#FAF6EE] shadow-2xl overflow-hidden">
-        <div className="flex items-start justify-between gap-4 border-b border-[#DDD3C0] bg-[#F3ECE0] px-5 py-4">
+      <div className="flex max-h-[90vh] w-full max-w-lg flex-col rounded-xl border border-[#DDD3C0] bg-[#FAF6EE] shadow-2xl overflow-hidden">
+        <div className="flex items-start justify-between gap-4 border-b border-[#DDD3C0] bg-[#F3ECE0] px-5 py-4 shrink-0">
           <div>
             <h2 id="ics-modal-title" className="font-display text-2xl font-semibold text-[#1C1917]">
               {isPa ? '.ics ਕੈਲੰਡਰ ਡਾਊਨਲੋਡ ਕਰੋ' : 'Export Puratan Jantri (.ics)'}
@@ -149,7 +173,7 @@ export const IcsExportModal: React.FC<IcsExportModalProps> = ({isOpen, lang, onC
           </button>
         </div>
 
-        <div className="p-5 space-y-5">
+        <div className="flex-1 overflow-y-auto p-5 space-y-4">
           {/* Sambat Scope Selector */}
           <div>
             <span className="block text-xs font-medium text-[#57534E] mb-2">
@@ -188,16 +212,31 @@ export const IcsExportModal: React.FC<IcsExportModalProps> = ({isOpen, lang, onC
               <label
                 key={t.id}
                 htmlFor={t.id}
-                className="flex items-center gap-3 min-h-[42px] px-3 py-2 rounded-md border border-[#DDD3C0]/80 bg-[#FAF6EE] hover:bg-[#F3ECE0]/60 cursor-pointer"
+                className={`flex items-start gap-3 min-h-[42px] px-3 py-2.5 rounded-md border cursor-pointer transition-colors ${
+                  t.featured
+                    ? t.checked
+                      ? 'border-[#C86400]/60 bg-[#C86400]/8'
+                      : 'border-[#B8860B]/45 bg-[#F3ECE0]/60 hover:bg-[#F3ECE0]'
+                    : 'border-[#DDD3C0]/80 bg-[#FAF6EE] hover:bg-[#F3ECE0]/60'
+                }`}
               >
                 <input
                   id={t.id}
                   type="checkbox"
                   checked={t.checked}
                   onChange={(e) => t.onChange(e.target.checked)}
-                  className="h-4 w-4 accent-[#1B263B] rounded-xs cursor-pointer"
+                  className="mt-0.5 h-4 w-4 accent-[#1B263B] rounded-xs cursor-pointer shrink-0"
                 />
-                <span className="text-sm text-[#1C1917]">{isPa ? t.labelPa : t.labelEn}</span>
+                <span className="min-w-0">
+                  <span className={`block text-sm ${t.featured ? 'font-semibold text-[#1B263B]' : 'text-[#1C1917]'}`}>
+                    {isPa ? t.labelPa : t.labelEn}
+                  </span>
+                  {t.hintEn && (
+                    <span className="mt-0.5 block text-[11px] text-[#57534E] leading-snug">
+                      {isPa ? t.hintPa : t.hintEn}
+                    </span>
+                  )}
+                </span>
               </label>
             ))}
           </fieldset>
@@ -215,23 +254,23 @@ export const IcsExportModal: React.FC<IcsExportModalProps> = ({isOpen, lang, onC
               </span>
             </div>
           )}
+        </div>
 
-          <div className="flex items-center justify-between gap-4 pt-3 border-t border-[#DDD2BE]">
-            <p className="text-xs font-mono-tabular text-[#57534E]">
-              {isPa
-                ? `ਕੁੱਲ ${formatNum(preview.eventCount, 'pa')} ਦਿਹਾੜੇ ਚੁਣੇ ਗਏ`
-                : `${preview.eventCount} dates selected`}
-            </p>
-            <button
-              type="button"
-              onClick={handleDownload}
-              disabled={preview.eventCount === 0}
-              className="inline-flex items-center gap-2 min-h-[44px] px-5 py-2.5 text-sm font-medium rounded-md bg-[#1B263B] text-[#FAF6EE] hover:bg-[#111A2B] disabled:opacity-45 disabled:cursor-not-allowed transition-colors whitespace-nowrap shrink-0 cursor-pointer"
-            >
-              <Download className="w-4 h-4" aria-hidden="true" />
-              <span>{isPa ? '.ics ਫ਼ਾਈਲ ਡਾਊਨਲੋਡ' : 'Download .ics'}</span>
-            </button>
-          </div>
+        <div className="flex items-center justify-between gap-4 border-t border-[#DDD2BE] bg-[#F3ECE0]/70 px-5 py-3.5 shrink-0">
+          <p className="text-xs font-mono-tabular text-[#57534E]" data-testid="ics-selected-count">
+            {isPa
+              ? `ਕੁੱਲ ${formatNum(preview.eventCount, 'pa')} ਦਿਹਾੜੇ ਚੁਣੇ ਗਏ`
+              : `${preview.eventCount} dates selected`}
+          </p>
+          <button
+            type="button"
+            onClick={handleDownload}
+            disabled={preview.eventCount === 0}
+            className="inline-flex items-center gap-2 min-h-[44px] px-5 py-2.5 text-sm font-medium rounded-md bg-[#1B263B] text-[#FAF6EE] hover:bg-[#111A2B] disabled:opacity-45 disabled:cursor-not-allowed transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+          >
+            <Download className="w-4 h-4" aria-hidden="true" />
+            <span>{isPa ? '.ics ਫ਼ਾਈਲ ਡਾਊਨਲੋਡ' : 'Download .ics'}</span>
+          </button>
         </div>
       </div>
     </div>

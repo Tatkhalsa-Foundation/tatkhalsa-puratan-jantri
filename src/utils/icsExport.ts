@@ -1,12 +1,25 @@
 import {HISTORICAL_EVENTS} from '../data/eventsData';
 import {getBikramiMonthMeta, SOLAR_MONTH_SPANS} from '../data/sambatData';
-import type {IcsExportOptions} from '../data/types';
-import {addDaysIso, getBikramiSolarDate, getLunarInfoCached, toGurmukhiNumerals} from './bikramiEngine';
+import type {HistoricalEvent, IcsExportOptions} from '../data/types';
+import {
+  addDaysIso,
+  formatDualTime,
+  getBikramiSolarDate,
+  getLunarInfoCached,
+  toGurmukhiNumerals,
+} from './bikramiEngine';
 
 /**
  * Pure RFC 5545 iCalendar (.ics) generator for Tatkhalsa Puratan Jantri.
- * Zero DOM/browser dependencies — reusable directly in React Native / Capacitor.
+ * Supports both selective observance export AND full 365-day daily Bikrami + Lunar date export
+ * (combining same-day Purabs, Sangrands, Puranmashi, Masya, Shaheedi Divases, and Barsis cleanly into each daily VEVENT).
  */
+
+const SCOPE_RANGES: Record<IcsExportOptions['sambatScope'], {start: string; end: string}> = {
+  '2083': {start: '2026-10-17', end: '2027-03-14'}, // 1 Katak 2083 – 30 Phagun 2083 (149 days)
+  '2084': {start: '2027-03-15', end: '2028-03-13'}, // 1 Chet 2084 – 30 Phagun 2084 (365 days)
+  all: {start: '2026-10-17', end: '2028-03-13'}, // Full Sambat 2083–2084 coverage (514 days)
+};
 
 function escapeIcsText(text: string): string {
   return text
@@ -64,8 +77,33 @@ function matchesSambatScope(sambat: number, scope: IcsExportOptions['sambatScope
   return String(sambat) === scope;
 }
 
+function isHistoricalEventSelected(ev: HistoricalEvent, options: IcsExportOptions): boolean {
+  if (ev.category === 'gurpurab') return options.includeGurpurabs;
+  if (ev.category === 'shaheedi') return options.includeShaheedi;
+  if (ev.category === 'khalsa') return options.includeKhalsa;
+  if (ev.category === 'barsi') return options.includeBarsis;
+  return false;
+}
+
+function formatDailyLunarClause(
+  lunar: ReturnType<typeof getLunarInfoCached>,
+  lang: IcsExportOptions['language'],
+): string {
+  if (lang === 'pa') {
+    if (lunar.isPuranmashi) return `${lunar.lunarMonthPa} ਪੂਰਨਮਾਸ਼ੀ`;
+    if (lunar.isMasya) return `${lunar.lunarMonthPa} ਮੱਸਿਆ`;
+    return `${lunar.lunarMonthPa} ${lunar.pakshPa} ${toGurmukhiNumerals(lunar.pakshDay)} (${lunar.tithiNamePa})`;
+  }
+  if (lunar.isPuranmashi) return `${lunar.lunarMonthEn} Puranmashi`;
+  if (lunar.isMasya) return `${lunar.lunarMonthEn} Masya`;
+  return `${lunar.lunarMonthEn} ${lunar.paksh} ${lunar.pakshDay} (${lunar.tithiNameEn})`;
+}
+
 /** Generate a complete RFC 5545 .ics string based on selected Jantri event categories and Sambat scope. */
-export function generateJantriIcs(options: IcsExportOptions, now: Date = new Date()): {
+export function generateJantriIcs(
+  options: IcsExportOptions,
+  now: Date = new Date(),
+): {
   content: string;
   eventCount: number;
 } {
@@ -73,92 +111,191 @@ export function generateJantriIcs(options: IcsExportOptions, now: Date = new Dat
   const records: IcsRecord[] = [];
   const isPa = options.language === 'pa';
   const isBi = options.language === 'bi';
+  const range = SCOPE_RANGES[options.sambatScope];
 
-  // 1. Sangrands (Solar Month Transitions)
-  if (options.includeSangrands) {
-    for (const span of SOLAR_MONTH_SPANS) {
-      if (span.startDate < '2026-11-01' || span.startDate > '2028-03-31') continue;
-      if (!matchesSambatScope(span.sambat, options.sambatScope)) continue;
-      const meta = getBikramiMonthMeta(span.monthId);
-      records.push({
-        uid: `sangrand-${span.sambat}-${meta.key}-${span.startDate}`,
-        date: span.startDate,
-        summary: isBi
-          ? `${meta.nameEn} Sangrand / ${meta.namePa} ਸੰਗਰਾਂਦ · 1 ${meta.nameEn}, Sambat ${span.sambat}`
-          : isPa
-            ? `${meta.namePa} ਸੰਗਰਾਂਦ · ੧ ${meta.namePa} ਸੰਮਤ ${toGurmukhiNumerals(span.sambat)}`
-            : `${meta.nameEn} Sangrand · 1 ${meta.nameEn}, Sambat ${span.sambat}`,
-        description: isPa
-          ? `ਪੁਰਾਤਨ ਬਿਕ੍ਰਮੀ ਸੰਗਰਾਂਦ (${meta.barahMahaRefPa})। ਬਾਰਹ ਮਾਹਾ: ${meta.pothiUrl}`
-          : `Puratan Bikrami Sangrand (${meta.barahMahaRefEn}). Read Barah Maha: ${meta.pothiUrl}`,
-        categories: 'Sangrand,Tatkhalsa Puratan Jantri',
-      });
-    }
-  }
-
-  // 2. Puranmashi & Masya across Sambat 2083 (Nov 2026 – Mar 2027) & 2084 (Mar 2027 – Mar 2028)
-  if (options.includePuranmashi || options.includeMasya) {
-    let cursor = '2026-11-01';
-    const endDate = '2028-03-14';
-    while (cursor <= endDate) {
-      const solar = getBikramiSolarDate(cursor);
-      if (matchesSambatScope(solar.sambat, options.sambatScope)) {
-        const lunar = getLunarInfoCached(cursor);
-        if (options.includePuranmashi && lunar.isPuranmashi) {
-          records.push({
-            uid: `puranmashi-${cursor}`,
-            date: cursor,
-            summary: isBi
-              ? `${lunar.lunarMonthEn} Puranmashi / ${lunar.lunarMonthPa} ਪੂਰਨਮਾਸ਼ੀ (${solar.day} ${solar.monthMeta.nameEn})`
-              : isPa
-                ? `${lunar.lunarMonthPa} ਪੂਰਨਮਾਸ਼ੀ (${toGurmukhiNumerals(solar.day)} ${solar.monthMeta.namePa})`
-                : `${lunar.lunarMonthEn} Puranmashi (${solar.day} ${solar.monthMeta.nameEn})`,
-            description: isPa
-              ? `ਪੁਰਾਤਨ ਬਿਕ੍ਰਮੀ ਚੰਦਰ ਤਿਥੀ: ${lunar.lunarMonthPa} ਸੁਦੀ ੧੫ (ਪੂਰਨਮਾਸ਼ੀ)। ਸੂਰਜੀ ਤਾਰੀਖ਼: ${toGurmukhiNumerals(solar.day)} ${solar.monthMeta.namePa}, ਸੰਮਤ ${toGurmukhiNumerals(solar.sambat)}।`
-              : `Puratan Bikrami Lunar Tithi: ${lunar.lunarMonthEn} Sudhi 15 (Puranmashi). Solar Date: ${solar.day} ${solar.monthMeta.nameEn}, Sambat ${solar.sambat}.`,
-            categories: 'Puranmashi,Tatkhalsa Puratan Jantri',
-          });
-        }
-        if (options.includeMasya && lunar.isMasya) {
-          records.push({
-            uid: `masya-${cursor}`,
-            date: cursor,
-            summary: isBi
-              ? `${lunar.lunarMonthEn} Masya / ${lunar.lunarMonthPa} ਮੱਸਿਆ (${solar.day} ${solar.monthMeta.nameEn})`
-              : isPa
-                ? `${lunar.lunarMonthPa} ਮੱਸਿਆ (${toGurmukhiNumerals(solar.day)} ${solar.monthMeta.namePa})`
-                : `${lunar.lunarMonthEn} Masya (${solar.day} ${solar.monthMeta.nameEn})`,
-            description: isPa
-              ? `ਪੁਰਾਤਨ ਬਿਕ੍ਰਮੀ ਚੰਦਰ ਤਿਥੀ: ${lunar.lunarMonthPa} ਵਦੀ ੧੫ (ਮੱਸਿਆ)। ਸੂਰਜੀ ਤਾਰੀਖ਼: ${toGurmukhiNumerals(solar.day)} ${solar.monthMeta.namePa}, ਸੰਮਤ ${toGurmukhiNumerals(solar.sambat)}।`
-              : `Puratan Bikrami Lunar Tithi: ${lunar.lunarMonthEn} Vadhi 15 (Masya). Solar Date: ${solar.day} ${solar.monthMeta.nameEn}, Sambat ${solar.sambat}.`,
-            categories: 'Masya,Tatkhalsa Puratan Jantri',
-          });
-        }
-      }
-      cursor = addDaysIso(cursor, 1);
-    }
-  }
-
-  // 3. Gurpurabs, Shaheedi Divases, and Khalsa/Sampardai events
+  // Index selected historical events by date for fast lookup
+  const selectedEventsByDate = new Map<string, HistoricalEvent[]>();
   for (const ev of HISTORICAL_EVENTS) {
     if (!matchesSambatScope(ev.sambat, options.sambatScope)) continue;
-    if (ev.category === 'gurpurab' && !options.includeGurpurabs) continue;
-    if (ev.category === 'shaheedi' && !options.includeShaheedi) continue;
-    if (ev.category === 'khalsa' && !options.includeKhalsa) continue;
+    if (!isHistoricalEventSelected(ev, options)) continue;
+    const list = selectedEventsByDate.get(ev.date) ?? [];
+    list.push(ev);
+    selectedEventsByDate.set(ev.date, list);
+  }
 
-    const citationsLine = ev.citations
-      .map((c) => (isPa ? `${c.sourcePa} (${c.referencePa})` : `${c.sourceEn} (${c.referenceEn})`))
-      .join(' | ');
+  if (options.includeDaily) {
+    // Full Daily Mode: generate one all-day VEVENT for EVERY calendar day in scope,
+    // combining any matching Sangrand, Puranmashi, Masya, Gurpurab, Shaheedi, Khalsa, or Barsi into that day's SUMMARY & DESCRIPTION.
+    let cursor = range.start;
+    while (cursor <= range.end) {
+      const solar = getBikramiSolarDate(cursor);
+      const lunar = getLunarInfoCached(cursor);
+      const dayEvents = selectedEventsByDate.get(cursor) ?? [];
+      const tithiDual = formatDualTime(lunar.tithiEndsAtUtc, 'Asia/Kolkata');
 
-    records.push({
-      uid: `event-${ev.id}`,
-      date: ev.date,
-      summary: isBi ? `${ev.titleEn} · ${ev.titlePa}` : isPa ? ev.titlePa : ev.titleEn,
-      description: isPa
-        ? `${ev.tithiRulePa}\n${ev.summaryPa}\nਹਵਾਲੇ: ${citationsLine}\nhttps://calendar.tatkhalsa.in`
-        : `${ev.tithiRuleEn}\n${ev.summaryEn}\nSources: ${citationsLine}\nhttps://calendar.tatkhalsa.in`,
-      categories: `${ev.category.toUpperCase()},Tatkhalsa Puratan Jantri`,
-    });
+      const solarBaseEn = `${solar.day} ${solar.monthMeta.nameEn} ${solar.sambat}`;
+      const solarBasePa = `${toGurmukhiNumerals(solar.day)} ${solar.monthMeta.namePa} ${toGurmukhiNumerals(solar.sambat)}`;
+      const lunarClauseEn = formatDailyLunarClause(lunar, 'en');
+      const lunarClausePa = formatDailyLunarClause(lunar, 'pa');
+
+      // Special observances appended after em-dash when checked
+      const highlights: string[] = [];
+      const categories = new Set<string>(['Tatkhalsa Puratan Jantri', 'Daily Bikrami']);
+
+      if (options.includeSangrands && solar.isSangrand) {
+        highlights.push(
+          isPa ? `${solar.monthMeta.namePa} ਸੰਗਰਾਂਦ` : `${solar.monthMeta.nameEn} Sangrand`,
+        );
+        categories.add('Sangrand');
+      }
+      if (options.includePuranmashi && lunar.isPuranmashi) {
+        categories.add('Puranmashi');
+      }
+      if (options.includeMasya && lunar.isMasya) {
+        categories.add('Masya');
+      }
+      for (const ev of dayEvents) {
+        highlights.push(isPa ? ev.shortLabelPa : ev.shortLabelEn);
+        categories.add(ev.category.toUpperCase());
+      }
+
+      const baseSummary = isPa
+        ? `${solarBasePa} · ${lunarClausePa}`
+        : isBi
+          ? `${solarBaseEn} · ${lunarClauseEn} (${solarBasePa})`
+          : `${solarBaseEn} · ${lunarClauseEn}`;
+
+      const summary =
+        highlights.length > 0 ? `${baseSummary} — ${highlights.join(' · ')}` : baseSummary;
+
+      // Rich Bilingual DESCRIPTION with Sri Anandpur Sahib (IST) tithi transition time
+      const descLines: string[] = [
+        `Desi Solar Date: ${solar.day} ${solar.monthMeta.nameEn}, Bikrami Sambat ${solar.sambat} (${toGurmukhiNumerals(solar.day)} ${solar.monthMeta.namePa}, ਸੰਮਤ ${toGurmukhiNumerals(solar.sambat)})`,
+        `Lunar Tithi: ${lunar.lunarMonthEn} ${lunar.paksh} ${lunar.pakshDay} (${lunar.tithiNameEn}) · ${lunar.lunarMonthPa} ${lunar.pakshPa} ${toGurmukhiNumerals(lunar.pakshDay)} (${lunar.tithiNamePa})`,
+        `Tithi ends (Sri Anandpur Sahib IST): ${tithiDual.amritsarTime}, ${tithiDual.amritsarDate}`,
+      ];
+
+      if (solar.isSangrand) {
+        const sankrantiDual = formatDualTime(solar.sankrantiUtc, 'Asia/Kolkata');
+        descLines.push(
+          `Sangrand: 1 ${solar.monthMeta.nameEn} (${solar.monthMeta.namePa} ਸੰਗਰਾਂਦ) · Sankranti at ${sankrantiDual.amritsarTime}, ${sankrantiDual.amritsarDate} IST`,
+        );
+      }
+
+      for (const ev of dayEvents) {
+        const citationsLine = ev.citations
+          .map((c) => `${c.sourceEn} (${c.referenceEn})`)
+          .join(' | ');
+        descLines.push(
+          '',
+          `${ev.titleEn} / ${ev.titlePa}`,
+          `${ev.tithiRuleEn} · ${ev.summaryEn}`,
+          ...(citationsLine ? [`Sources: ${citationsLine}`] : []),
+        );
+      }
+
+      descLines.push('', 'https://calendar.tatkhalsa.in/');
+
+      records.push({
+        uid: `daily-${cursor}`,
+        date: cursor,
+        summary,
+        description: descLines.join('\n'),
+        categories: Array.from(categories).join(','),
+      });
+
+      cursor = addDaysIso(cursor, 1);
+    }
+  } else {
+    // Selective Mode: export only chosen observances
+    // 1. Sangrands (Solar Month Transitions)
+    if (options.includeSangrands) {
+      for (const span of SOLAR_MONTH_SPANS) {
+        if (span.startDate < range.start || span.startDate > range.end) continue;
+        if (!matchesSambatScope(span.sambat, options.sambatScope)) continue;
+        const meta = getBikramiMonthMeta(span.monthId);
+        const sankrantiDual = formatDualTime(span.sankrantiUtc, 'Asia/Kolkata');
+        records.push({
+          uid: `sangrand-${span.sambat}-${meta.key}-${span.startDate}`,
+          date: span.startDate,
+          summary: isBi
+            ? `${meta.nameEn} Sangrand / ${meta.namePa} ਸੰਗਰਾਂਦ · 1 ${meta.nameEn}, Sambat ${span.sambat}`
+            : isPa
+              ? `${meta.namePa} ਸੰਗਰਾਂਦ · ੧ ${meta.namePa} ਸੰਮਤ ${toGurmukhiNumerals(span.sambat)}`
+              : `${meta.nameEn} Sangrand · 1 ${meta.nameEn}, Sambat ${span.sambat}`,
+          description: isPa
+            ? `ਪੁਰਾਤਨ ਬਿਕ੍ਰਮੀ ਸੰਗਰਾਂਦ (${meta.barahMahaRefPa})। ਸੰਕ੍ਰਾਂਤੀ (ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ IST): ${sankrantiDual.amritsarTime}, ${sankrantiDual.amritsarDate}। ਬਾਰਹ ਮਾਹਾ: ${meta.pothiUrl}\nhttps://calendar.tatkhalsa.in/`
+            : `Puratan Bikrami Sangrand (${meta.barahMahaRefEn}). Sankranti (Sri Anandpur Sahib IST): ${sankrantiDual.amritsarTime}, ${sankrantiDual.amritsarDate}. Read Barah Maha: ${meta.pothiUrl}\nhttps://calendar.tatkhalsa.in/`,
+          categories: 'Sangrand,Tatkhalsa Puratan Jantri',
+        });
+      }
+    }
+
+    // 2. Puranmashi & Masya across selected Sambat scope
+    if (options.includePuranmashi || options.includeMasya) {
+      let cursor = range.start;
+      while (cursor <= range.end) {
+        const solar = getBikramiSolarDate(cursor);
+        if (matchesSambatScope(solar.sambat, options.sambatScope)) {
+          const lunar = getLunarInfoCached(cursor);
+          const tithiDual = formatDualTime(lunar.tithiEndsAtUtc, 'Asia/Kolkata');
+          if (options.includePuranmashi && lunar.isPuranmashi) {
+            records.push({
+              uid: `puranmashi-${cursor}`,
+              date: cursor,
+              summary: isBi
+                ? `${lunar.lunarMonthEn} Puranmashi / ${lunar.lunarMonthPa} ਪੂਰਨਮਾਸ਼ੀ (${solar.day} ${solar.monthMeta.nameEn})`
+                : isPa
+                  ? `${lunar.lunarMonthPa} ਪੂਰਨਮਾਸ਼ੀ (${toGurmukhiNumerals(solar.day)} ${solar.monthMeta.namePa})`
+                  : `${lunar.lunarMonthEn} Puranmashi (${solar.day} ${solar.monthMeta.nameEn})`,
+              description: isPa
+                ? `ਪੁਰਾਤਨ ਬਿਕ੍ਰਮੀ ਚੰਦਰ ਤਿਥੀ: ${lunar.lunarMonthPa} ਸੁਦੀ ੧੫ (ਪੂਰਨਮਾਸ਼ੀ)। ਸੂਰਜੀ ਤਾਰੀਖ਼: ${toGurmukhiNumerals(solar.day)} ${solar.monthMeta.namePa}, ਸੰਮਤ ${toGurmukhiNumerals(solar.sambat)}। ਤਿਥੀ ਸਮਾਪਤੀ (ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ IST): ${tithiDual.amritsarTime}, ${tithiDual.amritsarDate}\nhttps://calendar.tatkhalsa.in/`
+                : `Puratan Bikrami Lunar Tithi: ${lunar.lunarMonthEn} Sudhi 15 (Puranmashi). Solar Date: ${solar.day} ${solar.monthMeta.nameEn}, Sambat ${solar.sambat}. Tithi ends (Sri Anandpur Sahib IST): ${tithiDual.amritsarTime}, ${tithiDual.amritsarDate}\nhttps://calendar.tatkhalsa.in/`,
+              categories: 'Puranmashi,Tatkhalsa Puratan Jantri',
+            });
+          }
+          if (options.includeMasya && lunar.isMasya) {
+            records.push({
+              uid: `masya-${cursor}`,
+              date: cursor,
+              summary: isBi
+                ? `${lunar.lunarMonthEn} Masya / ${lunar.lunarMonthPa} ਮੱਸਿਆ (${solar.day} ${solar.monthMeta.nameEn})`
+                : isPa
+                  ? `${lunar.lunarMonthPa} ਮੱਸਿਆ (${toGurmukhiNumerals(solar.day)} ${solar.monthMeta.namePa})`
+                  : `${lunar.lunarMonthEn} Masya (${solar.day} ${solar.monthMeta.nameEn})`,
+              description: isPa
+                ? `ਪੁਰਾਤਨ ਬਿਕ੍ਰਮੀ ਚੰਦਰ ਤਿਥੀ: ${lunar.lunarMonthPa} ਵਦੀ ੧੫ (ਮੱਸਿਆ)। ਸੂਰਜੀ ਤਾਰੀਖ਼: ${toGurmukhiNumerals(solar.day)} ${solar.monthMeta.namePa}, ਸੰਮਤ ${toGurmukhiNumerals(solar.sambat)}। ਤਿਥੀ ਸਮਾਪਤੀ (ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ IST): ${tithiDual.amritsarTime}, ${tithiDual.amritsarDate}\nhttps://calendar.tatkhalsa.in/`
+                : `Puratan Bikrami Lunar Tithi: ${lunar.lunarMonthEn} Vadhi 15 (Masya). Solar Date: ${solar.day} ${solar.monthMeta.nameEn}, Sambat ${solar.sambat}. Tithi ends (Sri Anandpur Sahib IST): ${tithiDual.amritsarTime}, ${tithiDual.amritsarDate}\nhttps://calendar.tatkhalsa.in/`,
+              categories: 'Masya,Tatkhalsa Puratan Jantri',
+            });
+          }
+        }
+        cursor = addDaysIso(cursor, 1);
+      }
+    }
+
+    // 3. Gurpurabs, Shaheedi Divases, Khalsa/Sampardai events, and Barsis
+    for (const ev of HISTORICAL_EVENTS) {
+      if (!matchesSambatScope(ev.sambat, options.sambatScope)) continue;
+      if (!isHistoricalEventSelected(ev, options)) continue;
+
+      const solar = getBikramiSolarDate(ev.date);
+      const lunar = getLunarInfoCached(ev.date);
+      const tithiDual = formatDualTime(lunar.tithiEndsAtUtc, 'Asia/Kolkata');
+      const citationsLine = ev.citations
+        .map((c) => (isPa ? `${c.sourcePa} (${c.referencePa})` : `${c.sourceEn} (${c.referenceEn})`))
+        .join(' | ');
+
+      records.push({
+        uid: `event-${ev.id}`,
+        date: ev.date,
+        summary: isBi ? `${ev.titleEn} · ${ev.titlePa}` : isPa ? ev.titlePa : ev.titleEn,
+        description: isPa
+          ? `${toGurmukhiNumerals(solar.day)} ${solar.monthMeta.namePa} ${toGurmukhiNumerals(solar.sambat)} · ${ev.tithiRulePa}\nਤਿਥੀ ਸਮਾਪਤੀ (ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ IST): ${tithiDual.amritsarTime}, ${tithiDual.amritsarDate}\n${ev.summaryPa}\nਹਵਾਲੇ: ${citationsLine}\nhttps://calendar.tatkhalsa.in/`
+          : `${solar.day} ${solar.monthMeta.nameEn} ${solar.sambat} · ${ev.tithiRuleEn}\nTithi ends (Sri Anandpur Sahib IST): ${tithiDual.amritsarTime}, ${tithiDual.amritsarDate}\n${ev.summaryEn}\nSources: ${citationsLine}\nhttps://calendar.tatkhalsa.in/`,
+        categories: `${ev.category.toUpperCase()},Tatkhalsa Puratan Jantri`,
+      });
+    }
   }
 
   records.sort((a, b) => a.date.localeCompare(b.date));
@@ -192,7 +329,7 @@ export function generateSingleDayIcs(
       uid: `day-${isoDate}`,
       date: isoDate,
       summary: title,
-      description: `${description}\nhttps://calendar.tatkhalsa.in`,
+      description: `${description}\nhttps://calendar.tatkhalsa.in/`,
       categories: 'Tatkhalsa Puratan Jantri',
     },
     dtStamp,

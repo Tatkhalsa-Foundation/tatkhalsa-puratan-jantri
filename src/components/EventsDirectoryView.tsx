@@ -27,6 +27,7 @@ const CATEGORY_TABS: readonly {id: DirectoryFilter; en: string; pa: string}[] = 
   {id: 'gurpurab', en: 'Gurpurabs', pa: 'ਗੁਰਪੁਰਬ'},
   {id: 'shaheedi', en: 'Shaheedi', pa: 'ਸ਼ਹੀਦੀ'},
   {id: 'khalsa', en: 'Khalsa & Colophons', pa: 'ਖ਼ਾਲਸਾ / ਹਵਾਲੇ'},
+  {id: 'barsi', en: 'Barsis & Mahapurakhs', pa: 'ਬਰਸੀਆਂ / ਮਹਾਂਪੁਰਖ'},
   {id: 'sangrand', en: 'Sangrands', pa: 'ਸੰਗਰਾਂਦਾਂ'},
   {id: 'puranmashi', en: 'Puranmashi', pa: 'ਪੂਰਨਮਾਸ਼ੀ'},
   {id: 'masya', en: 'Masya', pa: 'ਮੱਸਿਆ'},
@@ -46,6 +47,8 @@ function categoryLabel(cat: DirectoryCategory, isPa: boolean): string {
       return isPa ? 'ਸ਼ਹੀਦੀ ਦਿਵਸ' : 'Shaheedi Divas';
     case 'khalsa':
       return isPa ? 'ਖ਼ਾਲਸਾ / ਗ੍ਰੰਥ ਹਵਾਲਾ' : 'Khalsa & Colophon';
+    case 'barsi':
+      return isPa ? 'ਬਰਸੀ / ਮਹਾਂਪੁਰਖ' : 'Barsi / Mahapurakh';
     case 'sangrand':
       return isPa ? 'ਸੰਗਰਾਂਦ' : 'Sangrand';
     case 'puranmashi':
@@ -58,6 +61,7 @@ function categoryLabel(cat: DirectoryCategory, isPa: boolean): string {
 function categoryColor(cat: DirectoryObservance['category']): string {
   if (cat === 'shaheedi') return 'text-[#8F1D1D]';
   if (cat === 'khalsa' || cat === 'masya') return 'text-[#1B263B]';
+  if (cat === 'barsi') return 'text-[#6B4E16]';
   if (cat === 'puranmashi') return 'text-[#8A6305]';
   return 'text-[#9E4F00]';
 }

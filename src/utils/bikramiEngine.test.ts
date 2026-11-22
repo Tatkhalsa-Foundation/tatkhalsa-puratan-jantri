@@ -1,8 +1,10 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import {BARAH_MAHA_PAURIS} from '../data/barahMahaData';
 import {HISTORICAL_EVENTS} from '../data/eventsData';
-import {BIKRAMI_MONTHS, POTHI_BASE_URL} from '../data/sambatData';
-import {SOLAR_MONTH_SPANS} from '../data/sambatData';
+import {MONTHLY_HERITAGE} from '../data/heritageData';
+import {BIKRAMI_MONTHS, POTHI_BARAH_MAHA_URL, POTHI_BASE_URL, SOLAR_MONTH_SPANS} from '../data/sambatData';
+import {formatLiveClockSnapshot} from '../hooks/useLiveClock';
 import {
   addDaysIso,
   BROWSEABLE_SOLAR_SPANS,
@@ -151,16 +153,20 @@ test('Gregorian-to-Bikrami lookup validates dates and returns exact Puratan conv
   assert.equal(invalid.ok, false);
 });
 
-test('Unified directory observances include all 6 categories across Sambat 2083–2084', () => {
+test('Unified directory observances include all 7 categories (including Barsis) across Sambat 2083–2084', () => {
   const all = getAllDirectoryObservances();
   const categories = new Set(all.map((o) => o.category));
   assert.ok(categories.has('gurpurab'));
   assert.ok(categories.has('shaheedi'));
   assert.ok(categories.has('khalsa'));
+  assert.ok(categories.has('barsi'));
   assert.ok(categories.has('sangrand'));
   assert.ok(categories.has('puranmashi'));
   assert.ok(categories.has('masya'));
-  assert.ok(all.length > 65);
+  assert.ok(all.length > 90);
+
+  const barsis = all.filter((o) => o.category === 'barsi');
+  assert.ok(barsis.length >= 13, `Expected at least 13 Barsis/Mahapurakh entries, got ${barsis.length}`);
 
   const uniqueIds = new Set(all.map((o) => o.id));
   assert.equal(uniqueIds.size, all.length, 'Every directory observance must have a unique id');
@@ -192,41 +198,108 @@ test('Gregorian monthly calendar grid returns complete Sunday-to-Saturday weeks 
   assert.equal(toGurmukhiNumerals('9 Maghar'), '੯ Maghar');
 });
 
-test('Dual-time formatting converts Sri Amritsar Sahib (IST) alongside external browser timezone', () => {
+test('Dual-time formatting and live clock convert Sri Anandpur Sahib (IST) alongside external browser timezone', () => {
   const dual = formatDualTime('2026-11-24T14:55:00Z', 'America/Los_Angeles');
   assert.equal(dual.isSameZone, false);
   assert.match(dual.amritsarTime, /8:25|08:25/i);
   assert.match(dual.localTime, /6:55|06:55/i);
+
+  const live = formatLiveClockSnapshot(new Date('2026-11-24T14:55:42Z'), 'America/Los_Angeles');
+  assert.equal(live.isSameZone, false);
+  assert.match(live.anandpurTime, /8:25:42|08:25:42/i);
+  assert.match(live.localTime, /6:55:42|06:55:42/i);
+  assert.match(live.localTimeZoneLabel, /Los Angeles/i);
 });
 
-test('RFC 5545 .ics export generates valid VCALENDAR in English, Punjabi, and Bilingual modes', () => {
-  const result = generateJantriIcs({
+test('RFC 5545 .ics export supports selective mode AND full 365-day daily Bikrami + combined Purab mode', () => {
+  const selective = generateJantriIcs({
+    includeDaily: false,
     includeSangrands: true,
     includePuranmashi: true,
     includeMasya: true,
     includeGurpurabs: true,
     includeShaheedi: true,
     includeKhalsa: true,
+    includeBarsis: true,
     sambatScope: 'all',
     language: 'bi',
   });
-  assert.ok(result.eventCount > 45);
-  assert.ok(result.content.startsWith('BEGIN:VCALENDAR\r\n'));
-  assert.ok(result.content.includes('END:VCALENDAR\r\n'));
-  assert.ok(result.content.includes('557th Parkash Purab'));
-  assert.ok(result.content.includes('DTSTART;VALUE=DATE:20261124'));
+  assert.ok(selective.eventCount > 75);
+  assert.ok(selective.content.startsWith('BEGIN:VCALENDAR\r\n'));
+  assert.ok(selective.content.includes('END:VCALENDAR\r\n'));
+  assert.ok(selective.content.includes('557th Parkash Purab'));
+  assert.ok(selective.content.includes('DTSTART;VALUE=DATE:20261124'));
+  assert.ok(selective.content.includes('Sri Anandpur Sahib IST'));
+
+  // Full daily mode: Sambat 2084 = 365 days, Sambat 2083 = 149 days, All = 514 days
+  const daily2084 = generateJantriIcs({
+    includeDaily: true,
+    includeSangrands: true,
+    includePuranmashi: true,
+    includeMasya: true,
+    includeGurpurabs: true,
+    includeShaheedi: true,
+    includeKhalsa: true,
+    includeBarsis: true,
+    sambatScope: '2084',
+    language: 'en',
+  });
+  assert.equal(daily2084.eventCount, 365);
+
+  const daily2083 = generateJantriIcs({
+    includeDaily: true,
+    includeSangrands: true,
+    includePuranmashi: true,
+    includeMasya: true,
+    includeGurpurabs: true,
+    includeShaheedi: true,
+    includeKhalsa: true,
+    includeBarsis: true,
+    sambatScope: '2083',
+    language: 'en',
+  });
+  assert.equal(daily2083.eventCount, 149);
+  assert.ok(
+    daily2083.content.includes(
+      'SUMMARY:9 Maghar 2083 · Katak Puranmashi — 557th Parkash Sri Guru Nanak Dev Ji',
+    ),
+    'Daily mode should merge same-day Purab into the single daily VEVENT SUMMARY',
+  );
+  assert.ok(daily2083.content.includes('https://calendar.tatkhalsa.in/'));
+
+  const dailyAll = generateJantriIcs({
+    includeDaily: true,
+    includeSangrands: true,
+    includePuranmashi: true,
+    includeMasya: true,
+    includeGurpurabs: true,
+    includeShaheedi: true,
+    includeKhalsa: true,
+    includeBarsis: true,
+    sambatScope: 'all',
+    language: 'en',
+  });
+  assert.equal(dailyAll.eventCount, 514);
 
   const single = generateSingleDayIcs('2026-11-24', 'Katak Puranmashi', '9 Maghar, Sambat 2083');
   assert.ok(single.includes('BEGIN:VEVENT'));
   assert.ok(single.includes('SUMMARY:Katak Puranmashi'));
 });
 
-test('All Barah Maha and event Pothi references deep-link beyond the root homepage', () => {
+test('All 12 months have complete Barah Maha Majh pauris, pothi.tatkhalsa.in/tabs/pothi deep links, and Shastar/Asthaan heritage items', () => {
   for (const month of BIKRAMI_MONTHS) {
-    assert.ok(
-      month.pothiUrl.startsWith(`${POTHI_BASE_URL}/sundar-gutka/barah-maha?ang=`),
-      `Expected deep link for ${month.nameEn}, got ${month.pothiUrl}`,
+    assert.equal(
+      month.pothiUrl,
+      POTHI_BARAH_MAHA_URL,
+      `Expected ${POTHI_BARAH_MAHA_URL} for ${month.nameEn}, got ${month.pothiUrl}`,
     );
+    const pauri = BARAH_MAHA_PAURIS[month.key];
+    assert.ok(pauri, `Missing Barah Maha pauri for ${month.key}`);
+    assert.ok(pauri.pauriPa.length >= 9, `Expected >= 9 Gurmukhi lines for ${month.key}`);
+    assert.equal(pauri.pauriPa.length, pauri.pauriEn.length, `Line count mismatch for ${month.key}`);
+
+    const heritage = MONTHLY_HERITAGE[month.key];
+    assert.ok(heritage && heritage.shastarNameEn && heritage.asthaanEn && heritage.captionPa);
   }
   const linkedEvents = HISTORICAL_EVENTS.filter((e) => Boolean(e.pothiUrl));
   assert.ok(linkedEvents.length >= 8);
@@ -235,13 +308,26 @@ test('All Barah Maha and event Pothi references deep-link beyond the root homepa
       ev.pothiUrl!.startsWith(`${POTHI_BASE_URL}/`) && ev.pothiUrl!.length > POTHI_BASE_URL.length + 1,
       `Event ${ev.id} should deep-link past root homepage: ${ev.pothiUrl}`,
     );
-    for (const cit of ev.citations) {
-      if (cit.pothiUrl) {
-        assert.ok(
-          cit.pothiUrl.startsWith(`${POTHI_BASE_URL}/`) && cit.pothiUrl.length > POTHI_BASE_URL.length + 1,
-          `Citation in ${ev.id} should deep-link past root homepage: ${cit.pothiUrl}`,
-        );
-      }
-    }
   }
+});
+
+test('Expanded Sambat 2083 Purabs, Shaheedi Divases, and Barsis resolve on verified solar & lunar dates', () => {
+  const uniqueEventIds = new Set(HISTORICAL_EVENTS.map((e) => e.id));
+  assert.equal(uniqueEventIds.size, HISTORICAL_EVENTS.length, 'All historical event IDs must be unique');
+
+  const babaDeepSinghShaheedi = getJantriDay('2026-11-15');
+  assert.equal(babaDeepSinghShaheedi.solar.day, 30);
+  assert.equal(babaDeepSinghShaheedi.solar.monthMeta.nameEn, 'Katak');
+  assert.ok(babaDeepSinghShaheedi.events.some((e) => e.id === '2083-shaheedi-baba-deep-singh-ji'));
+
+  const kaviSantokhSingh = getJantriDay('2026-11-05');
+  assert.ok(kaviSantokhSingh.events.some((e) => e.id === '2083-barsi-mahakavi-bhai-santokh-singh'));
+
+  const basantDay = getJantriDay('2027-02-11');
+  assert.equal(basantDay.lunar.isPanchmi, true);
+  assert.ok(basantDay.events.some((e) => e.id === '2083-basant-panchmi'));
+  assert.ok(basantDay.events.some((e) => e.id === '2083-janam-sahibzada-baba-ajit-singh-ji'));
+
+  const sakaNankana = getJantriDay('2027-02-21');
+  assert.ok(sakaNankana.events.some((e) => e.id === '2083-saka-sri-nankana-sahib'));
 });

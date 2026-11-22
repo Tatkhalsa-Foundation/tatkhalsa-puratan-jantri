@@ -1,7 +1,9 @@
 import {ArrowUpRight, BookMarked, BookOpen, CalendarPlus, Clock, X} from 'lucide-react';
 import React, {useEffect} from 'react';
-import {POTHI_BASE_URL} from '../data/sambatData';
+import {BARAH_MAHA_PAURIS} from '../data/barahMahaData';
+import {POTHI_BARAH_MAHA_URL} from '../data/sambatData';
 import type {JantriDay, LanguageMode} from '../data/types';
+import type {LiveClockSnapshot} from '../hooks/useLiveClock';
 import {
   formatDualTime,
   formatGregorianDate,
@@ -12,12 +14,14 @@ import {MoonPhaseIcon} from './MoonPhaseIcon';
 
 interface EventColophonDrawerProps {
   day: JantriDay | null;
+  liveClock: LiveClockSnapshot;
   lang: LanguageMode;
   onClose: () => void;
 }
 
 export const EventColophonDrawer: React.FC<EventColophonDrawerProps> = ({
   day,
+  liveClock,
   lang,
   onClose,
 }) => {
@@ -40,7 +44,7 @@ export const EventColophonDrawer: React.FC<EventColophonDrawerProps> = ({
   const illuminationPct = Math.round(day.lunar.illumination * 100);
 
   const primaryEventPothi = day.events.find((e) => e.pothiUrl);
-  const footerPothiUrl = primaryEventPothi?.pothiUrl ?? day.solar.monthMeta.pothiUrl ?? POTHI_BASE_URL;
+  const footerPothiUrl = primaryEventPothi?.pothiUrl ?? POTHI_BARAH_MAHA_URL;
   const footerPothiLabel = primaryEventPothi
     ? isPa
       ? primaryEventPothi.pothiLabelPa || 'ਪੋਥੀ ਸਾਹਿਬ ’ਤੇ ਬਾਣੀ ਪੜ੍ਹੋ'
@@ -48,6 +52,7 @@ export const EventColophonDrawer: React.FC<EventColophonDrawerProps> = ({
     : isPa
       ? 'ਬਾਰਹ ਮਾਹਾ ਪੜ੍ਹੋ'
       : 'Read Barah Maha';
+  const monthlyPauri = BARAH_MAHA_PAURIS[day.solar.monthMeta.key];
 
   const specialLunarNote = day.lunar.isPuranmashi
     ? isPa
@@ -162,8 +167,8 @@ export const EventColophonDrawer: React.FC<EventColophonDrawerProps> = ({
               <div className="min-w-0 space-y-0.5">
                 <p className="text-xs text-[#78716C]">
                   {isPa
-                    ? 'ਚੰਦਰ ਸਥਿਤੀ (ਸ੍ਰੀ ਅੰਮ੍ਰਿਤਸਰ ਸਾਹਿਬ ਸੂਰਜ-ਉਦੈ ਅਨੁਸਾਰ)'
-                    : 'Lunar Coordinates (Sri Amritsar Sahib Sunrise)'}
+                    ? 'ਚੰਦਰ ਸਥਿਤੀ (ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ ਸੂਰਜ-ਉਦੈ ਅਨੁਸਾਰ)'
+                    : 'Lunar Coordinates (Sri Anandpur Sahib Sunrise)'}
                 </p>
                 <p className="text-sm font-semibold text-[#1C1917]">
                   {isPa
@@ -183,6 +188,26 @@ export const EventColophonDrawer: React.FC<EventColophonDrawerProps> = ({
               </div>
             </div>
 
+            {/* Live Dual Clock Strip */}
+            <div className="border-t border-[#DDD2BE] pt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+              <div>
+                <p className="text-[11px] text-[#78716C]">
+                  {isPa ? 'ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ (IST · ਲਾਈਵ)' : 'Sri Anandpur Sahib (IST · Live)'}
+                </p>
+                <p className="font-mono-tabular font-semibold text-[#1B263B]">
+                  {liveClock.anandpurTime}
+                </p>
+              </div>
+              <div className="sm:border-l sm:border-[#DDD2BE] sm:pl-3">
+                <p className="text-[11px] text-[#78716C]">
+                  {isPa ? 'ਤੁਹਾਡਾ ਸਥਾਨਕ ਸਮਾਂ (ਲਾਈਵ)' : `Local (${liveClock.localTimeZoneLabel})`}
+                </p>
+                <p className="font-mono-tabular font-semibold text-[#1C1917]">
+                  {liveClock.localTime}
+                </p>
+              </div>
+            </div>
+
             <div className="border-t border-[#DDD2BE] pt-3 space-y-2 text-xs text-[#44403C]">
               <div className="flex items-start gap-2">
                 <Clock className="w-3.5 h-3.5 text-[#9E4F00] mt-0.5 shrink-0" aria-hidden="true" />
@@ -191,7 +216,7 @@ export const EventColophonDrawer: React.FC<EventColophonDrawerProps> = ({
                     {isPa ? 'ਤਿਥੀ ਸਮਾਪਤੀ ਸਮਾਂ (ਦੋਹਰਾ ਸਮਾਂ):' : 'Lunar Tithi Transition (Dual-Time):'}
                   </p>
                   <p className="font-mono-tabular">
-                    {isPa ? 'ਸ੍ਰੀ ਅੰਮ੍ਰਿਤਸਰ ਸਾਹਿਬ (IST): ' : 'Sri Amritsar Sahib (IST): '}
+                    {isPa ? 'ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ (IST): ' : 'Sri Anandpur Sahib (IST): '}
                     <span className="font-medium text-[#1C1917]">
                       {tithiDual.amritsarTime}, {tithiDual.amritsarDate}
                     </span>
@@ -216,7 +241,7 @@ export const EventColophonDrawer: React.FC<EventColophonDrawerProps> = ({
                       {isPa ? 'ਸੂਰਜੀ ਸੰਕ੍ਰਾਂਤੀ (ਸੰਗਰਾਂਦ) ਪ੍ਰਵੇਸ਼:' : 'Solar Sankranti Ingress:'}
                     </p>
                     <p className="font-mono-tabular">
-                      {isPa ? 'ਸ੍ਰੀ ਅੰਮ੍ਰਿਤਸਰ ਸਾਹਿਬ (IST): ' : 'Sri Amritsar Sahib (IST): '}
+                      {isPa ? 'ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ (IST): ' : 'Sri Anandpur Sahib (IST): '}
                       <span className="font-medium text-[#1C1917]">
                         {sankrantiDual.amritsarTime}, {sankrantiDual.amritsarDate}
                       </span>
@@ -248,7 +273,9 @@ export const EventColophonDrawer: React.FC<EventColophonDrawerProps> = ({
                           ? 'text-[#8F1D1D]'
                           : ev.category === 'khalsa'
                             ? 'text-[#1B263B]'
-                            : 'text-[#9E4F00]'
+                            : ev.category === 'barsi'
+                              ? 'text-[#6B4E16]'
+                              : 'text-[#9E4F00]'
                       }`}
                     >
                       {ev.category === 'gurpurab'
@@ -259,9 +286,13 @@ export const EventColophonDrawer: React.FC<EventColophonDrawerProps> = ({
                           ? isPa
                             ? 'ਸ਼ਹੀਦੀ ਦਿਵਸ'
                             : 'Shaheedi Divas'
-                          : isPa
-                            ? 'ਖ਼ਾਲਸਾ / ਗ੍ਰੰਥ ਹਵਾਲਾ'
-                            : 'Khalsa & Manuscript Colophon'}
+                          : ev.category === 'barsi'
+                            ? isPa
+                              ? 'ਬਰਸੀ / ਮਹਾਂਪੁਰਖ'
+                              : 'Barsi / Mahapurakh'
+                            : isPa
+                              ? 'ਖ਼ਾਲਸਾ / ਗ੍ਰੰਥ ਹਵਾਲਾ'
+                              : 'Khalsa & Manuscript Colophon'}
                       <span aria-hidden="true"> · </span>
                       {isPa ? ev.tithiRulePa : ev.tithiRuleEn}
                     </p>
@@ -284,14 +315,14 @@ export const EventColophonDrawer: React.FC<EventColophonDrawerProps> = ({
                     </p>
                   )}
 
-                  {/* Primary Scriptural & Colophon Citations */}
+                  {/* Purab Shabad & Itihaas Citations */}
                   <div className="space-y-3 pt-3 border-t border-[#DDD2BE]">
                     <div className="flex items-center gap-2 text-xs font-semibold text-[#1B263B]">
                       <BookMarked className="w-4 h-4 text-[#B8860B]" aria-hidden="true" />
                       <span>
                         {isPa
-                          ? 'ਪ੍ਰਮਾਣਿਕ ਗ੍ਰੰਥ ਅਤੇ ਇਤਿਹਾਸਕ ਹਵਾਲੇ'
-                          : 'Primary Scriptural & Colophon Citations'}
+                          ? 'ਪੁਰਬ ਸ਼ਬਦ ਅਤੇ ਇਤਿਹਾਸ (ਪ੍ਰਮਾਣਿਕ ਗ੍ਰੰਥ ਹਵਾਲੇ)'
+                          : 'Purab Shabad & Itihaas (Gurbani & Suraj Prakash Citations)'}
                       </span>
                     </div>
 
@@ -355,27 +386,51 @@ export const EventColophonDrawer: React.FC<EventColophonDrawerProps> = ({
             </div>
           )}
 
-          {/* Month Barah Maha Archival Block */}
-          <div className="rounded-lg border border-[#DDD2BE] bg-[#F3ECE0]/55 p-4 space-y-1.5">
-            <p className="text-xs text-[#78716C]">
-              {isPa ? day.solar.monthMeta.barahMahaRefPa : day.solar.monthMeta.barahMahaRefEn}
-            </p>
-            <p className="font-gurmukhi text-base text-[#1C1917]">
-              {day.solar.monthMeta.barahMahaOpeningPa}
-            </p>
-            {!isPa && (
-              <p className="text-xs italic text-[#57534E]">
-                {day.solar.monthMeta.barahMahaOpeningTranslit}
+          {/* Full Embedded Monthly Barah Maha Majh Pauri (SGGS Ang 133–136) */}
+          <div
+            data-testid="embedded-barah-maha"
+            className="rounded-lg border border-[#B8860B]/45 bg-[#F3ECE0]/65 p-4 space-y-3"
+          >
+            <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[#DDD2BE] pb-2">
+              <p className="text-xs font-semibold text-[#1B263B]">
+                {isPa
+                  ? `${day.solar.monthMeta.namePa} — ਸੰਪੂਰਨ ਬਾਰਹ ਮਾਹਾ ਮਾਂਝ ਪਉੜੀ`
+                  : `${day.solar.monthMeta.nameEn} — Complete Barah Maha Majh Pauri`}
               </p>
-            )}
-            <div className="pt-1">
+              <p className="text-[11px] font-mono-tabular text-[#78716C]">
+                {isPa
+                  ? `ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ · ਅੰਗ ${toGurmukhiNumerals(monthlyPauri.ang)}`
+                  : `SGGS Ang ${monthlyPauri.ang}`}
+              </p>
+            </div>
+
+            <div className="space-y-2.5">
+              {monthlyPauri.pauriPa.map((linePa, idx) => (
+                <div key={idx} className="space-y-0.5">
+                  <p className="font-gurmukhi text-[15px] text-[#1C1917] leading-relaxed">
+                    {linePa}
+                  </p>
+                  {!isPa && monthlyPauri.pauriEn[idx] && (
+                    <p className="text-xs text-[#57534E] leading-relaxed">
+                      {monthlyPauri.pauriEn[idx]}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <div className="pt-2 border-t border-[#DDD2BE]">
               <a
-                href={day.solar.monthMeta.pothiUrl}
+                href={POTHI_BARAH_MAHA_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-xs font-medium text-[#1B263B] hover:text-[#9E4F00] underline underline-offset-4"
+                className="inline-flex items-center gap-1 text-xs font-semibold text-[#9E4F00] hover:text-[#7C3D00] underline underline-offset-4"
               >
-                <span>{isPa ? 'pothi.tatkhalsa.in ’ਤੇ ਬਾਰਹ ਮਾਹਾ ਪੜ੍ਹੋ' : 'Open Barah Maha on pothi.tatkhalsa.in'}</span>
+                <span>
+                  {isPa
+                    ? 'pothi.tatkhalsa.in ’ਤੇ ਬਾਰਹ ਮਾਹਾ ਪੜ੍ਹੋ'
+                    : 'Open Barah Maha on pothi.tatkhalsa.in'}
+                </span>
                 <ArrowUpRight className="w-3.5 h-3.5" aria-hidden="true" />
               </a>
             </div>

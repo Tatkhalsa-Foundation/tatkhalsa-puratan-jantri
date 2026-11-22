@@ -205,7 +205,9 @@ export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
                           ? 'text-[#8F1D1D]'
                           : ev.category === 'khalsa'
                             ? 'text-[#1B263B]'
-                            : 'text-[#9E4F00]'
+                            : ev.category === 'barsi'
+                              ? 'text-[#6B4E16]'
+                              : 'text-[#9E4F00]'
                       }`}
                     >
                       {isPa ? ev.shortLabelPa : ev.shortLabelEn}
@@ -258,7 +260,7 @@ export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
 
         <footer className="mt-4 pt-2 border-t border-[#E7E5E4] flex items-center justify-between text-[10px] text-[#78716C]">
           <span>
-            Puratan Bikrami Luni-Solar Chronology (Sri Amritsar Sahib IST) · No Fixed Nanakshahi or Astrology
+            Puratan Bikrami Luni-Solar Chronology (Sri Anandpur Sahib IST) · No Fixed Nanakshahi or Astrology
           </span>
           <span>pothi.tatkhalsa.in · calendar.tatkhalsa.in</span>
         </footer>

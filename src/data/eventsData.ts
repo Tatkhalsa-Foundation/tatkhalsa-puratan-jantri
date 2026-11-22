@@ -1,16 +1,237 @@
+import {POTHI_BARAH_MAHA_URL} from './sambatData';
 import type {HistoricalEvent} from './types';
 
 /**
- * Verified Puratan Bikrami Gurpurabs, Shaheedi Divases, and Khalsa/Sampardai historical events
- * for Sambat 2083 (Nov 2026 – Mar 2027) and full Sambat 2084 (Mar 2027 – Mar 2028).
+ * Verified Puratan Bikrami Gurpurabs, Shaheedi Divases, Barsis, and Khalsa/Sampardai historical events
+ * for Sambat 2083 (Oct 2026 – Mar 2027) and full Sambat 2084 (Mar 2027 – Mar 2028).
  *
  * All dates strictly follow Puratan luni-solar Bikrami chronology (Purnimanta tithis & sidereal solar dates).
  * Zero fixed Nanakshahi dates and zero astrology/rashifal/muhurat entries.
  */
 export const HISTORICAL_EVENTS: readonly HistoricalEvent[] = [
   // =========================================================================
-  // SAMBAT 2083 (Nov 2026 – Mar 2027)
+  // SAMBAT 2083 (Oct 2026 – Mar 2027 · Katak through Phagun)
   // =========================================================================
+  {
+    id: '2083-bhog-dussehra-mahattam',
+    date: '2026-10-20',
+    sambat: 2083,
+    category: 'khalsa',
+    titleEn: 'Bhog Dussehra Mahattam Paath',
+    titlePa: 'ਭੋਗ ਦੁਸਹਿਰਾ ਮਹਾਤਮ ਪਾਠ',
+    shortLabelEn: 'Bhog Dussehra Mahattam',
+    shortLabelPa: 'ਭੋਗ ਦੁਸਹਿਰਾ ਮਹਾਤਮ',
+    tithiRuleEn: 'Assu Sudhi 9 (4 Katak, Sambat 2083)',
+    tithiRulePa: 'ਅੱਸੂ ਸੁਦੀ ੯ (੪ ਕੱਤਕ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Traditional Puratan Bhog of Sri Dasam Granth Sahib Ji Dussehra Mahattam and Shastar Darshan Maryada at Takhat Sachkhand Sri Hazur Sahib and Nihang Singh Dals.',
+    summaryPa: 'ਤਖ਼ਤ ਸੱਚਖੰਡ ਸ੍ਰੀ ਹਜ਼ੂਰ ਸਾਹਿਬ ਅਤੇ ਪੁਰਾਤਨ ਨਿਹੰਗ ਸਿੰਘ ਦਲਾਂ ਵਿਖੇ ਸ੍ਰੀ ਦਸਮ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ ਦੇ ਦੁਸਹਿਰਾ ਮਹਾਤਮ ਪਾਠ ਦਾ ਭੋਗ ਅਤੇ ਸ਼ਸਤਰ ਦਰਸ਼ਨ ਮਰਯਾਦਾ।',
+    historicalContextEn:
+      'Observed in Puratan Khalsa Maryada across Takhat Sachkhand Sri Hazur Sahib and Nihang Singh Sampradaye with continuous recitations of Chandi Di Vaar, Chandi Charitar, and Shastar Nam Mala, culminating in Shastar Darshan and Ardas for Chardi Kala of the Panth.',
+    historicalContextPa:
+      'ਪੁਰਾਤਨ ਖ਼ਾਲਸਾਈ ਮਰਯਾਦਾ ਅਨੁਸਾਰ ਤਖ਼ਤ ਸੱਚਖੰਡ ਸ੍ਰੀ ਹਜ਼ੂਰ ਸਾਹਿਬ ਅਤੇ ਬੁੱਢਾ ਦਲ/ਤਰਨਾ ਦਲ ਵਿਖੇ ਨੌਂ ਦਿਨਾਂ ਦੇ ਪਾਠਾਂ ਉਪਰੰਤ ਚੰਡੀ ਦੀ ਵਾਰ ਅਤੇ ਸ਼ਸਤਰ ਨਾਮ ਮਾਲਾ ਦੇ ਭੋਗ ਪਾ ਕੇ ਸ਼ਸਤਰ ਦਰਸ਼ਨ ਕਰਵਾਏ ਜਾਂਦੇ ਹਨ।',
+    citations: [
+      {
+        sourceEn: 'Sri Dasam Granth Sahib Ji (Chandi Di Vaar)',
+        sourcePa: 'ਸ੍ਰੀ ਦਸਮ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ (ਚੰਡੀ ਦੀ ਵਾਰ)',
+        referenceEn: 'Pauri 1 · Pritham Bhagauti Simar Kai',
+        referencePa: 'ਪਉੜੀ ੧ · ਪ੍ਰਿਥਮ ਭਗੌਤੀ ਸਿਮਰਿ ਕੈ',
+        excerptPa: 'ਪ੍ਰਿਥਮ ਭਗੌਤੀ ਸਿਮਰਿ ਕੈ ਗੁਰ ਨਾਨਕ ਲਈਂ ਧਿਆਇ ॥',
+        excerptTranslit: 'Pritham Bhagautee simar kai Gur Naanak laeen dhiaae.',
+      },
+      {
+        sourceEn: 'Sri Gurpratap Suraj Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰਪ੍ਰਤਾਪ ਸੂਰਜ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Rut 3, Ansu 26 · Puratan Anandpur & Hazuri Dussehra Shastar Maryada',
+        referencePa: 'ਰੁੱਤ ੩, ਅੰਸੂ ੨੬ · ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ ਅਤੇ ਹਜ਼ੂਰੀ ਦੁਸਹਿਰਾ ਸ਼ਸਤਰ ਮਰਯਾਦਾ',
+      },
+    ],
+  },
+  {
+    id: '2083-janam-baba-budha-ji',
+    date: '2026-10-23',
+    sambat: 2083,
+    category: 'barsi',
+    titleEn: 'Janam Divas — Brahmgyani Baba Budha Ji',
+    titlePa: 'ਜਨਮ ਦਿਹਾੜਾ — ਬ੍ਰਹਮਗਿਆਨੀ ਬਾਬਾ ਬੁੱਢਾ ਜੀ',
+    shortLabelEn: 'Janam Baba Budha Ji',
+    shortLabelPa: 'ਜਨਮ ਬਾਬਾ ਬੁੱਢਾ ਜੀ',
+    tithiRuleEn: 'Assu Sudhi 12 (7 Katak, Sambat 2083)',
+    tithiRulePa: 'ਅੱਸੂ ਸੁਦੀ ੧੨ (੭ ਕੱਤਕ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Birth commemoration of Baba Budha Ji (1563 Bikrami), First Head Granthi of Sachkhand Sri Harmandir Sahib who performed Gurgaddi Tilak for five Gurus.',
+    summaryPa: 'ਸੱਚਖੰਡ ਸ੍ਰੀ ਹਰਿਮੰਦਰ ਸਾਹਿਬ ਦੇ ਪਹਿਲੇ ਮੁੱਖ ਗ੍ਰੰਥੀ ਬ੍ਰਹਮਗਿਆਨੀ ਬਾਬਾ ਬੁੱਢਾ ਜੀ (ਸੰਮਤ ੧੫੬੩) ਦਾ ਪਾਵਨ ਜਨਮ ਦਿਹਾੜਾ।',
+    historicalContextEn:
+      'Born at Kathunangal (Amritsar) in Sambat 1563 Bikrami (1506 CE), Baba Budha Ji met Sri Guru Nanak Dev Ji as a young boy and served six Guru Sahiban in unbroken devotion. He was appointed the first Granthi of Sri Harmandir Sahib in 1604 CE and imparted martial and scriptural training to Sri Guru Hargobind Sahib Ji.',
+    historicalContextPa:
+      'ਕੱਥੂਨੰਗਲ ਵਿਖੇ ਸੰਮਤ ੧੫੬੩ ਵਿੱਚ ਪ੍ਰਗਟ ਹੋਏ ਬਾਬਾ ਬੁੱਢਾ ਜੀ ਨੇ ਛੇ ਗੁਰੂ ਸਾਹਿਬਾਨ ਦੀ ਸੇਵਾ ਨਿਭਾਈ, ਪੰਜ ਗੁਰੂ ਸਾਹਿਬਾਨ ਨੂੰ ਗੁਰਿਆਈ ਦਾ ਤਿਲਕ ਲਗਾਇਆ ਅਤੇ ਸ੍ਰੀ ਹਰਿਮੰਦਰ ਸਾਹਿਬ ਦੇ ਪਹਿਲੇ ਗ੍ਰੰਥੀ ਥਾਪੇ ਗਏ।',
+    citations: [
+      {
+        sourceEn: 'Sri Gurpratap Suraj Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰਪ੍ਰਤਾਪ ਸੂਰਜ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Raas 4, Ansu 25 · First Parkash of Adi Granth & Granthi Seva of Baba Budha Ji',
+        referencePa: 'ਰਾਸਿ ੪, ਅੰਸੂ ੨੫ · ਆਦਿ ਗ੍ਰੰਥ ਸਾਹਿਬ ਦਾ ਪਹਿਲਾ ਪ੍ਰਕਾਸ਼ ਅਤੇ ਬਾਬਾ ਬੁੱਢਾ ਜੀ ਦੀ ਸੇਵਾ',
+      },
+      {
+        sourceEn: 'Sri Guru Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ang 272 · Sukhmani Sahib (Ashtpadi 8 — Attributes of a Brahmgyani)',
+        referencePa: 'ਅੰਗ ੨੭੨ · ਸੁਖਮਨੀ ਸਾਹਿਬ (ਅਸ਼ਟਪਦੀ ੮ — ਬ੍ਰਹਮਗਿਆਨੀ ਦੇ ਲੱਛਣ)',
+        excerptPa: 'ਬ੍ਰਹਮ ਗਿਆਨੀ ਸਦਾ ਨਿਰਲੇਪ ॥ ਜੈਸੇ ਜਲ ਮਹਿ ਕਮਲ ਅਲੇਪ ॥',
+        excerptTranslit: 'Brahm giaanee sadaa nirlep, jaise jal meh kamal alep.',
+      },
+    ],
+  },
+  {
+    id: '2083-saka-sri-panja-sahib',
+    date: '2026-10-30',
+    sambat: 2083,
+    category: 'shaheedi',
+    titleEn: 'Shaheedi Saka Sri Panja Sahib (Bhai Partap Singh & Bhai Karam Singh Ji)',
+    titlePa: 'ਸ਼ਹੀਦੀ ਸਾਕਾ ਸ੍ਰੀ ਪੰਜਾ ਸਾਹਿਬ (ਭਾਈ ਪ੍ਰਤਾਪ ਸਿੰਘ ਤੇ ਭਾਈ ਕਰਮ ਸਿੰਘ ਜੀ)',
+    shortLabelEn: 'Saka Sri Panja Sahib',
+    shortLabelPa: 'ਸਾਕਾ ਸ੍ਰੀ ਪੰਜਾ ਸਾਹਿਬ',
+    tithiRuleEn: 'Katak Vadhi 5 (14 Katak, Sambat 2083)',
+    tithiRulePa: 'ਕੱਤਕ ਵਦੀ ੫ (੧੪ ਕੱਤਕ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Martyrdom of Bhai Partap Singh Ji, Bhai Karam Singh Ji, and the Sangat who halted a train at Hasan Abdal (1922) to serve Langar to Gurdwara Reform prisoners.',
+    summaryPa: 'ਗੁਰੂ ਕੇ ਬਾਗ਼ ਦੇ ਕੈਦੀ ਸਿੰਘਾਂ ਨੂੰ ਪ੍ਰਸ਼ਾਦਾ ਛਕਾਉਣ ਲਈ ਹਸਨ ਅਬਦਾਲ (੧੯੨੨) ਵਿਖੇ ਗੱਡੀ ਅੱਗੇ ਲੇਟ ਕੇ ਸ਼ਹੀਦ ਹੋਏ ਭਾਈ ਪ੍ਰਤਾਪ ਸਿੰਘ ਜੀ ਅਤੇ ਭਾਈ ਕਰਮ ਸਿੰਘ ਜੀ ਦੀ ਸ਼ਹਾਦਤ।',
+    historicalContextEn:
+      'On 30 October 1922 (14 Katak, Sambat 1979), hearing that a train carrying arrested Akali Singhs from Guru Ka Bagh was ordered not to stop at Hasan Abdal, Bhai Partap Singh Ji, Bhai Karam Singh Ji, and Sangat laid themselves on the iron rails with Langar in hand. Eleven Singhs were crushed and two attained immediate shaheedi before the locomotive came to a halt and every prisoner was fed.',
+    historicalContextPa:
+      '੧੪ ਕੱਤਕ ਸੰਮਤ ੧੯੭੯ (੩੦ ਅਕਤੂਬਰ ੧੯੨੨) ਨੂੰ ਗੁਰੂ ਕੇ ਬਾਗ਼ ਦੇ ਕੈਦੀ ਸਿੰਘਾਂ ਨੂੰ ਲੰਗਰ ਛਕਾਉਣ ਲਈ ਸ੍ਰੀ ਪੰਜਾ ਸਾਹਿਬ ਦੀ ਸੰਗਤ ਰੇਲ ਦੀ ਪਟੜੀ ’ਤੇ ਬੈਠ ਗਈ। ਭਾਈ ਪ੍ਰਤਾਪ ਸਿੰਘ ਜੀ ਅਤੇ ਭਾਈ ਕਰਮ ਸਿੰਘ ਜੀ ਨੇ ਸ਼ਹਾਦਤ ਦੇ ਕੇ ਗੱਡੀ ਰੁਕਵਾਈ ਅਤੇ ਸਿੰਘਾਂ ਨੂੰ ਲੰਗਰ ਛਕਾਇਆ।',
+    citations: [
+      {
+        sourceEn: 'Sri Guru Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ang 1412 · Salok Vaaran Te Vadhik (Mahalla 1)',
+        referencePa: 'ਅੰਗ ੧੪੧੨ · ਸਲੋਕ ਵਾਰਾਂ ਤੇ ਵਧੀਕ (ਮਹਲਾ ੧)',
+        excerptPa: 'ਜਉ ਤਉ ਪ੍ਰੇਮ ਖੇਲਣ ਕਾ ਚਾਉ ॥ ਸਿਰੁ ਧਰਿ ਤਲੀ ਗਲੀ ਮੇਰੀ ਆਉ ॥',
+        excerptTranslit: 'Jau tau prem khelan kaa chaao, sir dhar talee galee meree aao.',
+      },
+      {
+        sourceEn: 'Panthic Historical Record · Gurdwara Sudhar Lehar',
+        sourcePa: 'ਪੰਥਕ ਇਤਿਹਾਸਕ ਰਿਕਾਰਡ · ਗੁਰਦੁਆਰਾ ਸੁਧਾਰ ਲਹਿਰ',
+        referenceEn: '14 Katak 1979 Bikrami (30 Oct 1922) · Hasan Abdal Railway Station Saka',
+        referencePa: '੧੪ ਕੱਤਕ ੧੯੭੯ ਬਿਕ੍ਰਮੀ (੩੦ ਅਕਤੂਬਰ ੧੯੨੨) · ਹਸਨ ਅਬਦਾਲ ਸਾਕਾ',
+      },
+    ],
+  },
+  {
+    id: '2083-shaheedi-bhai-beant-singh-ji',
+    date: '2026-10-31',
+    sambat: 2083,
+    category: 'shaheedi',
+    titleEn: 'Shaheedi Divas — Shaheed Bhai Beant Singh Ji',
+    titlePa: 'ਸ਼ਹੀਦੀ ਦਿਹਾੜਾ — ਸ਼ਹੀਦ ਭਾਈ ਬੇਅੰਤ ਸਿੰਘ ਜੀ',
+    shortLabelEn: 'Shaheedi Bhai Beant Singh Ji',
+    shortLabelPa: 'ਸ਼ਹੀਦੀ ਭਾਈ ਬੇਅੰਤ ਸਿੰਘ ਜੀ',
+    tithiRuleEn: 'Katak Vadhi 6 (15 Katak, Sambat 2083)',
+    tithiRulePa: 'ਕੱਤਕ ਵਦੀ ੬ (੧੫ ਕੱਤਕ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Remembrance of Shaheed Bhai Beant Singh Ji (15 Katak, 1984), honored by Sri Akal Takht Sahib following the June 1984 assault on Sri Darbar Sahib.',
+    summaryPa: 'ਜੂਨ ੧੯੮੪ ਦੇ ਘੱਲੂਘਾਰੇ ਉਪਰੰਤ ੧੫ ਕੱਤਕ ਨੂੰ ਸ਼ਹਾਦਤ ਪ੍ਰਾਪਤ ਕਰਨ ਵਾਲੇ ਸ਼ਹੀਦ ਭਾਈ ਬੇਅੰਤ ਸਿੰਘ ਜੀ ਦੀ ਯਾਦ।',
+    historicalContextEn:
+      'Commemorated annually at Sri Akal Takht Sahib and across the Panth on 15 Katak (31 October) in memory of Bhai Beant Singh Ji’s martyrdom in 1984.',
+    historicalContextPa:
+      'ਸ੍ਰੀ ਅਕਾਲ ਤਖ਼ਤ ਸਾਹਿਬ ਅਤੇ ਸਮੁੱਚੇ ਪੰਥ ਵੱਲੋਂ ੧੫ ਕੱਤਕ (੩੧ ਅਕਤੂਬਰ) ਨੂੰ ਸ਼ਹੀਦ ਭਾਈ ਬੇਅੰਤ ਸਿੰਘ ਜੀ ਦੀ ਸ਼ਹਾਦਤ ਨੂੰ ਸ਼ਰਧਾ ਸਹਿਤ ਯਾਦ ਕੀਤਾ ਜਾਂਦਾ ਹੈ।',
+    citations: [
+      {
+        sourceEn: 'Sri Guru Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ang 1105 · Maru Kabir Ji',
+        referencePa: 'ਅੰਗ ੧੧੦੫ · ਮਾਰੂ ਕਬੀਰ ਜੀ',
+        excerptPa: 'ਸੂਰਾ ਸੋ ਪਹਿਚਾਨੀਐ ਜੁ ਲਰੈ ਦੀਨ ਕੇ ਹੇਤ ॥ ਪੁਰਜਾ ਪੁਰਜਾ ਕਟਿ ਮਰੈ ਕਬਹੂ ਨ ਛਾਡੈ ਖੇਤੁ ॥',
+        excerptTranslit: 'Sooraa so pehchaaneeai ju larai deen ke het, purjaa purjaa kat marai kabhoo na chhaadai khet.',
+      },
+    ],
+  },
+  {
+    id: '2083-barsi-sant-baba-ajit-singh-patna',
+    date: '2026-10-31',
+    sambat: 2083,
+    category: 'barsi',
+    titleEn: 'Barsi — Sant Baba Ajit Singh Ji (Takht Sri Patna Sahib)',
+    titlePa: 'ਬਰਸੀ — ਸੰਤ ਬਾਬਾ ਅਜੀਤ ਸਿੰਘ ਜੀ (ਤਖ਼ਤ ਸ੍ਰੀ ਪਟਨਾ ਸਾਹਿਬ)',
+    shortLabelEn: 'Barsi Baba Ajit Singh Ji Patna',
+    shortLabelPa: 'ਬਰਸੀ ਬਾਬਾ ਅਜੀਤ ਸਿੰਘ ਜੀ ਪਟਨਾ',
+    tithiRuleEn: 'Katak Vadhi 6 (15 Katak, Sambat 2083)',
+    tithiRulePa: 'ਕੱਤਕ ਵਦੀ ੬ (੧੫ ਕੱਤਕ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Annual Barsi remembrance of Sant Baba Ajit Singh Ji, devoted Kar Seva and Kirtan Mahapurakh associated with Takht Sri Harmandir Ji Patna Sahib.',
+    summaryPa: 'ਤਖ਼ਤ ਸ੍ਰੀ ਹਰਿਮੰਦਰ ਜੀ ਪਟਨਾ ਸਾਹਿਬ ਨਾਲ ਜੁੜੇ ਮਹਾਂਪੁਰਖ ਸੰਤ ਬਾਬਾ ਅਜੀਤ ਸਿੰਘ ਜੀ ਦੀ ਸਾਲਾਨਾ ਬਰਸੀ।',
+    historicalContextEn:
+      'Observed by Sampardai Singhs and Patna Sahib Sangat on Katak Vadhi 6 / 15 Katak in tribute to Sant Baba Ajit Singh Ji’s lifelong dedication to Gurbani Katha, Amrit Sanchar, and Kar Seva at Takht Sri Patna Sahib.',
+    historicalContextPa:
+      'ਕੱਤਕ ਵਦੀ ੬ / ੧੫ ਕੱਤਕ ਨੂੰ ਸੰਪਰਦਾਈ ਸੰਗਤਾਂ ਵੱਲੋਂ ਸੰਤ ਬਾਬਾ ਅਜੀਤ ਸਿੰਘ ਜੀ (ਪਟਨਾ ਸਾਹਿਬ) ਦੀਆਂ ਪੰਥਕ ਅਤੇ ਗੁਰਮਤਿ ਸੇਵਾਵਾਂ ਨੂੰ ਯਾਦ ਕੀਤਾ ਜਾਂਦਾ ਹੈ।',
+    citations: [
+      {
+        sourceEn: 'Sri Guru Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ang 286 · Sukhmani Sahib (Ashtpadi 17)',
+        referencePa: 'ਅੰਗ ੨੮੬ · ਸੁਖਮਨੀ ਸਾਹਿਬ (ਅਸ਼ਟਪਦੀ ੧੭)',
+        excerptPa: 'ਸੰਤ ਕੀ ਮਹਿਮਾ ਬੇਦ ਨ ਜਾਨਹਿ ॥ ਜੇਤਾ ਸੁਨਹਿ ਤੇਤਾ ਬਖਿਆਨਹਿ ॥',
+        excerptTranslit: 'Sant kee mehimaa bed na jaaneh, jetaa suneh tetaa bakhiaaneh.',
+      },
+    ],
+  },
+  {
+    id: '2083-barsi-mahakavi-bhai-santokh-singh',
+    date: '2026-11-05',
+    sambat: 2083,
+    category: 'barsi',
+    titleEn: 'Barsi — Mahakavi Bhai Santokh Singh Ji (Author of Suraj Prakash)',
+    titlePa: 'ਬਰਸੀ — ਮਹਾਂਕਵੀ ਭਾਈ ਸੰਤੋਖ ਸਿੰਘ ਜੀ (ਕਰਤਾ ਸ੍ਰੀ ਗੁਰਪ੍ਰਤਾਪ ਸੂਰਜ ਗ੍ਰੰਥ)',
+    shortLabelEn: 'Barsi Kavi Santokh Singh Ji',
+    shortLabelPa: 'ਬਰਸੀ ਕਵੀ ਸੰਤੋਖ ਸਿੰਘ ਜੀ',
+    tithiRuleEn: 'Katak Vadhi 11 (20 Katak, Sambat 2083)',
+    tithiRulePa: 'ਕੱਤਕ ਵਦੀ ੧੧ (੨੦ ਕੱਤਕ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Annual Barsi of Churamani Mahakavi Bhai Santokh Singh Ji (1787–1843 CE), immortal author of Sri Nanak Prakash, Sri Gurpratap Suraj Granth Sahib Ji, and Garab Ganjani Tika.',
+    summaryPa: 'ਸ੍ਰੀ ਨਾਨਕ ਪ੍ਰਕਾਸ਼, ਸ੍ਰੀ ਗੁਰਪ੍ਰਤਾਪ ਸੂਰਜ ਗ੍ਰੰਥ ਅਤੇ ਗਰਬ ਗੰਜਨੀ ਟੀਕਾ ਦੇ ਰਚੇਤਾ ਮਹਾਂਕਵੀ ਭਾਈ ਸੰਤੋਖ ਸਿੰਘ ਜੀ (੧੭੮੭–੧੮੪੩) ਦੀ ਸਾਲਾਨਾ ਬਰਸੀ।',
+    historicalContextEn:
+      'Trained in the Nirmala-Giani Samparda under Giani Sant Singh Ji at Sri Amritsar Sahib and completing his monumental fourteen-volume Sri Gurpratap Suraj Granth Sahib Ji at Kaithal in Sambat 1900 (1843 CE), Mahakavi Bhai Santokh Singh Ji passed into Sachkhand shortly after finishing the epic chronicle of all ten Guru Sahiban.',
+    historicalContextPa:
+      'ਸ੍ਰੀ ਅੰਮ੍ਰਿਤਸਰ ਸਾਹਿਬ ਵਿਖੇ ਗਿਆਨੀ ਸੰਤ ਸਿੰਘ ਜੀ ਪਾਸੋਂ ਵਿੱਦਿਆ ਪ੍ਰਾਪਤ ਕਰਕੇ ਭਾਈ ਸੰਤੋਖ ਸਿੰਘ ਜੀ ਨੇ ਕੈਥਲ ਵਿਖੇ ਸੰਮਤ ੧੯੦੦ ਵਿੱਚ ਚੌਦਾਂ ਜਿਲਦਾਂ ਵਾਲਾ ਮਹਾਨ ਇਤਿਹਾਸਕ ਗ੍ਰੰਥ "ਸ੍ਰੀ ਗੁਰਪ੍ਰਤਾਪ ਸੂਰਜ ਗ੍ਰੰਥ" ਸੰਪੂਰਨ ਕੀਤਾ, ਜੋ ਅੱਜ ਵੀ ਗੁਰਦੁਆਰਿਆਂ ਵਿੱਚ ਕਥਾ ਦਾ ਮੁੱਖ ਆਧਾਰ ਹੈ।',
+    citations: [
+      {
+        sourceEn: 'Sri Gurpratap Suraj Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰਪ੍ਰਤਾਪ ਸੂਰਜ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ayan 2, Final Ansu (Sambat 1900 Bikrami) · Completion Colophon at Kaithal',
+        referencePa: 'ਅਯਨ ੨, ਅੰਤਿਮ ਅੰਸੂ (ਸੰਮਤ ੧੯੦੦ ਬਿਕ੍ਰਮੀ) · ਕੈਥਲ ਸੰਪੂਰਨਤਾ ਲੇਖ',
+      },
+      {
+        sourceEn: 'Sri Guru Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ang 39 · Sri Raag Mahalla 5',
+        referencePa: 'ਅੰਗ ੩੯ · ਸਿਰੀਰਾਗੁ ਮਹਲਾ ੫',
+        excerptPa: 'ਸਭ ਤੇ ਵਡਾ ਸਤਿਗੁਰੁ ਨਾਨਕੁ ਜਿਨਿ ਕਲ ਰਾਖੀ ਮੇਰੀ ॥',
+        excerptTranslit: 'Sabh te vadaa Satgur Naanak jin kal raakhee meree.',
+      },
+    ],
+  },
+  {
+    id: '2083-barsi-baba-mitt-singh-ji',
+    date: '2026-11-08',
+    sambat: 2083,
+    category: 'barsi',
+    titleEn: 'Barsi — Baba Mitt Singh Ji (Hazuri & Budha Dal Heritage)',
+    titlePa: 'ਬਰਸੀ — ਬਾਬਾ ਮਿੱਤ ਸਿੰਘ ਜੀ',
+    shortLabelEn: 'Barsi Baba Mitt Singh Ji',
+    shortLabelPa: 'ਬਰਸੀ ਬਾਬਾ ਮਿੱਤ ਸਿੰਘ ਜੀ',
+    tithiRuleEn: 'Katak Vadhi 14 (23 Katak, Sambat 2083)',
+    tithiRulePa: 'ਕੱਤਕ ਵਦੀ ੧੪ (੨੩ ਕੱਤਕ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Annual Barsi commemoration of Baba Mitt Singh Ji, revered Puratan Nihang Singh and Gurmat Maryada custodian.',
+    summaryPa: 'ਪੁਰਾਤਨ ਨਿਹੰਗ ਸਿੰਘ ਮਰਯਾਦਾ ਅਤੇ ਗੁਰਮਤਿ ਪ੍ਰਚਾਰ ਦੇ ਪਹਿਰੇਦਾਰ ਬਾਬਾ ਮਿੱਤ ਸਿੰਘ ਜੀ ਦੀ ਸਾਲਾਨਾ ਬਰਸੀ।',
+    historicalContextEn:
+      'Observed on Katak Vadhi 14 (23 Katak) across Puratan Sampardai Deras and Takhat Sri Hazur Sahib Sangat in honor of Baba Mitt Singh Ji’s lifelong Simran, Seva, and preservation of Khalsa Rehat.',
+    historicalContextPa:
+      'ਕੱਤਕ ਵਦੀ ੧੪ (੨੩ ਕੱਤਕ) ਨੂੰ ਪੁਰਾਤਨ ਸੰਪਰਦਾਈ ਸੰਗਤਾਂ ਵੱਲੋਂ ਬਾਬਾ ਮਿੱਤ ਸਿੰਘ ਜੀ ਦੇ ਨਾਮ-ਅਭਿਆਸ ਅਤੇ ਖ਼ਾਲਸਾਈ ਰਹਿਤ ਦੀ ਪਹਿਰੇਦਾਰੀ ਨੂੰ ਸ਼ਰਧਾ ਸਹਿਤ ਯਾਦ ਕੀਤਾ ਜਾਂਦਾ ਹੈ।',
+    citations: [
+      {
+        sourceEn: 'Sri Guru Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ang 274 · Sukhmani Sahib (Ashtpadi 9)',
+        referencePa: 'ਅੰਗ ੨੭੪ · ਸੁਖਮਨੀ ਸਾਹਿਬ (ਅਸ਼ਟਪਦੀ ੯)',
+        excerptPa: 'ਅਪਰਸੁ ਪਾਰਸੁ ਪਰਸਿ ਮਿਲੈ ਗੁਰਮੁਖਿ ਨਾਮਿ ਸਮਾਇ ॥',
+        excerptTranslit: 'Aparas paaras paras milai Gurmukh Naam samaae.',
+      },
+    ],
+  },
   {
     id: '2083-bandi-chhor-divas',
     date: '2026-11-09',
@@ -80,6 +301,34 @@ export const HISTORICAL_EVENTS: readonly HistoricalEvent[] = [
     ],
   },
   {
+    id: '2083-barsi-sant-jwala-singh-harkhowal',
+    date: '2026-11-13',
+    sambat: 2083,
+    category: 'barsi',
+    titleEn: 'Barsi — Sant Baba Jwala Singh Ji (Harkhowal)',
+    titlePa: 'ਬਰਸੀ — ਸੰਤ ਬਾਬਾ ਜਵਾਲਾ ਸਿੰਘ ਜੀ (ਹਰਖੋਵਾਲ)',
+    shortLabelEn: 'Barsi Sant Jwala Singh Ji',
+    shortLabelPa: 'ਬਰਸੀ ਸੰਤ ਜਵਾਲਾ ਸਿੰਘ ਜੀ',
+    tithiRuleEn: 'Katak Sudhi 4 (28 Katak, Sambat 2083)',
+    tithiRulePa: 'ਕੱਤਕ ਸੁਦੀ ੪ (੨੮ ਕੱਤਕ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Annual Barsi of Brahmgyani Sant Baba Jwala Singh Ji Harkhowal (1889–1957 CE), luminary of Hoti Mardan Samparda.',
+    summaryPa: 'ਹੋਤੀ ਮਰਦਾਨ ਸੰਪਰਦਾ ਦੇ ਮਹਾਨ ਬ੍ਰਹਮਗਿਆਨੀ ਸੰਤ ਬਾਬਾ ਜਵਾਲਾ ਸਿੰਘ ਜੀ ਹਰਖੋਵਾਲ (੧੮੮੯–੧੯੫੭) ਦੀ ਸਾਲਾਨਾ ਬਰਸੀ।',
+    historicalContextEn:
+      'Disciple of Sant Baba Karam Singh Ji Hoti Mardan and Sant Baba Aya Singh Ji, Sant Baba Jwala Singh Ji established the spiritual center at Gurdwara Santgarh Harkhowal (Hoshiarpur), inspiring generations in Gurbani Santhia, Nitnem, and Gurmat Katha.',
+    historicalContextPa:
+      'ਸੰਤ ਬਾਬਾ ਕਰਮ ਸਿੰਘ ਜੀ ਹੋਤੀ ਮਰਦਾਨ ਅਤੇ ਸੰਤ ਬਾਬਾ ਆਇਆ ਸਿੰਘ ਜੀ ਦੀ ਸੰਪਰਦਾ ਦੇ ਮਹਾਂਪੁਰਖ ਸੰਤ ਬਾਬਾ ਜਵਾਲਾ ਸਿੰਘ ਜੀ ਨੇ ਹਰਖੋਵਾਲ (ਹੁਸ਼ਿਆਰਪੁਰ) ਵਿਖੇ ਨਾਮ-ਸਿਮਰਨ, ਸੰਥਿਆ ਅਤੇ ਗੁਰਮਤਿ ਪ੍ਰਚਾਰ ਦਾ ਮਹਾਨ ਕੇਂਦਰ ਸਥਾਪਤ ਕੀਤਾ।',
+    citations: [
+      {
+        sourceEn: 'Sri Guru Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ang 273 · Sukhmani Sahib (Ashtpadi 8)',
+        referencePa: 'ਅੰਗ ੨੭੩ · ਸੁਖਮਨੀ ਸਾਹਿਬ (ਅਸ਼ਟਪਦੀ ੮)',
+        excerptPa: 'ਬ੍ਰਹਮ ਗਿਆਨੀ ਕੈ ਗਰੀਬੀ ਸਮਾਹਾ ॥ ਬ੍ਰਹਮ ਗਿਆਨੀ ਪਰਉਪਕਾਰ ਉਮਾਹਾ ॥',
+        excerptTranslit: 'Brahm giaanee kai gareebee samaahaa, Brahm giaanee parupkaar umaahaa.',
+      },
+    ],
+  },
+  {
     id: '2083-joti-jot-guru-gobind-singh',
     date: '2026-11-14',
     sambat: 2083,
@@ -108,6 +357,75 @@ export const HISTORICAL_EVENTS: readonly HistoricalEvent[] = [
         sourcePa: 'ਸ੍ਰੀ ਗੁਰ ਪ੍ਰਤਾਪ ਸੂਰਜ ਗ੍ਰੰਥ',
         referenceEn: 'Ayan 2, Ansu 44 · Sachkhand Payana',
         referencePa: 'ਅਯਨ ੨, ਅੰਸੂ ੪੪ · ਸੱਚਖੰਡ ਪਿਆਨਾ',
+      },
+    ],
+  },
+  {
+    id: '2083-shaheedi-baba-deep-singh-ji',
+    date: '2026-11-15',
+    sambat: 2083,
+    category: 'shaheedi',
+    titleEn: 'Shaheedi Divas — Dhan Dhan Baba Deep Singh Ji Shaheed',
+    titlePa: 'ਸ਼ਹੀਦੀ ਦਿਹਾੜਾ — ਧੰਨ ਧੰਨ ਬਾਬਾ ਦੀਪ ਸਿੰਘ ਜੀ ਸ਼ਹੀਦ',
+    shortLabelEn: 'Shaheedi Baba Deep Singh Ji',
+    shortLabelPa: 'ਸ਼ਹੀਦੀ ਬਾਬਾ ਦੀਪ ਸਿੰਘ ਜੀ',
+    tithiRuleEn: 'Katak Sudhi 6 (30 Katak, Sambat 2083)',
+    tithiRulePa: 'ਕੱਤਕ ਸੁਦੀ ੬ (੩੦ ਕੱਤਕ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Immortal martyrdom of Baba Deep Singh Ji Shaheed (1814 Bikrami / 1757 CE), first Head of Damdami Taksal and Shaheedan Misl, liberating Sachkhand Sri Harmandir Sahib.',
+    summaryPa: 'ਦਮਦਮੀ ਟਕਸਾਲ ਅਤੇ ਸ਼ਹੀਦਾਂ ਮਿਸਲ ਦੇ ਪਹਿਲੇ ਮੁਖੀ ਬਾਬਾ ਦੀਪ ਸਿੰਘ ਜੀ ਸ਼ਹੀਦ (ਸੰਮਤ ੧੮੧੪) ਦੀ ਸੱਚਖੰਡ ਸ੍ਰੀ ਹਰਿਮੰਦਰ ਸਾਹਿਬ ਦੀ ਪਵਿੱਤਰਤਾ ਲਈ ਲਾਸਾਨੀ ਸ਼ਹਾਦਤ।',
+    historicalContextEn:
+      'In Sambat 1814 Bikrami (November 1757 CE), upon hearing of Jahan Khan’s desecration of Sri Harmandir Sahib, the 75-year-old scholar-warrior Baba Deep Singh Ji drew a line on the earth at Tarn Taran with his double-edged Khanda and marched toward Amritsar. Severely wounded at Goharwal, he upheld his vow by bearing his severed head on his left palm while fighting all the way to the Parikrama of Sri Harmandir Sahib.',
+    historicalContextPa:
+      'ਸੰਮਤ ੧੮੧੪ ਬਿਕ੍ਰਮੀ ਵਿੱਚ ਜਹਾਨ ਖ਼ਾਨ ਵੱਲੋਂ ਸ੍ਰੀ ਹਰਿਮੰਦਰ ਸਾਹਿਬ ਦੀ ਬੇਅਦਬੀ ਦੀ ਖ਼ਬਰ ਸੁਣ ਕੇ ੭੫ ਸਾਲਾ ਬਾਬਾ ਦੀਪ ਸਿੰਘ ਜੀ ਨੇ ਤਰਨਤਾਰਨ ਵਿਖੇ ਖੰਡੇ ਨਾਲ ਲਕੀਰ ਖਿੱਚੀ ਅਤੇ ਸੀਸ ਤਲੀ ’ਤੇ ਧਰ ਕੇ ਸ੍ਰੀ ਹਰਿਮੰਦਰ ਸਾਹਿਬ ਦੀ ਪਰਿਕਰਮਾ ਤੱਕ ਜੂਝਦਿਆਂ ਅਦੁੱਤੀ ਸ਼ਹਾਦਤ ਪ੍ਰਾਪਤ ਕੀਤੀ।',
+    citations: [
+      {
+        sourceEn: 'Sri Guru Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ang 1412 · Salok Vaaran Te Vadhik (Mahalla 1 — Vow of Baba Deep Singh Ji)',
+        referencePa: 'ਅੰਗ ੧੪੧੨ · ਸਲੋਕ ਵਾਰਾਂ ਤੇ ਵਧੀਕ (ਮਹਲਾ ੧)',
+        excerptPa: 'ਜਉ ਤਉ ਪ੍ਰੇਮ ਖੇਲਣ ਕਾ ਚਾਉ ॥ ਸਿਰੁ ਧਰਿ ਤਲੀ ਗਲੀ ਮੇਰੀ ਆਉ ॥',
+        excerptTranslit: 'Jau tau prem khelan kaa chaao, sir dhar talee galee meree aao.',
+      },
+      {
+        sourceEn: 'Prachin Panth Prakash (Rattan Singh Bhangu)',
+        sourcePa: 'ਪ੍ਰਾਚੀਨ ਪੰਥ ਪ੍ਰਕਾਸ਼ (ਰਤਨ ਸਿੰਘ ਭੰਗੂ)',
+        referenceEn: 'Sakhi Baba Deep Singh Ji Shaheed · Battle of Goharwal & Amritsar Parikrama (1814 Bikrami)',
+        referencePa: 'ਸਾਖੀ ਬਾਬਾ ਦੀਪ ਸਿੰਘ ਜੀ ਸ਼ਹੀਦ · ਗੋਹਲਵੜ੍ਹ ਅਤੇ ਸ੍ਰੀ ਅੰਮ੍ਰਿਤਸਰ ਪਰਿਕਰਮਾ ਜੰਗ (੧੮੧੪ ਬਿਕ੍ਰਮੀ)',
+      },
+    ],
+    featured: true,
+  },
+  {
+    id: '2083-janam-bhagat-namdev-ji',
+    date: '2026-11-20',
+    sambat: 2083,
+    category: 'gurpurab',
+    titleEn: 'Janam Divas — Shiromani Bhagat Namdev Ji',
+    titlePa: 'ਜਨਮ ਦਿਹਾੜਾ — ਸ਼੍ਰੋਮਣੀ ਭਗਤ ਨਾਮਦੇਵ ਜੀ',
+    shortLabelEn: 'Janam Bhagat Namdev Ji',
+    shortLabelPa: 'ਜਨਮ ਭਗਤ ਨਾਮਦੇਵ ਜੀ',
+    tithiRuleEn: 'Katak Sudhi 10 (5 Maghar, Sambat 2083)',
+    tithiRulePa: 'ਕੱਤਕ ਸੁਦੀ ੧੦ (੫ ਮੱਘਰ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Birth commemoration of Bhagat Namdev Ji (1270 CE), whose 61 luminous hymns are enshrined in Sri Guru Granth Sahib Ji.',
+    summaryPa: 'ਸ਼੍ਰੋਮਣੀ ਭਗਤ ਨਾਮਦੇਵ ਜੀ ਦਾ ਪਾਵਨ ਜਨਮ ਦਿਹਾੜਾ, ਜਿਨ੍ਹਾਂ ਦੇ ੬੧ ਪਾਵਨ ਸ਼ਬਦ ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ ਵਿੱਚ ਸੁਸ਼ੋਭਿਤ ਹਨ।',
+    historicalContextEn:
+      'Born at Narsi Bamani (Maharashtra) and spending his later years in Ghuman (Gurdaspur, Punjab), Bhagat Namdev Ji preached unwavering love for the All-Pervading One Lord beyond caste and ritual. Sixty-one of his Shabads across eighteen Raags are revered in Sri Guru Granth Sahib Ji.',
+    historicalContextPa:
+      'ਮਹਾਰਾਸ਼ਟਰ ਵਿੱਚ ਜਨਮੇ ਅਤੇ ਪੰਜਾਬ ਦੇ ਘੁਮਾਣ ਵਿਖੇ ਭਗਤੀ ਕਰਨ ਵਾਲੇ ਭਗਤ ਨਾਮਦੇਵ ਜੀ ਦੇ ੬੧ ਸ਼ਬਦ ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ ਵਿੱਚ ਦਰਜ ਹਨ, ਜੋ ਸਰਬ-ਵਿਆਪਕ ਪਰਮਾਤਮਾ ਨਾਲ ਅਟੁੱਟ ਪ੍ਰੇਮ ਦਾ ਉਪਦੇਸ਼ ਦਿੰਦੇ ਹਨ।',
+    citations: [
+      {
+        sourceEn: 'Sri Guru Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ang 1164 · Raag Bhairao Bani Bhagat Namdev Ji',
+        referencePa: 'ਅੰਗ ੧੧੬੪ · ਰਾਗੁ ਭੈਰਉ ਬਾਣੀ ਭਗਤ ਨਾਮਦੇਵ ਜੀ',
+        excerptPa: 'ਏਕੈ ਪਾਥਰ ਕੀਜੈ ਭਾਉ ॥ ਦੂਜੈ ਪਾਥਰ ਧਰੀਐ ਪਾਉ ॥',
+        excerptTranslit: 'Ekai paathar keejai bhaao, doojai paathar dhareeai paao.',
+      },
+      {
+        sourceEn: 'Bhai Gurdas Ji — Vaaran',
+        sourcePa: 'ਭਾਈ ਗੁਰਦਾਸ ਜੀ — ਵਾਰਾਂ',
+        referenceEn: 'Vaar 10, Pauri 1–9 · Devotion of Bhagat Namdev Ji',
+        referencePa: 'ਵਾਰ ੧੦, ਪਉੜੀ ੧–੯ · ਭਗਤ ਨਾਮਦੇਵ ਜੀ ਦੀ ਅਨੰਨ ਭਗਤੀ',
       },
     ],
   },
@@ -161,6 +479,120 @@ export const HISTORICAL_EVENTS: readonly HistoricalEvent[] = [
     featured: true,
   },
   {
+    id: '2083-barsi-sant-giani-mohan-singh-bhindranwale',
+    date: '2026-12-03',
+    sambat: 2083,
+    category: 'barsi',
+    titleEn: 'Barsi — Sant Giani Mohan Singh Ji Bhindranwale',
+    titlePa: 'ਬਰਸੀ — ਸੰਤ ਗਿਆਨੀ ਮੋਹਨ ਸਿੰਘ ਜੀ ਭਿੰਡਰਾਂਵਾਲੇ',
+    shortLabelEn: 'Barsi Sant Mohan Singh Ji',
+    shortLabelPa: 'ਬਰਸੀ ਸੰਤ ਮੋਹਨ ਸਿੰਘ ਜੀ',
+    tithiRuleEn: 'Maghar Vadhi 10 (18 Maghar, Sambat 2083)',
+    tithiRulePa: 'ਮੱਘਰ ਵਦੀ ੧੦ (੧੮ ਮੱਘਰ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Annual Barsi of Sant Giani Mohan Singh Ji Bhindranwale, renowned Vidvan and Head of Damdami Taksal (Bhindran) who taught hundreds of Gurbani Kathakars.',
+    summaryPa: 'ਦਮਦਮੀ ਟਕਸਾਲ (ਭਿੰਡਰਾਂ) ਦੇ ਪ੍ਰਸਿੱਧ ਵਿਦਵਾਨ ਮੁਖੀ ਸੰਤ ਗਿਆਨੀ ਮੋਹਨ ਸਿੰਘ ਜੀ ਭਿੰਡਰਾਂਵਾਲੇ ਦੀ ਸਾਲਾਨਾ ਬਰਸੀ।',
+    historicalContextEn:
+      'Serving as the twelfth Jathedar of Damdami Taksal (Bhindran Kalan), Sant Giani Mohan Singh Ji dedicated his entire life to pure Shuddh Gurbani Santhia, Katha of Sri Guru Granth Sahib Ji and Sri Gurpratap Suraj Granth, and Amrit Prachar across Malwa and Doaba.',
+    historicalContextPa:
+      'ਦਮਦਮੀ ਟਕਸਾਲ (ਭਿੰਡਰਾਂ ਕਲਾਂ) ਦੇ ਮੁਖੀ ਵਜੋਂ ਸੰਤ ਗਿਆਨੀ ਮੋਹਨ ਸਿੰਘ ਜੀ ਨੇ ਸ਼ੁੱਧ ਗੁਰਬਾਣੀ ਸੰਥਿਆ, ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਅਤੇ ਸੂਰਜ ਪ੍ਰਕਾਸ਼ ਦੀ ਕਥਾ ਰਾਹੀਂ ਅਨੇਕਾਂ ਵਿਦਵਾਨ ਤਿਆਰ ਕੀਤੇ।',
+    citations: [
+      {
+        sourceEn: 'Sri Guru Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ang 595 · Sorath Mahalla 1 (Gurmukh Vidya)',
+        referencePa: 'ਅੰਗ ੫੯੫ · ਸੋਰਠਿ ਮਹਲਾ ੧',
+        excerptPa: 'ਗੁਰਮੁਖਿ ਵਿਦਿਆ ਬੀਚਾਰੀਐ ਤਾ ਪਰਉਪਕਾਰੀ ਹੋਇ ॥',
+        excerptTranslit: 'Gurmukh vidiaa beechaareeai taa parupkaaree hoe.',
+      },
+    ],
+  },
+  {
+    id: '2083-janam-dr-bhai-vir-singh-ji',
+    date: '2026-12-05',
+    sambat: 2083,
+    category: 'barsi',
+    titleEn: 'Janam Divas — Bhai Sahib Dr. Bhai Vir Singh Ji',
+    titlePa: 'ਜਨਮ ਦਿਹਾੜਾ — ਭਾਈ ਸਾਹਿਬ ਡਾ. ਭਾਈ ਵੀਰ ਸਿੰਘ ਜੀ',
+    shortLabelEn: 'Janam Dr. Bhai Vir Singh Ji',
+    shortLabelPa: 'ਜਨਮ ਡਾ. ਭਾਈ ਵੀਰ ਸਿੰਘ ਜੀ',
+    tithiRuleEn: 'Maghar Vadhi 12 (20 Maghar, Sambat 2083)',
+    tithiRulePa: 'ਮੱਘਰ ਵਦੀ ੧੨ (੨੦ ਮੱਘਰ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Birth commemoration of Bhai Sahib Dr. Bhai Vir Singh Ji (1872–1957 CE), scholar-saint, editor of Sri Gurpratap Suraj Granth Sahib Ji (14 vols), and father of modern Punjabi literature.',
+    summaryPa: 'ਸ੍ਰੀ ਗੁਰਪ੍ਰਤਾਪ ਸੂਰਜ ਗ੍ਰੰਥ ਦੇ ੧੪-ਜਿਲਦੀ ਸੰਪਾਦਕ, ਸੰਥਿਆ ਪੋਥੀ ਦੇ ਟੀਕਾਕਾਰ ਅਤੇ ਆਧੁਨਿਕ ਪੰਜਾਬੀ ਸਾਹਿਤ ਦੇ ਪਿਤਾਮਾ ਭਾਈ ਸਾਹਿਬ ਡਾ. ਭਾਈ ਵੀਰ ਸਿੰਘ ਜੀ ਦਾ ਜਨਮ ਦਿਹਾੜਾ।',
+    historicalContextEn:
+      'Born on 5 December 1872 at Sri Amritsar Sahib into the lineage of Diwan Kaura Mal Ji and Giani Hazara Singh Ji, Bhai Vir Singh Ji edited and annotated the monumental 14-volume Sri Gurpratap Suraj Granth, Prachin Panth Prakash, and authored Santhya Sri Guru Granth Sahib, Sri Kalgidhar Chamatkar, and Sri Guru Nanak Chamatkar.',
+    historicalContextPa:
+      '੫ ਦਸੰਬਰ ੧੮੭੨ ਨੂੰ ਸ੍ਰੀ ਅੰਮ੍ਰਿਤਸਰ ਸਾਹਿਬ ਵਿਖੇ ਜਨਮੇ ਭਾਈ ਸਾਹਿਬ ਡਾ. ਭਾਈ ਵੀਰ ਸਿੰਘ ਜੀ ਨੇ ਸ੍ਰੀ ਗੁਰਪ੍ਰਤਾਪ ਸੂਰਜ ਗ੍ਰੰਥ ਦੀ ੧੪ ਜਿਲਦਾਂ ਵਿੱਚ ਸੰਪਾਦਨਾ, ਸੰਥਿਆ ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਅਤੇ ਕਲਗੀਧਰ ਚਮਤਕਾਰ ਵਰਗੇ ਅਮੁੱਲ ਗ੍ਰੰਥ ਪੰਥ ਨੂੰ ਭੇਟ ਕੀਤੇ।',
+    citations: [
+      {
+        sourceEn: 'Sri Gurpratap Suraj Granth Sahib Ji (Edited by Dr. Bhai Vir Singh Ji)',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰਪ੍ਰਤਾਪ ਸੂਰਜ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ (ਸੰਪਾਦਕ: ਡਾ. ਭਾਈ ਵੀਰ ਸਿੰਘ ਜੀ)',
+        referenceEn: 'Jild 1 (Prastavna) · Critical Puratan Bikrami Chronology & Footnotes',
+        referencePa: 'ਜਿਲਦ ੧ (ਪ੍ਰਸਤਾਵਨਾ) · ਪੁਰਾਤਨ ਬਿਕ੍ਰਮੀ ਇਤਿਹਾਸਕ ਟਿੱਪਣੀਆਂ',
+      },
+    ],
+  },
+  {
+    id: '2083-barsi-sant-teja-singh-rara-sahib',
+    date: '2026-12-09',
+    sambat: 2083,
+    category: 'barsi',
+    titleEn: 'Barsi — Sant Baba Teja Singh Ji (Rara Sahib)',
+    titlePa: 'ਬਰਸੀ — ਸੰਤ ਬਾਬਾ ਤੇਜਾ ਸਿੰਘ ਜੀ (ਰਾੜਾ ਸਾਹਿਬ)',
+    shortLabelEn: 'Barsi Sant Teja Singh Ji Rara',
+    shortLabelPa: 'ਬਰਸੀ ਸੰਤ ਤੇਜਾ ਸਿੰਘ ਜੀ ਰਾੜਾ',
+    tithiRuleEn: 'Maghar Sudhi 1 (24 Maghar, Sambat 2083)',
+    tithiRulePa: 'ਮੱਘਰ ਸੁਦੀ ੧ (੨੪ ਮੱਘਰ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Annual Barsi of Sant Baba Teja Singh Ji of Gurdwara Karamsar Rara Sahib, successor to Sant Baba Isher Singh Ji and Sant Baba Kishan Singh Ji.',
+    summaryPa: 'ਗੁਰਦੁਆਰਾ ਕਰਮਸਰ ਰਾੜਾ ਸਾਹਿਬ ਦੇ ਮਹਾਂਪੁਰਖ ਸੰਤ ਬਾਬਾ ਤੇਜਾ ਸਿੰਘ ਜੀ ਦੀ ਸਾਲਾਨਾ ਬਰਸੀ।',
+    historicalContextEn:
+      'Remembered for deep humility, selfless Langar Seva, and continuous Naam Simran at Gurdwara Karamsar Rara Sahib, carrying forward the Hoti Mardan–Rara Sahib Gurmat Samparda.',
+    historicalContextPa:
+      'ਗੁਰਦੁਆਰਾ ਕਰਮਸਰ ਰਾੜਾ ਸਾਹਿਬ ਵਿਖੇ ਨਿਰਮਾਣਤਾ, ਨਾਮ-ਅਭਿਆਸ ਅਤੇ ਨਿਰੰਤਰ ਲੰਗਰ-ਸੇਵਾ ਦੀ ਪੁਰਾਤਨ ਮਰਯਾਦਾ ਨਿਭਾਉਣ ਵਾਲੇ ਸੰਤ ਬਾਬਾ ਤੇਜਾ ਸਿੰਘ ਜੀ ਦੀ ਪਾਵਨ ਯਾਦ।',
+    citations: [
+      {
+        sourceEn: 'Sri Guru Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ang 262 · Gauri Sukhmani Mahalla 5',
+        referencePa: 'ਅੰਗ ੨੬੨ · ਗਉੜੀ ਸੁਖਮਨੀ ਮਹਲਾ ੫',
+        excerptPa: 'ਸਿਮਰਉ ਸਿਮਰਿ ਸਿਮਰਿ ਸੁਖੁ ਪਾਵਉ ॥ ਕਲਿ ਕਲੇਸ ਤਨ ਮਾਹਿ ਮਿਟਾਵਉ ॥',
+        excerptTranslit: 'Simrau simar simar sukh paavau, kal kales tan maahe mitaavau.',
+      },
+    ],
+  },
+  {
+    id: '2083-gurgaddi-guru-gobind-singh-ji',
+    date: '2026-12-12',
+    sambat: 2083,
+    category: 'gurpurab',
+    titleEn: 'Gurgadhi Divas — Sri Guru Gobind Singh Ji',
+    titlePa: 'ਗੁਰਗੱਦੀ ਦਿਵਸ — ਸ੍ਰੀ ਗੁਰੂ ਗੋਬਿੰਦ ਸਿੰਘ ਜੀ',
+    shortLabelEn: 'Gurgadhi Guru Gobind Singh Ji',
+    shortLabelPa: 'ਗੁਰਗੱਦੀ ਗੁਰੂ ਗੋਬਿੰਦ ਸਿੰਘ ਜੀ',
+    tithiRuleEn: 'Maghar Sudhi 3 (27 Maghar, Sambat 2083)',
+    tithiRulePa: 'ਮੱਘਰ ਸੁਦੀ ੩ (੨੭ ਮੱਘਰ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Bestowal of Gurgaddi upon the Tenth Patshah Sri Guru Gobind Singh Ji at Chak Nanaki (Sri Anandpur Sahib) following the departure of Sri Guru Tegh Bahadur Ji for Delhi (1732 Bikrami).',
+    summaryPa: 'ਨੌਵੇਂ ਪਾਤਸ਼ਾਹ ਸ੍ਰੀ ਗੁਰੂ ਤੇਗ਼ ਬਹਾਦਰ ਜੀ ਵੱਲੋਂ ਦਿੱਲੀ ਰਵਾਨਗੀ ਸਮੇਂ ਚੱਕ ਨਾਨਕੀ (ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ) ਵਿਖੇ ਦਸਮੇਸ਼ ਪਿਤਾ ਸ੍ਰੀ ਗੁਰੂ ਗੋਬਿੰਦ ਸਿੰਘ ਜੀ ਨੂੰ ਗੁਰਗੱਦੀ ਬਖ਼ਸ਼ਿਸ਼ (ਸੰਮਤ ੧੭੩੨)।',
+    historicalContextEn:
+      'Prior to His supreme martyrdom at Chandni Chowk, Delhi in Sambat 1732 Bikrami (1675 CE), Sri Guru Tegh Bahadur Ji sent five paise and a coconut via Bhai Gurditta Ji to Sri Anandpur Sahib, formally bestowing the Gurgaddi of Guru Nanak upon the nine-year-old Gobind Rai Ji.',
+    historicalContextPa:
+      'ਸੰਮਤ ੧੭੩੨ ਬਿਕ੍ਰਮੀ ਵਿੱਚ ਦਿੱਲੀ ਵਿਖੇ ਸ਼ਹਾਦਤ ਤੋਂ ਪਹਿਲਾਂ ਸ੍ਰੀ ਗੁਰੂ ਤੇਗ਼ ਬਹਾਦਰ ਜੀ ਨੇ ਭਾਈ ਗੁਰਦਿੱਤਾ ਜੀ ਹੱਥ ਪੰਜ ਪੈਸੇ ਅਤੇ ਨਾਰੀਅਲ ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ ਭੇਜ ਕੇ ਨੌਂ ਸਾਲਾ ਗੋਬਿੰਦ ਰਾਇ ਜੀ ਨੂੰ ਗੁਰਿਆਈ ਦੀ ਜ਼ਿੰਮੇਵਾਰੀ ਸੌਂਪੀ।',
+    citations: [
+      {
+        sourceEn: 'Sri Gurpratap Suraj Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰਪ੍ਰਤਾਪ ਸੂਰਜ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Raas 12, Ansu 49–55 · Gurgaddi Tilak at Sri Anandpur Sahib (1732 Bikrami)',
+        referencePa: 'ਰਾਸਿ ੧੨, ਅੰਸੂ ੪੯–੫੫ · ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ ਗੁਰਗੱਦੀ ਤਿਲਕ ਪ੍ਰਸੰਗ',
+      },
+      {
+        sourceEn: 'Sri Dasam Granth Sahib Ji (Bachitar Natak)',
+        sourcePa: 'ਸ੍ਰੀ ਦਸਮ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ (ਬਚਿਤ੍ਰ ਨਾਟਕ)',
+        referenceEn: 'Adhyay 5, Chhand 16 · Ascension to the Sovereign Guruship',
+        referencePa: 'ਅਧਿਆਇ ੫, ਛੰਦ ੧੬ · ਪਿਤ ਕੇ ਪਯਾਨ ਉਪਰੰਤ ਗੁਰਗੱਦੀ',
+      },
+    ],
+  },
+  {
     id: '2083-shaheedi-guru-tegh-bahadur',
     date: '2026-12-14',
     sambat: 2083,
@@ -200,6 +632,32 @@ export const HISTORICAL_EVENTS: readonly HistoricalEvent[] = [
     pothiLabelEn: 'Read Salok Mahalla 9 on Pothi',
     pothiLabelPa: 'ਪੋਥੀ ਸਾਹਿਬ ’ਤੇ ਸਲੋਕ ਮਹਲਾ ੯ ਪੜ੍ਹੋ',
     featured: true,
+  },
+  {
+    id: '2083-janam-baba-atal-sahib-ji',
+    date: '2026-12-22',
+    sambat: 2083,
+    category: 'gurpurab',
+    titleEn: 'Janam Divas — Baba Atal Rai Sahib Ji',
+    titlePa: 'ਜਨਮ ਦਿਹਾੜਾ — ਬਾਬਾ ਅਟੱਲ ਰਾਇ ਸਾਹਿਬ ਜੀ',
+    shortLabelEn: 'Janam Baba Atal Sahib Ji',
+    shortLabelPa: 'ਜਨਮ ਬਾਬਾ ਅਟੱਲ ਸਾਹਿਬ ਜੀ',
+    tithiRuleEn: 'Maghar Sudhi 13 (7 Poh, Sambat 2083)',
+    tithiRulePa: 'ਮੱਘਰ ਸੁਦੀ ੧੩ (੭ ਪੋਹ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Birth commemoration of Baba Atal Rai Ji (1676 Bikrami), luminous son of Sri Guru Hargobind Sahib Ji and Mata Nanaki Ji, honored by the nine-story Gurdwara Baba Atal Sahib.',
+    summaryPa: 'ਛੇਵੇਂ ਪਾਤਸ਼ਾਹ ਸ੍ਰੀ ਗੁਰੂ ਹਰਿਗੋਬਿੰਦ ਸਾਹਿਬ ਜੀ ਅਤੇ ਮਾਤਾ ਨਾਨਕੀ ਜੀ ਦੇ ਸਪੁੱਤਰ ਬਾਬਾ ਅਟੱਲ ਰਾਇ ਸਾਹਿਬ ਜੀ (ਸੰਮਤ ੧੬੭੬) ਦਾ ਪ੍ਰਕਾਸ਼ ਦਿਹਾੜਾ।',
+    historicalContextEn:
+      'Born at Sri Amritsar Sahib in Sambat 1676 Bikrami (1619 CE), Baba Atal Rai Ji demonstrated extraordinary spiritual maturity at age nine and surrendered his mortal frame in obedience to the Divine Hukam, immortalized in the nine-storied Gurdwara Baba Atal Rai Sahib near Sri Harmandir Sahib.',
+    historicalContextPa:
+      'ਸੰਮਤ ੧੬੭੬ ਵਿੱਚ ਸ੍ਰੀ ਅੰਮ੍ਰਿਤਸਰ ਸਾਹਿਬ ਵਿਖੇ ਜਨਮੇ ਬਾਬਾ ਅਟੱਲ ਰਾਇ ਜੀ ਨੇ ਨੌਂ ਸਾਲ ਦੀ ਆਯੂ ਵਿੱਚ ਅਕਾਲ ਪੁਰਖ ਦੇ ਭਾਣੇ ਅੱਗੇ ਸੀਸ ਝੁਕਾਉਂਦਿਆਂ ਸੱਚਖੰਡ ਪਿਆਨਾ ਕੀਤਾ, ਜਿਨ੍ਹਾਂ ਦੀ ਯਾਦ ਵਿੱਚ ਨੌ-ਮੰਜ਼ਿਲਾ ਗੁਰਦੁਆਰਾ ਬਾਬਾ ਅਟੱਲ ਸਾਹਿਬ ਸੁਸ਼ੋਭਿਤ ਹੈ।',
+    citations: [
+      {
+        sourceEn: 'Sri Gurpratap Suraj Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰਪ੍ਰਤਾਪ ਸੂਰਜ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Raas 6, Ansu 38–42 · Janam & Spiritual Glory of Baba Atal Rai Ji',
+        referencePa: 'ਰਾਸਿ ੬, ਅੰਸੂ ੩੮–੪੨ · ਬਾਬਾ ਅਟੱਲ ਰਾਇ ਜੀ ਪ੍ਰਸੰਗ',
+      },
+    ],
   },
   {
     id: '2083-vadde-sahibzade',
@@ -242,6 +700,34 @@ export const HISTORICAL_EVENTS: readonly HistoricalEvent[] = [
     pothiLabelPa: 'ਜ਼ਫ਼ਰਨਾਮਾ ਅਤੇ ਸ਼ਬਦ ਹਜ਼ਾਰੇ ਪਾਤਸ਼ਾਹੀ ੧੦ ਪੜ੍ਹੋ',
   },
   {
+    id: '2083-barsi-sant-baba-thakur-singh-ji',
+    date: '2026-12-24',
+    sambat: 2083,
+    category: 'barsi',
+    titleEn: 'Barsi — Sant Baba Thakur Singh Ji (Damdami Taksal)',
+    titlePa: 'ਬਰਸੀ — ਸੰਤ ਬਾਬਾ ਠਾਕੁਰ ਸਿੰਘ ਜੀ (ਦਮਦਮੀ ਟਕਸਾਲ)',
+    shortLabelEn: 'Barsi Baba Thakur Singh Ji',
+    shortLabelPa: 'ਬਰਸੀ ਬਾਬਾ ਠਾਕੁਰ ਸਿੰਘ ਜੀ',
+    tithiRuleEn: 'Poh Vadhi 1 (9 Poh, Sambat 2083)',
+    tithiRulePa: 'ਪੋਹ ਵਦੀ ੧ (੯ ਪੋਹ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Annual Barsi of Sant Baba Thakur Singh Ji (1915–2004 CE), steadfast caretaker Jathedar of Damdami Taksal (Mehta Chowk) and pillar of Panthic Chardi Kala.',
+    summaryPa: 'ਦਮਦਮੀ ਟਕਸਾਲ (ਮਹਿਤਾ ਚੌਕ) ਦੇ ਕਾਰਜਕਾਰੀ ਮੁਖੀ, ਨਾਮ-ਅਭਿਆਸੀ ਅਤੇ ਪੰਥਕ ਚੜ੍ਹਦੀ ਕਲਾ ਦੇ ਮੁਦੱਈ ਸੰਤ ਬਾਬਾ ਠਾਕੁਰ ਸਿੰਘ ਜੀ (੧੯੧੫–੨੦੦੪) ਦੀ ਸਾਲਾਨਾ ਬਰਸੀ।',
+    historicalContextEn:
+      'Leading Damdami Taksal with unwavering steadiness through two turbulent decades after 1984, Sant Baba Thakur Singh Ji rebuilt historic Gurdwaras, supported Shaheed families, and conducted massive Amrit Sanchar and Gurbani Santhia initiatives worldwide before departing on 24 December 2004 (9 Poh).',
+    historicalContextPa:
+      '੧੯੮੪ ਉਪਰੰਤ ਦੋ ਦਹਾਕਿਆਂ ਤੱਕ ਦਮਦਮੀ ਟਕਸਾਲ ਦੀ ਸੁਚੱਜੀ ਅਗਵਾਈ ਕਰਦਿਆਂ ਸੰਤ ਬਾਬਾ ਠਾਕੁਰ ਸਿੰਘ ਜੀ ਨੇ ਸ਼ਹੀਦ ਪਰਿਵਾਰਾਂ ਦੀ ਸਾਂਭ-ਸੰਭਾਲ, ਅੰਮ੍ਰਿਤ ਸੰਚਾਰ ਅਤੇ ਗੁਰਬਾਣੀ ਸੰਥਿਆ ਦੀ ਲਹਿਰ ਚਲਾਈ।',
+    citations: [
+      {
+        sourceEn: 'Sri Guru Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ang 282 · Sukhmani Sahib (Ashtpadi 15)',
+        referencePa: 'ਅੰਗ ੨੮੨ · ਸੁਖਮਨੀ ਸਾਹਿਬ (ਅਸ਼ਟਪਦੀ ੧੫)',
+        excerptPa: 'ਸਰਬ ਕਲਾ ਭਰਪੂਰ ਪ੍ਰਭ ਬਿਰਥਾ ਜਾਨਨਹਾਰ ॥ ਜਾ ਕੈ ਸਿਮਰਨਿ ਉਧਰੀਐ ਨਾਨਕ ਤਿਸੁ ਬਲਿਹਾਰ ॥',
+        excerptTranslit: 'Sarab kalaa bharpoor Prabh birathaa jaananhaar, jaa kai simran udhareeai Naanak tis balihaar.',
+      },
+    ],
+  },
+  {
     id: '2083-chhote-sahibzade',
     date: '2026-12-28',
     sambat: 2083,
@@ -273,6 +759,172 @@ export const HISTORICAL_EVENTS: readonly HistoricalEvent[] = [
       },
     ],
     featured: true,
+  },
+  {
+    id: '2083-barsi-sant-kishan-singh-rara-sahib',
+    date: '2027-01-01',
+    sambat: 2083,
+    category: 'barsi',
+    titleEn: 'Barsi — Sant Baba Kishan Singh Ji (Rara Sahib)',
+    titlePa: 'ਬਰਸੀ — ਸੰਤ ਬਾਬਾ ਕਿਸ਼ਨ ਸਿੰਘ ਜੀ (ਰਾੜਾ ਸਾਹਿਬ)',
+    shortLabelEn: 'Barsi Sant Kishan Singh Ji',
+    shortLabelPa: 'ਬਰਸੀ ਸੰਤ ਕਿਸ਼ਨ ਸਿੰਘ ਜੀ',
+    tithiRuleEn: 'Poh Vadhi 9 (17 Poh, Sambat 2083)',
+    tithiRulePa: 'ਪੋਹ ਵਦੀ ੯ (੧੭ ਪੋਹ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Annual Barsi of Sant Baba Kishan Singh Ji, lifelong companion and sewadar of Sant Baba Isher Singh Ji at Gurdwara Karamsar Rara Sahib.',
+    summaryPa: 'ਗੁਰਦੁਆਰਾ ਕਰਮਸਰ ਰਾੜਾ ਸਾਹਿਬ ਵਿਖੇ ਸੰਤ ਬਾਬਾ ਈਸ਼ਰ ਸਿੰਘ ਜੀ ਦੇ ਅਨਿੰਨ ਸਾਥੀ ਅਤੇ ਸੇਵਾਦਾਰ ਸੰਤ ਬਾਬਾ ਕਿਸ਼ਨ ਸਿੰਘ ਜੀ ਦੀ ਸਾਲਾਨਾ ਬਰਸੀ।',
+    historicalContextEn:
+      'Known across the Panth for complete ego-effacement, deep Simran, and preserving the pristine maryada of Gurdwara Karamsar Rara Sahib after Sant Baba Isher Singh Ji’s departure in 1975.',
+    historicalContextPa:
+      'ਸੰਤ ਬਾਬਾ ਈਸ਼ਰ ਸਿੰਘ ਜੀ ਦੇ ਸਾਥੀ ਸੰਤ ਬਾਬਾ ਕਿਸ਼ਨ ਸਿੰਘ ਜੀ ਨੇ ਰਾੜਾ ਸਾਹਿਬ ਵਿਖੇ ਨਾਮ-ਬਾਣੀ ਅਤੇ ਨਿਰਮਾਣ ਸੇਵਾ ਦੀ ਮਿਸਾਲ ਕਾਇਮ ਕੀਤੀ।',
+    citations: [
+      {
+        sourceEn: 'Sri Guru Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ang 286 · Sukhmani Sahib (Ashtpadi 17)',
+        referencePa: 'ਅੰਗ ੨੮੬ · ਸੁਖਮਨੀ ਸਾਹਿਬ (ਅਸ਼ਟਪਦੀ ੧੭)',
+        excerptPa: 'ਸਾਧੂ ਸੰਗਿ ਭਏ ਨਿਰਮਲਾ ॥ ਨਾਨਕ ਪ੍ਰਭ ਸਿਉ ਰਹਿਆ ਮਿਲਾ ॥',
+        excerptTranslit: 'Saadhoo sang bhae nirmalaa, Naanak Prabh sio rahiaa milaa.',
+      },
+    ],
+  },
+  {
+    id: '2083-shaheedi-jathedar-gurdev-singh-kaunke',
+    date: '2027-01-01',
+    sambat: 2083,
+    category: 'shaheedi',
+    titleEn: 'Shaheedi Divas — Jathedar Bhai Gurdev Singh Ji Kaunke',
+    titlePa: 'ਸ਼ਹੀਦੀ ਦਿਹਾੜਾ — ਜਥੇਦਾਰ ਭਾਈ ਗੁਰਦੇਵ ਸਿੰਘ ਜੀ ਕਾਉਂਕੇ',
+    shortLabelEn: 'Shaheedi Jathedar Kaunke',
+    shortLabelPa: 'ਸ਼ਹੀਦੀ ਜਥੇਦਾਰ ਕਾਉਂਕੇ',
+    tithiRuleEn: 'Poh Vadhi 9 (17 Poh, Sambat 2083)',
+    tithiRulePa: 'ਪੋਹ ਵਦੀ ੯ (੧੭ ਪੋਹ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Martyrdom commemoration of Acting Jathedar of Sri Akal Takht Sahib Bhai Gurdev Singh Ji Kaunke (1 January 1993).',
+    summaryPa: 'ਸ੍ਰੀ ਅਕਾਲ ਤਖ਼ਤ ਸਾਹਿਬ ਦੇ ਸਾਬਕਾ ਕਾਰਜਕਾਰੀ ਜਥੇਦਾਰ ਸ਼ਹੀਦ ਭਾਈ ਗੁਰਦੇਵ ਸਿੰਘ ਜੀ ਕਾਉਂਕੇ (੧ ਜਨਵਰੀ ੧੯੯੩) ਦਾ ਸ਼ਹੀਦੀ ਦਿਹਾੜਾ।',
+    historicalContextEn:
+      'Appointed Acting Jathedar of Sri Akal Takht Sahib by the Sarbat Khalsa in 1986, Bhai Gurdev Singh Ji Kaunke was an erudite Damdami Taksal scholar and Amrit Pracharak who attained martyrdom in January 1993.',
+    historicalContextPa:
+      '੧੯੮੬ ਦੇ ਸਰਬੱਤ ਖ਼ਾਲਸਾ ਵੱਲੋਂ ਸ੍ਰੀ ਅਕਾਲ ਤਖ਼ਤ ਸਾਹਿਬ ਦੇ ਕਾਰਜਕਾਰੀ ਜਥੇਦਾਰ ਥਾਪੇ ਗਏ ਭਾਈ ਗੁਰਦੇਵ ਸਿੰਘ ਜੀ ਕਾਉਂਕੇ ਜਨਵਰੀ ੧੯੯੩ ਵਿੱਚ ਸ਼ਹੀਦ ਹੋਏ।',
+    citations: [
+      {
+        sourceEn: 'Sri Guru Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ang 579 · Vadahans Mahalla 1 (Alahnia)',
+        referencePa: 'ਅੰਗ ੫੭੯ · ਵਡਹੰਸੁ ਮਹਲਾ ੧',
+        excerptPa: 'ਮਰਣੁ ਮੁਣਸਾ ਸੂਰਿਆ ਹਕੁ ਹੈ ਜੋ ਹੋਇ ਮਰਨਿ ਪਰਵਾਣੋ ॥',
+        excerptTranslit: 'Maran munasaa sooriaa hak hai jo hoe maran parvaano.',
+      },
+    ],
+  },
+  {
+    id: '2083-barsi-sant-harnam-singh-rampur-khera',
+    date: '2027-01-04',
+    sambat: 2083,
+    category: 'barsi',
+    titleEn: 'Barsi — Sant Baba Harnam Singh Ji (Rampur Khera Wale)',
+    titlePa: 'ਬਰਸੀ — ਸੰਤ ਬਾਬਾ ਹਰਨਾਮ ਸਿੰਘ ਜੀ (ਰਾਮਪੁਰ ਖੇੜਾ ਵਾਲੇ)',
+    shortLabelEn: 'Barsi Sant Harnam Singh Ji',
+    shortLabelPa: 'ਬਰਸੀ ਸੰਤ ਹਰਨਾਮ ਸਿੰਘ ਜੀ',
+    tithiRuleEn: 'Poh Vadhi 12 (20 Poh, Sambat 2083)',
+    tithiRulePa: 'ਪੋਹ ਵਦੀ ੧੨ (੨੦ ਪੋਹ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Annual Barsi of Sant Baba Harnam Singh Ji Rampur Khera Wale (1897–1983 CE), whose spiritual biography "Se Kinehiya" has inspired seekers globally.',
+    summaryPa: 'ਪ੍ਰਸਿੱਧ ਅਧਿਆਤਮਕ ਜੀਵਨੀ "ਸੇ ਕਿਨੇਹਿਆ" ਦੇ ਨਾਇਕ, ਨਾਮ-ਅਭਿਆਸੀ ਸੰਤ ਬਾਬਾ ਹਰਨਾਮ ਸਿੰਘ ਜੀ ਰਾਮਪੁਰ ਖੇੜਾ ਵਾਲੇ (੧੮੯੭–੧੯੮੩) ਦੀ ਬਰਸੀ।',
+    historicalContextEn:
+      'Born at Dhugga Kalan and spiritually awakened in the company of Sant Baba Karam Singh Ji Hoti Mardan and Sant Baba Attar Singh Ji Mastuana, Sant Baba Harnam Singh Ji founded Gurdwara Garhna Sahib / Rampur Khera (Hoshiarpur), exemplifying strict Amritvela Nitnem and Gurmat living.',
+    historicalContextPa:
+      'ਸੰਤ ਬਾਬਾ ਕਰਮ ਸਿੰਘ ਜੀ ਹੋਤੀ ਮਰਦਾਨ ਅਤੇ ਸੰਤ ਅਤਰ ਸਿੰਘ ਜੀ ਮਸਤੂਆਣਾ ਦੀ ਸੰਗਤ ਤੋਂ ਰੰਗੇ ਸੰਤ ਬਾਬਾ ਹਰਨਾਮ ਸਿੰਘ ਜੀ ਨੇ ਰਾਮਪੁਰ ਖੇੜਾ ਵਿਖੇ ਅੰਮ੍ਰਿਤਵੇਲੇ ਦੇ ਸਿਮਰਨ ਅਤੇ ਗੁਰਮਤਿ ਜੀਵਨ ਦੀ ਅਦੁੱਤੀ ਮਿਸਾਲ ਪੇਸ਼ ਕੀਤੀ।',
+    citations: [
+      {
+        sourceEn: 'Sri Guru Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ang 1102 · Maru Vaar Mahalla 5 (Dakhne — Inspiration of "Se Kinehiya")',
+        referencePa: 'ਅੰਗ ੧੧੦੨ · ਮਾਰੂ ਵਾਰ ਮਹਲਾ ੫ (ਡਖਣੇ)',
+        excerptPa: 'ਸੇ ਕਿਨੇਹਿਆ ਜਿਨ੍ਹੀ ਤੂੰ ਧਿਆਇਆ ॥',
+        excerptTranslit: 'Se kinehiaa jinhee toon dhiaaiaa.',
+      },
+    ],
+  },
+  {
+    id: '2083-shaheedi-bhai-satwant-singh-kehar-singh',
+    date: '2027-01-06',
+    sambat: 2083,
+    category: 'shaheedi',
+    titleEn: 'Shaheedi Divas — Shaheed Bhai Satwant Singh Ji & Bhai Kehar Singh Ji',
+    titlePa: 'ਸ਼ਹੀਦੀ ਦਿਹਾੜਾ — ਸ਼ਹੀਦ ਭਾਈ ਸਤਵੰਤ ਸਿੰਘ ਜੀ ਅਤੇ ਭਾਈ ਕੇਹਰ ਸਿੰਘ ਜੀ',
+    shortLabelEn: 'Shaheedi Bhai Satwant & Kehar Singh Ji',
+    shortLabelPa: 'ਸ਼ਹੀਦੀ ਭਾਈ ਸਤਵੰਤ ਤੇ ਕੇਹਰ ਸਿੰਘ ਜੀ',
+    tithiRuleEn: 'Poh Vadhi 14 (22 Poh, Sambat 2083)',
+    tithiRulePa: 'ਪੋਹ ਵਦੀ ੧੪ (੨੨ ਪੋਹ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Martyrdom commemoration of Shaheed Bhai Satwant Singh Ji and Shaheed Bhai Kehar Singh Ji (6 January 1989 / 22 Poh), observed at Sri Akal Takht Sahib.',
+    summaryPa: '੬ ਜਨਵਰੀ ੧੯੮੯ (੨੨ ਪੋਹ) ਨੂੰ ਤਿਹਾੜ ਜੇਲ੍ਹ ਵਿਖੇ ਸ਼ਹੀਦ ਹੋਏ ਭਾਈ ਸਤਵੰਤ ਸਿੰਘ ਜੀ ਅਤੇ ਭਾਈ ਕੇਹਰ ਸਿੰਘ ਜੀ ਦਾ ਸ਼ਹੀਦੀ ਦਿਹਾੜਾ।',
+    historicalContextEn:
+      'Observed on 6 January / 22 Poh with Sri Akhand Paath Sahib Bhog and Ardas at Sri Akal Takht Sahib, Amritsar, honoring Bhai Satwant Singh Ji and Bhai Kehar Singh Ji.',
+    historicalContextPa:
+      '੨੨ ਪੋਹ (੬ ਜਨਵਰੀ) ਨੂੰ ਸ੍ਰੀ ਅਕਾਲ ਤਖ਼ਤ ਸਾਹਿਬ ਵਿਖੇ ਸ਼ਹੀਦ ਭਾਈ ਸਤਵੰਤ ਸਿੰਘ ਜੀ ਅਤੇ ਸ਼ਹੀਦ ਭਾਈ ਕੇਹਰ ਸਿੰਘ ਜੀ ਦੀ ਸ਼ਹਾਦਤ ਨੂੰ ਯਾਦ ਕੀਤਾ ਜਾਂਦਾ ਹੈ।',
+    citations: [
+      {
+        sourceEn: 'Sri Guru Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ang 1105 · Maru Kabir Ji',
+        referencePa: 'ਅੰਗ ੧੧੦੫ · ਮਾਰੂ ਕਬੀਰ ਜੀ',
+        excerptPa: 'ਗਗਨ ਦਮਾਮਾ ਬਾਜਿਓ ਪਰਿਓ ਨੀਸਾਨੈ ਘਾਉ ॥ ਖੇਤੁ ਜੁ ਮਾਂਡਿਓ ਸੂਰਮਾ ਅਬ ਜੂਝਨ ਕੋ ਦਾਉ ॥',
+        excerptTranslit: 'Gagan damaamaa baajio pario neesaanai ghaao, khet ju maandio soormaa ab joojhan ko daao.',
+      },
+    ],
+  },
+  {
+    id: '2083-barsi-baba-hazura-singh-hazur-sahib',
+    date: '2027-01-12',
+    sambat: 2083,
+    category: 'barsi',
+    titleEn: 'Barsi — Singhsahib Baba Hazura Singh Ji (Jathedar Takhat Sri Hazur Sahib)',
+    titlePa: 'ਬਰਸੀ — ਸਿੰਘ ਸਾਹਿਬ ਬਾਬਾ ਹਜ਼ੂਰਾ ਸਿੰਘ ਜੀ (ਜਥੇਦਾਰ ਤਖ਼ਤ ਸ੍ਰੀ ਹਜ਼ੂਰ ਸਾਹਿਬ)',
+    shortLabelEn: 'Barsi Baba Hazura Singh Ji',
+    shortLabelPa: 'ਬਰਸੀ ਬਾਬਾ ਹਜ਼ੂਰਾ ਸਿੰਘ ਜੀ',
+    tithiRuleEn: 'Poh Sudhi 4 (28 Poh, Sambat 2083)',
+    tithiRulePa: 'ਪੋਹ ਸੁਦੀ ੪ (੨੮ ਪੋਹ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Annual Barsi of Singhsahib Baba Hazura Singh Ji, revered Jathedar of Takhat Sachkhand Sri Hazur Abchal Nagar Sahib who safeguarded Puratan Hazuri Maryada.',
+    summaryPa: 'ਤਖ਼ਤ ਸੱਚਖੰਡ ਸ੍ਰੀ ਹਜ਼ੂਰ ਅਬਚਲ ਨਗਰ ਸਾਹਿਬ ਦੇ ਸਤਿਕਾਰਯੋਗ ਜਥੇਦਾਰ ਸਿੰਘ ਸਾਹਿਬ ਬਾਬਾ ਹਜ਼ੂਰਾ ਸਿੰਘ ਜੀ ਦੀ ਸਾਲਾਨਾ ਬਰਸੀ।',
+    historicalContextEn:
+      'Honored across Nanded Sahib and Puratan Sikh Sampradaye on Poh Sudhi 4 for his tireless stewardship of Takhat Sachkhand Sri Hazur Sahib’s daily Nitnem, Shastar Darshan, and Puratan Bikrami calendar traditions.',
+    historicalContextPa:
+      'ਤਖ਼ਤ ਸੱਚਖੰਡ ਸ੍ਰੀ ਹਜ਼ੂਰ ਸਾਹਿਬ ਦੀ ਪੁਰਾਤਨ ਮਰਯਾਦਾ, ਸ਼ਸਤਰ ਦਰਸ਼ਨ ਅਤੇ ਨਿੱਤਨੇਮ ਸੇਵਾ ਦੇ ਮਹਾਨ ਪਹਿਰੇਦਾਰ ਜਥੇਦਾਰ ਬਾਬਾ ਹਜ਼ੂਰਾ ਸਿੰਘ ਜੀ ਦੀ ਸਾਲਾਨਾ ਯਾਦ।',
+    citations: [
+      {
+        sourceEn: 'Takhat Sachkhand Sri Hazur Sahib Archival Record',
+        sourcePa: 'ਤਖ਼ਤ ਸੱਚਖੰਡ ਸ੍ਰੀ ਹਜ਼ੂਰ ਸਾਹਿਬ ਇਤਿਹਾਸਕ ਰਿਕਾਰਡ',
+        referenceEn: 'Jathedar Lineage & Puratan Hazuri Maryada Chronicle',
+        referencePa: 'ਜਥੇਦਾਰ ਸਾਹਿਬਾਨ ਪਰੰਪਰਾ ਅਤੇ ਪੁਰਾਤਨ ਹਜ਼ੂਰੀ ਮਰਯਾਦਾ',
+      },
+    ],
+  },
+  {
+    id: '2083-basant-ruth-arambh',
+    date: '2027-01-13',
+    sambat: 2083,
+    category: 'khalsa',
+    titleEn: 'Basant Ruth Arambh (Inauguration of Raag Basant Kirtan)',
+    titlePa: 'ਬਸੰਤ ਰੁੱਤ ਆਰੰਭ (ਰਾਗ ਬਸੰਤ ਕੀਰਤਨ ਦੀ ਸ਼ੁਰੂਆਤ)',
+    shortLabelEn: 'Basant Ruth Arambh',
+    shortLabelPa: 'ਬਸੰਤ ਰੁੱਤ ਆਰੰਭ',
+    tithiRuleEn: 'Poh Sudhi 5 (29 Poh, Sambat 2083)',
+    tithiRulePa: 'ਪੋਹ ਸੁਦੀ ੫ (੨੯ ਪੋਹ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Puratan Gurdwara Maryada marking the commencement of Raag Basant Kirtan (Lohri / Maghi eve) through Holla Mohalla at Sachkhand Sri Harmandir Sahib and all Takhts.',
+    summaryPa: 'ਸੱਚਖੰਡ ਸ੍ਰੀ ਹਰਿਮੰਦਰ ਸਾਹਿਬ ਅਤੇ ਪੰਜ ਤਖ਼ਤ ਸਾਹਿਬਾਨ ਵਿਖੇ ਪੁਰਾਤਨ ਮਰਯਾਦਾ ਅਨੁਸਾਰ ਰਾਗ ਬਸੰਤ ਦੇ ਕੀਰਤਨ ਦਾ ਆਰੰਭ।',
+    historicalContextEn:
+      'In Puratan Gurmat Sangeet Maryada preserved at Sri Harmandir Sahib and Takhat Sri Hazur Sahib, Raagis begin singing Shabads in Raag Basant on the eve of Maghi (29 Poh / Lohri), continuing daily until Holla Mohalla.',
+    historicalContextPa:
+      'ਸ੍ਰੀ ਹਰਿਮੰਦਰ ਸਾਹਿਬ ਅਤੇ ਤਖ਼ਤ ਸਾਹਿਬਾਨ ਦੀ ਪੁਰਾਤਨ ਗੁਰਮਤਿ ਸੰਗੀਤ ਮਰਯਾਦਾ ਅਨੁਸਾਰ ਮਾਘੀ ਦੀ ਪੂਰਵ ਸੰਧਿਆ (੨੯ ਪੋਹ) ਤੋਂ ਹੋਲਾ ਮਹੱਲਾ ਤੱਕ ਰਾਗ ਬਸੰਤ ਵਿੱਚ ਕੀਰਤਨ ਆਰੰਭ ਹੁੰਦਾ ਹੈ।',
+    citations: [
+      {
+        sourceEn: 'Sri Guru Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ang 1176 · Raag Basant Mahalla 3 (Basant Ki Vaar & Seasonal Renewal)',
+        referencePa: 'ਅੰਗ ੧੧੭੬ · ਰਾਗੁ ਬਸੰਤੁ ਮਹਲਾ ੩',
+        excerptPa: 'ਬਸੰਤੁ ਚੜਿਆ ਫੂਲੀ ਬਨਰਾਇ ॥ ਏਹਿ ਜੀਅ ਜੰਤ ਫੂਲਹਿ ਹਰਿ ਚਿਤੁ ਲਾਇ ॥',
+        excerptTranslit: 'Basant charhiaa phoolee banraae, eh jeea jant phooleh Har chit laae.',
+      },
+    ],
   },
   {
     id: '2083-maghi-chali-mukte',
@@ -342,6 +994,224 @@ export const HISTORICAL_EVENTS: readonly HistoricalEvent[] = [
     featured: true,
   },
   {
+    id: '2083-barsi-baba-daya-singh-sursingh',
+    date: '2027-01-19',
+    sambat: 2083,
+    category: 'barsi',
+    titleEn: 'Barsi — Jathedar Baba Daya Singh Ji (Bidhi Chand Dal, Sursingh Wale)',
+    titlePa: 'ਬਰਸੀ — ਜਥੇਦਾਰ ਬਾਬਾ ਦਇਆ ਸਿੰਘ ਜੀ (ਦਲ ਬਾਬਾ ਬਿਧੀ ਚੰਦ ਜੀ, ਸੁਰਸਿੰਘ ਵਾਲੇ)',
+    shortLabelEn: 'Barsi Baba Daya Singh Ji Sursingh',
+    shortLabelPa: 'ਬਰਸੀ ਬਾਬਾ ਦਇਆ ਸਿੰਘ ਜੀ ਸੁਰਸਿੰਘ',
+    tithiRuleEn: 'Poh Sudhi 11 (6 Magh, Sambat 2083)',
+    tithiRulePa: 'ਪੋਹ ਸੁਦੀ ੧੧ (੬ ਮਾਘ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Annual Barsi of Singhsahib Baba Daya Singh Ji, Eleventh Jathedar of Samprada Dal Baba Bidhi Chand Ji (Sursingh) who upheld Puratan Nihang Singh Rehat and Gatka.',
+    summaryPa: 'ਸੰਪਰਦਾ ਦਲ ਬਾਬਾ ਬਿਧੀ ਚੰਦ ਜੀ (ਸੁਰਸਿੰਘ) ਦੇ ੧੧ਵੇਂ ਜਥੇਦਾਰ ਬਾਬਾ ਦਇਆ ਸਿੰਘ ਜੀ ਦੀ ਸਾਲਾਨਾ ਬਰਸੀ।',
+    historicalContextEn:
+      'Honored across Majha and global Nihang Singh Dals on 6 Magh (19 January) for upholding the unbroken lineage of Baba Bidhi Chand Ji Chhina, nurturing thousands of Amritdhari Singhs, and guarding Sri Darbar Sahib’s Puratan maryada.',
+    historicalContextPa:
+      'ਛੇਵੇਂ ਪਾਤਸ਼ਾਹ ਜੀ ਦੇ ਅਨਿੰਨ ਸੇਵਕ ਬਾਬਾ ਬਿਧੀ ਚੰਦ ਜੀ ਦੀ ਸੰਪਰਦਾ ਦੇ ੧੧ਵੇਂ ਮੁਖੀ ਬਾਬਾ ਦਇਆ ਸਿੰਘ ਜੀ ਨੇ ਸੁਰਸਿੰਘ ਵਿਖੇ ਪੁਰਾਤਨ ਨਿਹੰਗ ਸਿੰਘ ਮਰਯਾਦਾ ਅਤੇ ਅੰਮ੍ਰਿਤ ਪ੍ਰਚਾਰ ਦੀ ਅਥਾਹ ਸੇਵਾ ਕੀਤੀ।',
+    citations: [
+      {
+        sourceEn: 'Sri Guru Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ang 283 · Sukhmani Sahib (Ashtpadi 15)',
+        referencePa: 'ਅੰਗ ੨੮੩ · ਸੁਖਮਨੀ ਸਾਹਿਬ (ਅਸ਼ਟਪਦੀ ੧੫)',
+        excerptPa: 'ਸੰਤ ਸਰਣਿ ਜੋ ਜਨੁ ਪਰੈ ਸੋ ਜਨੁ ਉਧਰਨਹਾਰ ॥',
+        excerptTranslit: 'Sant saran jo jan parai so jan udharanhaar.',
+      },
+    ],
+  },
+  {
+    id: '2083-barsi-sant-attar-singh-reru-sahib',
+    date: '2027-01-22',
+    sambat: 2083,
+    category: 'barsi',
+    titleEn: 'Barsi — Sant Baba Attar Singh Ji (Reru Sahib Wale)',
+    titlePa: 'ਬਰਸੀ — ਸੰਤ ਬਾਬਾ ਅਤਰ ਸਿੰਘ ਜੀ (ਰੇਰੂ ਸਾਹਿਬ ਵਾਲੇ)',
+    shortLabelEn: 'Barsi Sant Attar Singh Ji Reru',
+    shortLabelPa: 'ਬਰਸੀ ਸੰਤ ਅਤਰ ਸਿੰਘ ਜੀ ਰੇਰੂ',
+    tithiRuleEn: 'Poh Puranmashi (9 Magh, Sambat 2083)',
+    tithiRulePa: 'ਪੋਹ ਪੂਰਨਮਾਸ਼ੀ (੯ ਮਾਘ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Annual Barsi of Brahmgyani Sant Baba Attar Singh Ji Reru Sahib (1867–1927 CE), whose spiritual grace transformed Reru Sahib and inspired Sant Baba Isher Singh Ji Rara Sahib.',
+    summaryPa: 'ਗੁਰਦੁਆਰਾ ਰੇਰੂ ਸਾਹਿਬ ਦੇ ਮਹਾਂਪੁਰਖ ਬ੍ਰਹਮਗਿਆਨੀ ਸੰਤ ਬਾਬਾ ਅਤਰ ਸਿੰਘ ਜੀ (੧੮੬੭–੧੯੨੭) ਦੀ ਸਾਲਾਨਾ ਬਰਸੀ।',
+    historicalContextEn:
+      'Born at village Ghungrana and attaining spiritual realization through intense Naam Simran at Gurdwara Reru Sahib (Sahnewal, Ludhiana), Sant Baba Attar Singh Ji Reru Sahib blessed thousands with Amrit and inspired Sant Baba Isher Singh Ji (Rara Sahib).',
+    historicalContextPa:
+      'ਘੁੰਗਰਾਣਾ ਵਿਖੇ ਜਨਮੇ ਸੰਤ ਬਾਬਾ ਅਤਰ ਸਿੰਘ ਜੀ ਰੇਰੂ ਸਾਹਿਬ ਵਾਲਿਆਂ ਨੇ ਰੇਰੂ ਸਾਹਿਬ ਵਿਖੇ ਅਥਾਹ ਨਾਮ-ਭਗਤੀ ਕਰਕੇ ਅਨੇਕਾਂ ਜੀਵਾਂ ਨੂੰ ਗੁਰੂ-ਚਰਨਾਂ ਨਾਲ ਜੋੜਿਆ।',
+    citations: [
+      {
+        sourceEn: 'Sri Guru Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ang 272 · Sukhmani Sahib (Ashtpadi 8)',
+        referencePa: 'ਅੰਗ ੨੭੨ · ਸੁਖਮਨੀ ਸਾਹਿਬ (ਅਸ਼ਟਪਦੀ ੮)',
+        excerptPa: 'ਬ੍ਰਹਮ ਗਿਆਨੀ ਕੀ ਗਤਿ ਬ੍ਰਹਮ ਗਿਆਨੀ ਜਾਨੈ ॥',
+        excerptTranslit: 'Brahm giaanee kee gat Brahm giaanee jaanai.',
+      },
+    ],
+  },
+  {
+    id: '2083-janam-baba-deep-singh-ji',
+    date: '2027-01-27',
+    sambat: 2083,
+    category: 'barsi',
+    titleEn: 'Janam Divas — Dhan Dhan Baba Deep Singh Ji Shaheed',
+    titlePa: 'ਜਨਮ ਦਿਹਾੜਾ — ਧੰਨ ਧੰਨ ਬਾਬਾ ਦੀਪ ਸਿੰਘ ਜੀ ਸ਼ਹੀਦ',
+    shortLabelEn: 'Janam Baba Deep Singh Ji',
+    shortLabelPa: 'ਜਨਮ ਬਾਬਾ ਦੀਪ ਸਿੰਘ ਜੀ',
+    tithiRuleEn: 'Magh Vadhi 6 (14 Magh, Sambat 2083)',
+    tithiRulePa: 'ਮਾਘ ਵਦੀ ੬ (੧੪ ਮਾਘ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Birth commemoration of Baba Deep Singh Ji Shaheed (14 Magh, 1738 Bikrami / 1682 CE) at Pahuwind (Tarn Taran), master scribe of Damdami Bir and warrior-saint of the Khalsa.',
+    summaryPa: 'ਪਿੰਡ ਪਹੁਵਿੰਡ ਵਿਖੇ ੧੪ ਮਾਘ, ਸੰਮਤ ੧੭੩੮ ਬਿਕ੍ਰਮੀ ਨੂੰ ਪ੍ਰਗਟ ਹੋਏ ਦਮਦਮੀ ਟਕਸਾਲ ਦੇ ਪਹਿਲੇ ਮੁਖੀ ਬਾਬਾ ਦੀਪ ਸਿੰਘ ਜੀ ਸ਼ਹੀਦ ਦਾ ਜਨਮ ਦਿਹਾੜਾ।',
+    historicalContextEn:
+      'Born on 14 Magh, Sambat 1738 Bikrami (26–27 January 1682 CE) to Bhai Bhagta Ji and Mata Jioni Ji at Pahuwind, Baba Deep Singh Ji received Khande-ki-Pahul from Sri Guru Gobind Singh Ji at Sri Anandpur Sahib, assisted Bhai Mani Singh Ji in preparing the Damdami Bir at Takht Sri Damdama Sahib, and hand-inscribed four complete Saroops of Sri Guru Granth Sahib Ji for the Takhts.',
+    historicalContextPa:
+      '੧੪ ਮਾਘ ਸੰਮਤ ੧੭੩੮ ਨੂੰ ਪਹੁਵਿੰਡ ਵਿਖੇ ਜਨਮੇ ਬਾਬਾ ਦੀਪ ਸਿੰਘ ਜੀ ਨੇ ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ ਵਿਖੇ ਦਸਮੇਸ਼ ਪਿਤਾ ਪਾਸੋਂ ਅੰਮ੍ਰਿਤ ਛਕਿਆ, ਤਖ਼ਤ ਸ੍ਰੀ ਦਮਦਮਾ ਸਾਹਿਬ ਵਿਖੇ ਭਾਈ ਮਨੀ ਸਿੰਘ ਜੀ ਨਾਲ ਦਮਦਮੀ ਬੀੜ ਲਿਖਣ ਦੀ ਸੇਵਾ ਨਿਭਾਈ ਅਤੇ ਚਾਰ ਪਾਵਨ ਬੀੜਾਂ ਦੇ ਉਤਾਰੇ ਕੀਤੇ।',
+    citations: [
+      {
+        sourceEn: 'Prachin Panth Prakash & Tawarikh Guru Khalsa',
+        sourcePa: 'ਪ੍ਰਾਚੀਨ ਪੰਥ ਪ੍ਰਕਾਸ਼ ਅਤੇ ਤਵਾਰੀਖ਼ ਗੁਰੂ ਖ਼ਾਲਸਾ',
+        referenceEn: '14 Magh 1738 Bikrami · Birth at Pahuwind & Damdama Sahib Scribe Seva',
+        referencePa: '੧੪ ਮਾਘ ੧੭੩੮ ਬਿਕ੍ਰਮੀ · ਪਹੁਵਿੰਡ ਜਨਮ ਅਤੇ ਦਮਦਮਾ ਸਾਹਿਬ ਬੀੜ ਉਤਾਰਾ ਸੇਵਾ',
+      },
+      {
+        sourceEn: 'Sri Guru Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ang 1364 · Salok Kabir Ji',
+        referencePa: 'ਅੰਗ ੧੩੬੪ · ਸਲੋਕ ਕਬੀਰ ਜੀ',
+        excerptPa: 'ਕਬੀਰ ਜਿਸੁ ਮਰਨੇ ਤੇ ਜਗੁ ਡਰੈ ਮੇਰੇ ਮਨਿ ਆਨੰਦੁ ॥ ਮਰਨੇ ਹੀ ਤੇ ਪਾਈਐ ਪੂਰਨੁ ਪਰਮਾਨੰਦੁ ॥',
+        excerptTranslit: 'Kabeer jis marane te jag darai mere man aanand, marane hee te paaeeai pooran parmaanand.',
+      },
+    ],
+  },
+  {
+    id: '2083-barsi-sant-attar-singh-mastuana',
+    date: '2027-02-01',
+    sambat: 2083,
+    category: 'barsi',
+    titleEn: 'Barsi — Sant Baba Attar Singh Ji (Mastuana Sahib)',
+    titlePa: 'ਬਰਸੀ — ਸੰਤ ਬਾਬਾ ਅਤਰ ਸਿੰਘ ਜੀ (ਮਸਤੂਆਣਾ ਸਾਹਿਬ)',
+    shortLabelEn: 'Barsi Sant Attar Singh Ji Mastuana',
+    shortLabelPa: 'ਬਰਸੀ ਸੰਤ ਅਤਰ ਸਿੰਘ ਜੀ ਮਸਤੂਆਣਾ',
+    tithiRuleEn: 'Magh Vadhi 10 (19 Magh, Sambat 2083)',
+    tithiRulePa: 'ਮਾਘ ਵਦੀ ੧੦ (੧੯ ਮਾਘ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Annual Barsi of Sant Baba Attar Singh Ji Mastuana Sahib (1866–1927 CE), towering pioneer of Amrit Prachar, Gurmat Vidyalayas, and Nirmala-Panthic revival.',
+    summaryPa: 'ਅੰਮ੍ਰਿਤ ਪ੍ਰਚਾਰ, ਗੁਰਮਤਿ ਵਿੱਦਿਆ ਅਤੇ ਮਸਤੂਆਣਾ ਸਾਹਿਬ ਦੇ ਬਾਨੀ ਸੰਤ ਬਾਬਾ ਅਤਰ ਸਿੰਘ ਜੀ (੧੮੬੬–੧੯੨੭) ਦੀ ਸਾਲਾਨਾ ਬਰਸੀ।',
+    historicalContextEn:
+      'Born at Cheema Sahib (Sangrur) and initiated into Khalsa Rehat at Takhat Sachkhand Sri Hazur Sahib, Sant Baba Attar Singh Ji Mastuana inspired over one million souls to take Amrit, laid the foundation of Gurdwara Gursagar Mastuana Sahib and Akal College, and passed into Sachkhand on 31 January / 1 February 1927 (19 Magh).',
+    historicalContextPa:
+      'ਚੀਮਾ ਸਾਹਿਬ ਵਿਖੇ ਜਨਮੇ ਅਤੇ ਤਖ਼ਤ ਸੱਚਖੰਡ ਸ੍ਰੀ ਹਜ਼ੂਰ ਸਾਹਿਬ ਵਿਖੇ ਅੰਮ੍ਰਿਤ ਛਕਣ ਵਾਲੇ ਸੰਤ ਬਾਬਾ ਅਤਰ ਸਿੰਘ ਜੀ ਮਸਤੂਆਣਾ ਨੇ ਲੱਖਾਂ ਪ੍ਰਾਣੀਆਂ ਨੂੰ ਅੰਮ੍ਰਿਤ ਛਕਾਇਆ ਅਤੇ ਮਸਤੂਆਣਾ ਸਾਹਿਬ ਵਿਖੇ ਗੁਰਮਤਿ ਵਿੱਦਿਆ ਦਾ ਮਹਾਨ ਕੇਂਦਰ ਕਾਇਮ ਕੀਤਾ।',
+    citations: [
+      {
+        sourceEn: 'Sri Guru Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ang 749 · Suhi Mahalla 5',
+        referencePa: 'ਅੰਗ ੭੪੯ · ਸੂਹੀ ਮਹਲਾ ੫',
+        excerptPa: 'ਜਿਨ ਪ੍ਰੇਮ ਕੀਓ ਤਿਨ ਹੀ ਪ੍ਰਭੁ ਪਾਇਓ ॥',
+        excerptTranslit: 'Jin prem keeo tin hee Prabh paaio.',
+      },
+      {
+        sourceEn: 'Jeevan Charitar Sant Attar Singh Ji (Sant Teja Singh M.A.)',
+        sourcePa: 'ਜੀਵਨ ਚਰਿੱਤਰ ਸੰਤ ਅਤਰ ਸਿੰਘ ਜੀ (ਸੰਤ ਤੇਜਾ ਸਿੰਘ ਐਮ.ਏ.)',
+        referenceEn: 'Hazur Sahib Tapasya & Mastuana Sahib Gurmat Vidya Mission',
+        referencePa: 'ਸ੍ਰੀ ਹਜ਼ੂਰ ਸਾਹਿਬ ਤਪੱਸਿਆ ਅਤੇ ਮਸਤੂਆਣਾ ਸਾਹਿਬ ਗੁਰਮਤਿ ਵਿੱਦਿਆ ਮਿਸ਼ਨ',
+      },
+    ],
+  },
+  {
+    id: '2083-basant-panchmi',
+    date: '2027-02-11',
+    sambat: 2083,
+    category: 'khalsa',
+    titleEn: 'Basant Panchmi — Gurdwara Dukhniwaran Sahib & Chheharta Sahib Jor Mela',
+    titlePa: 'ਬਸੰਤ ਪੰਚਮੀ — ਗੁਰਦੁਆਰਾ ਦੂਖ ਨਿਵਾਰਨ ਸਾਹਿਬ ਅਤੇ ਛੇਹਰਟਾ ਸਾਹਿਬ ਜੋੜ ਮੇਲਾ',
+    shortLabelEn: 'Basant Panchmi',
+    shortLabelPa: 'ਬਸੰਤ ਪੰਚਮੀ',
+    tithiRuleEn: 'Magh Sudhi 5 (Panchmi · 29 Magh, Sambat 2083)',
+    tithiRulePa: 'ਮਾਘ ਸੁਦੀ ੫ (ਪੰਚਮੀ · ੨੯ ਮਾਘ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Traditional Sikh observance of Magh Sudhi Panchmi commemorating Sri Guru Tegh Bahadur Ji’s healing grace at Patiala (Dukhniwaran Sahib) and Chheharta Sahib.',
+    summaryPa: 'ਮਾਘ ਸੁਦੀ ਪੰਚਮੀ — ਸ੍ਰੀ ਗੁਰੂ ਤੇਗ਼ ਬਹਾਦਰ ਜੀ ਦੇ ਪਟਿਆਲਾ (ਦੂਖ ਨਿਵਾਰਨ ਸਾਹਿਬ) ਅਤੇ ਸ੍ਰੀ ਛੇਹਰਟਾ ਸਾਹਿਬ ਵਿਖੇ ਪਾਵਨ ਬਸੰਤ ਪੰਚਮੀ ਜੋੜ ਮੇਲਾ।',
+    historicalContextEn:
+      'On Magh Sudhi 5 (Basant Panchmi), large Sangats gather at Gurdwara Sri Dukhniwaran Sahib (Patiala), where Sri Guru Tegh Bahadur Ji cured the village of Lehal from plague on Magh Sudhi 5, Sambat 1728, and at Gurdwara Chheharta Sahib (Amritsar) honoring Sri Guru Arjan Dev Ji’s six-wheeled well.',
+    historicalContextPa:
+      'ਮਾਘ ਸੁਦੀ ੫ (ਬਸੰਤ ਪੰਚਮੀ) ਨੂੰ ਗੁਰਦੁਆਰਾ ਸ੍ਰੀ ਦੂਖ ਨਿਵਾਰਨ ਸਾਹਿਬ ਪਟਿਆਲਾ (ਜਿੱਥੇ ਨੌਵੇਂ ਪਾਤਸ਼ਾਹ ਜੀ ਨੇ ਲਹਿਲ ਪਿੰਡ ਦੀ ਬੀਮਾਰੀ ਦੂਰ ਕੀਤੀ) ਅਤੇ ਗੁਰਦੁਆਰਾ ਛੇਹਰਟਾ ਸਾਹਿਬ ਵਿਖੇ ਭਾਰੀ ਜੋੜ ਮੇਲੇ ਲੱਗਦੇ ਹਨ।',
+    citations: [
+      {
+        sourceEn: 'Sri Guru Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ang 1180 · Raag Basant Mahalla 5',
+        referencePa: 'ਅੰਗ ੧੧੮੦ · ਰਾਗੁ ਬਸੰਤੁ ਮਹਲਾ ੫',
+        excerptPa: 'ਸੁਣੀ ਅਰਦਾਸਿ ਸੁਆਮੀ ਮੇਰੈ ਸਰਬ ਕਲਾ ਬਣਿ ਆਈ ॥',
+        excerptTranslit: 'Sunee ardaas suaamee merai sarab kalaa ban aaee.',
+      },
+      {
+        sourceEn: 'Sri Gurpratap Suraj Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰਪ੍ਰਤਾਪ ਸੂਰਜ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Raas 11 · Lehal Village (Dukhniwaran Sahib) Magh Sudhi Panchmi Hukam',
+        referencePa: 'ਰਾਸਿ ੧੧ · ਲਹਿਲ ਪਿੰਡ (ਦੂਖ ਨਿਵਾਰਨ ਸਾਹਿਬ) ਮਾਘ ਸੁਦੀ ਪੰਚਮੀ ਬਖ਼ਸ਼ਿਸ਼',
+      },
+    ],
+  },
+  {
+    id: '2083-janam-sahibzada-baba-ajit-singh-ji',
+    date: '2027-02-11',
+    sambat: 2083,
+    category: 'gurpurab',
+    titleEn: 'Parkash Purab — Sahibzada Baba Ajit Singh Ji',
+    titlePa: 'ਪ੍ਰਕਾਸ਼ ਪੁਰਬ — ਸਾਹਿਬਜ਼ਾਦਾ ਬਾਬਾ ਅਜੀਤ ਸਿੰਘ ਜੀ',
+    shortLabelEn: 'Janam Baba Ajit Singh Ji',
+    shortLabelPa: 'ਜਨਮ ਬਾਬਾ ਅਜੀਤ ਸਿੰਘ ਜੀ',
+    tithiRuleEn: 'Magh Sudhi 5 (29 Magh, Sambat 2083)',
+    tithiRulePa: 'ਮਾਘ ਸੁਦੀ ੫ (੨੯ ਮਾਘ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Birth commemoration of Eldest Sahibzada Baba Ajit Singh Ji (1743 Bikrami / 1687 CE) at Paonta Sahib, unconquerable warrior of Garhi Chamkaur.',
+    summaryPa: 'ਪਾਉਂਟਾ ਸਾਹਿਬ ਵਿਖੇ ਸੰਮਤ ੧੭੪੩ ਵਿੱਚ ਪ੍ਰਗਟ ਹੋਏ ਵੱਡੇ ਸਾਹਿਬਜ਼ਾਦਾ ਬਾਬਾ ਅਜੀਤ ਸਿੰਘ ਜੀ ਦਾ ਪਾਵਨ ਪ੍ਰਕਾਸ਼ ਪੁਰਬ।',
+    historicalContextEn:
+      'Born at Paonta Sahib in Magh, Sambat 1743 Bikrami (1687 CE) to Sri Guru Gobind Singh Ji and Mata Sundar Kaur Ji, Sahibzada Baba Ajit Singh Ji excelled in Gurbani, Persian, horsemanship, and Shastar Vidya, leading relief missions and attaining immortal shaheedi at Garhi Chamkaur at age 18.',
+    historicalContextPa:
+      'ਮਾਘ ਸੰਮਤ ੧੭੪੩ ਬਿਕ੍ਰਮੀ ਨੂੰ ਪਾਉਂਟਾ ਸਾਹਿਬ ਵਿਖੇ ਦਸਮੇਸ਼ ਪਿਤਾ ਜੀ ਅਤੇ ਮਾਤਾ ਸੁੰਦਰ ਕੌਰ ਜੀ ਦੇ ਗ੍ਰਹਿ ਪ੍ਰਗਟ ਹੋਏ ਸਾਹਿਬਜ਼ਾਦਾ ਬਾਬਾ ਅਜੀਤ ਸਿੰਘ ਜੀ ਸ਼ਸਤਰ-ਵਿੱਦਿਆ ਅਤੇ ਗੁਰਮਤਿ ਦੇ ਧਨੀ ਸਨ ਜਿਨ੍ਹਾਂ ਨੇ ਗੜ੍ਹੀ ਚਮਕੌਰ ਵਿੱਚ ਲਾਸਾਨੀ ਸ਼ਹਾਦਤ ਪ੍ਰਾਪਤ ਕੀਤੀ।',
+    citations: [
+      {
+        sourceEn: 'Sri Gurpratap Suraj Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰਪ੍ਰਤਾਪ ਸੂਰਜ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Rut 2, Ansu 29 · Paonta Sahib Parkash of Sahibzada Baba Ajit Singh Ji',
+        referencePa: 'ਰੁੱਤ ੨, ਅੰਸੂ ੨੯ · ਪਾਉਂਟਾ ਸਾਹਿਬ ਵਿਖੇ ਸਾਹਿਬਜ਼ਾਦਾ ਬਾਬਾ ਅਜੀਤ ਸਿੰਘ ਜੀ ਦਾ ਪ੍ਰਕਾਸ਼',
+      },
+      {
+        sourceEn: 'Bhatt Vahi Talaunda',
+        sourcePa: 'ਭੱਟ ਵਹੀ ਤਲੌਡਾ',
+        referenceEn: 'Magh 1743 Bikrami · Birth Record of Eldest Sahibzada',
+        referencePa: 'ਮਾਘ ੧੭੪੩ ਬਿਕ੍ਰਮੀ · ਵੱਡੇ ਸਾਹਿਬਜ਼ਾਦੇ ਦਾ ਪ੍ਰਕਾਸ਼ ਲੇਖ',
+      },
+    ],
+  },
+  {
+    id: '2083-barsi-sant-sundar-singh-bhindranwale',
+    date: '2027-02-16',
+    sambat: 2083,
+    category: 'barsi',
+    titleEn: 'Barsi — Sant Giani Sundar Singh Ji Bhindranwale',
+    titlePa: 'ਬਰਸੀ — ਸੰਤ ਗਿਆਨੀ ਸੁੰਦਰ ਸਿੰਘ ਜੀ ਭਿੰਡਰਾਂਵਾਲੇ',
+    shortLabelEn: 'Barsi Sant Sundar Singh Ji',
+    shortLabelPa: 'ਬਰਸੀ ਸੰਤ ਸੁੰਦਰ ਸਿੰਘ ਜੀ',
+    tithiRuleEn: 'Magh Sudhi 10 (4 Phagun, Sambat 2083)',
+    tithiRulePa: 'ਮਾਘ ਸੁਦੀ ੧੦ (੪ ਫੱਗਣ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Annual Barsi of Vidya Martand Sant Giani Sundar Singh Ji Bhindranwale (1883–1930 CE), Eleventh Head of Damdami Taksal and master teacher of Gurbani Arth & Santhia.',
+    summaryPa: 'ਵਿਦਿਆ ਮਾਰਤੰਡ ਸੰਤ ਗਿਆਨੀ ਸੁੰਦਰ ਸਿੰਘ ਜੀ ਭਿੰਡਰਾਂਵਾਲੇ (੧੮੮੩–੧੯੩੦), ਦਮਦਮੀ ਟਕਸਾਲ ਦੇ ੧੧ਵੇਂ ਮੁਖੀ ਦੀ ਸਾਲਾਨਾ ਬਰਸੀ।',
+    historicalContextEn:
+      'Born at Bhindran Kalan (Moga) and studying under Sant Giani Bishan Singh Ji Muralewale, Sant Giani Sundar Singh Ji revived intensive Damdami Taksal Gurbani Santhia and Katha, mentoring luminaries including Sant Giani Gurbachan Singh Ji Khalsa before departing on 4 Phagun (15–16 February 1930).',
+    historicalContextPa:
+      'ਭਿੰਡਰਾਂ ਕਲਾਂ ਵਿਖੇ ਜਨਮੇ ਵਿਦਿਆ ਮਾਰਤੰਡ ਸੰਤ ਗਿਆਨੀ ਸੁੰਦਰ ਸਿੰਘ ਜੀ ਨੇ ਦਮਦਮੀ ਟਕਸਾਲ ਦੀ ਸੰਥਿਆ ਅਤੇ ਕਥਾ ਪਰੰਪਰਾ ਨੂੰ ਨਵੀਂ ਬੁਲੰਦੀ ਦਿੱਤੀ ਅਤੇ ਸੰਤ ਗਿਆਨੀ ਗੁਰਬਚਨ ਸਿੰਘ ਜੀ ਖ਼ਾਲਸਾ ਵਰਗੇ ਮਹਾਨ ਵਿਦਵਾਨ ਤਿਆਰ ਕੀਤੇ।',
+    citations: [
+      {
+        sourceEn: 'Sri Guru Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ang 356 · Asa Mahalla 1',
+        referencePa: 'ਅੰਗ ੩੫੬ · ਆਸਾ ਮਹਲਾ ੧',
+        excerptPa: 'ਵਿਦਿਆ ਵੀਚਾਰੀ ਤਾਂ ਪਰਉਪਕਾਰੀ ॥',
+        excerptTranslit: 'Vidiaa veechaaree taan parupkaaree.',
+      },
+    ],
+  },
+  {
     id: '2083-parkash-guru-har-rai',
     date: '2027-02-19',
     sambat: 2083,
@@ -395,6 +1265,41 @@ export const HISTORICAL_EVENTS: readonly HistoricalEvent[] = [
       },
     ],
   },
+  {
+    id: '2083-saka-sri-nankana-sahib',
+    date: '2027-02-21',
+    sambat: 2083,
+    category: 'shaheedi',
+    titleEn: 'Shaheedi Saka Sri Nankana Sahib (Bhai Lachhman Singh Ji Dharowali & Shaheed Jatha)',
+    titlePa: 'ਸ਼ਹੀਦੀ ਸਾਕਾ ਸ੍ਰੀ ਨਨਕਾਣਾ ਸਾਹਿਬ (ਭਾਈ ਲਛਮਣ ਸਿੰਘ ਜੀ ਧਾਰੋਵਾਲੀ ਅਤੇ ਸ਼ਹੀਦ ਜਥਾ)',
+    shortLabelEn: 'Saka Sri Nankana Sahib',
+    shortLabelPa: 'ਸਾਕਾ ਸ੍ਰੀ ਨਨਕਾਣਾ ਸਾਹਿਬ',
+    tithiRuleEn: 'Phagun Vadhi 1 (9 Phagun, Sambat 2083)',
+    tithiRulePa: 'ਫੱਗਣ ਵਦੀ ੧ (੯ ਫੱਗਣ, ਸੰਮਤ ੨੦੮੩)',
+    summaryEn: 'Supreme peaceful martyrdom of Bhai Lachhman Singh Ji Dharowali, Bhai Dalip Singh Ji, and over 130 Singhs on 20–21 February 1921 liberating Gurdwara Janam Asthan Sri Nankana Sahib.',
+    summaryPa: 'ਗੁਰਦੁਆਰਾ ਜਨਮ ਅਸਥਾਨ ਸ੍ਰੀ ਨਨਕਾਣਾ ਸਾਹਿਬ ਨੂੰ ਮਹੰਤਾਂ ਤੋਂ ਆਜ਼ਾਦ ਕਰਵਾਉਣ ਲਈ ਭਾਈ ਲਛਮਣ ਸਿੰਘ ਜੀ ਧਾਰੋਵਾਲੀ, ਭਾਈ ਦਲੀਪ ਸਿੰਘ ਜੀ ਅਤੇ ੧੩੦ ਤੋਂ ਵੱਧ ਸਿੰਘਾਂ ਦੀ ਲਾਸਾਨੀ ਸ਼ਹਾਦਤ (੧੯੨੧)।',
+    historicalContextEn:
+      'On 20–21 February 1921 (8–9 Phagun, Sambat 1977), a peaceful Jatha led by Bhai Lachhman Singh Ji Dharowali entered Gurdwara Janam Asthan Sri Nankana Sahib reciting Gurbani to liberate the birthplace of Sri Guru Nanak Dev Ji from corrupt Mahant Narain Das. Attacked by armed mercenaries, Bhai Lachhman Singh Ji was tied to the historic Jand tree and burned alive while Singhs stayed steadfast in prayer, awakening the entire Gurdwara Reform Movement.',
+    historicalContextPa:
+      '੮–੯ ਫੱਗਣ ਸੰਮਤ ੧੯੭੭ (੨੦–੨੧ ਫ਼ਰਵਰੀ ੧੯੨੧) ਨੂੰ ਸ੍ਰੀ ਗੁਰੂ ਨਾਨਕ ਦੇਵ ਜੀ ਦੇ ਜਨਮ ਅਸਥਾਨ ਨੂੰ ਕੁਕਰਮੀ ਮਹੰਤ ਨਰੈਣ ਦਾਸ ਤੋਂ ਮੁਕਤ ਕਰਵਾਉਣ ਲਈ ਸ਼ਾਂਤਮਈ ਜਥੇ ਨੇ ਸ਼ਹਾਦਤਾਂ ਦਿੱਤੀਆਂ। ਭਾਈ ਲਛਮਣ ਸਿੰਘ ਜੀ ਨੂੰ ਜੰਡ ਸਾਹਿਬ ਨਾਲ ਬੰਨ੍ਹ ਕੇ ਸ਼ਹੀਦ ਕੀਤਾ ਗਿਆ।',
+    citations: [
+      {
+        sourceEn: 'Sri Guru Granth Sahib Ji',
+        sourcePa: 'ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ',
+        referenceEn: 'Ang 1412 · Salok Vaaran Te Vadhik (Mahalla 1)',
+        referencePa: 'ਅੰਗ ੧੪੧੨ · ਸਲੋਕ ਵਾਰਾਂ ਤੇ ਵਧੀਕ (ਮਹਲਾ ੧)',
+        excerptPa: 'ਇਤੁ ਮਾਰਗਿ ਪੈਰੁ ਧਰੀਜੈ ॥ ਸਿਰੁ ਦੀਜੈ ਕਾਣਿ ਨ ਕੀਜੈ ॥',
+        excerptTranslit: 'It maarag pair dhareejai, sir deejai kaan na keejai.',
+      },
+      {
+        sourceEn: 'Saka Nankana Sahib Historical Chronicle (SGPC / Gurdwara Sudhar Lehar)',
+        sourcePa: 'ਸਾਕਾ ਸ੍ਰੀ ਨਨਕਾਣਾ ਸਾਹਿਬ ਇਤਿਹਾਸਕ ਦਸਤਾਵੇਜ਼',
+        referenceEn: 'Phagun 1977 Bikrami (20–21 Feb 1921) · Liberation of Janam Asthan Sri Nankana Sahib',
+        referencePa: 'ਫੱਗਣ ੧੯੭੭ ਬਿਕ੍ਰਮੀ (੨੦–੨੧ ਫ਼ਰਵਰੀ ੧੯੨੧) · ਜਨਮ ਅਸਥਾਨ ਸ੍ਰੀ ਨਨਕਾਣਾ ਸਾਹਿਬ ਦੀ ਆਜ਼ਾਦੀ',
+      },
+    ],
+    featured: true,
+  },
 
   // =========================================================================
   // FULL SAMBAT 2084 (1 Chet 2084 / Mar 15, 2027 – 30 Phagun 2084 / Mar 13, 2028)
@@ -424,12 +1329,12 @@ export const HISTORICAL_EVENTS: readonly HistoricalEvent[] = [
         referencePa: 'ਅੰਗ ੧੩੩ · ਬਾਰਹ ਮਾਹਾ ਮਾਂਝ ਮਹਲਾ ੫',
         excerptPa: 'ਚੇਤਿ ਗੋਵਿੰਦੁ ਅਰਾਧੀਐ ਹੋਵੈ ਅਨੰਦੁ ਘਣਾ ॥',
         excerptTranslit: 'Chet Govind araadheeai hovai anand ghanaa.',
-        pothiUrl: 'https://pothi.tatkhalsa.in/sundar-gutka/barah-maha?ang=133',
+        pothiUrl: POTHI_BARAH_MAHA_URL,
         pothiLabelEn: 'Read Barah Maha Majh (Ang 133)',
         pothiLabelPa: 'ਬਾਰਹ ਮਾਹਾ ਮਾਂਝ (ਅੰਗ ੧੩੩) ਪੜ੍ਹੋ',
       },
     ],
-    pothiUrl: 'https://pothi.tatkhalsa.in/sundar-gutka/barah-maha?ang=133',
+    pothiUrl: POTHI_BARAH_MAHA_URL,
     pothiLabelEn: 'Read Barah Maha Chet (Ang 133)',
     pothiLabelPa: 'ਬਾਰਹ ਮਾਹਾ ਚੇਤ (ਅੰਗ ੧੩੩) ਪੜ੍ਹੋ',
   },

@@ -4,12 +4,13 @@ export type CalendarGridMode = 'solar' | 'gregorian';
 
 export type LunarPaksh = 'Sudhi' | 'Vadhi';
 
-export type EventCategory = 'gurpurab' | 'shaheedi' | 'khalsa' | 'sangrand' | 'lunar';
+export type EventCategory = 'gurpurab' | 'shaheedi' | 'khalsa' | 'barsi' | 'sangrand' | 'lunar';
 
 export type DirectoryCategory =
   | 'gurpurab'
   | 'shaheedi'
   | 'khalsa'
+  | 'barsi'
   | 'sangrand'
   | 'puranmashi'
   | 'masya';
@@ -172,12 +173,14 @@ export interface DualTimeDisplay {
 }
 
 export interface IcsExportOptions {
+  includeDaily: boolean;
   includeSangrands: boolean;
   includePuranmashi: boolean;
   includeMasya: boolean;
   includeGurpurabs: boolean;
   includeShaheedi: boolean;
   includeKhalsa: boolean;
+  includeBarsis: boolean;
   sambatScope: 'all' | '2083' | '2084';
   language: LanguageMode;
 }

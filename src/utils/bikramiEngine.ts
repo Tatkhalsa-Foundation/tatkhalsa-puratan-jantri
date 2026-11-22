@@ -357,8 +357,8 @@ export function getAllDirectoryObservances(): readonly DirectoryObservance[] {
     });
   }
 
-  // 3. All Puranmashi and Masya dates across Sambat 2083–2084 (Nov 2026 – Mar 13, 2028)
-  let cursor = '2026-11-01';
+  // 3. All Puranmashi and Masya dates across Sambat 2083–2084 (1 Katak 2083 / Oct 17, 2026 – 30 Phagun 2084 / Mar 13, 2028)
+  let cursor = '2026-10-17';
   const endDate = '2028-03-13';
   while (cursor <= endDate) {
     const solar = getBikramiSolarDate(cursor);
@@ -401,9 +401,10 @@ export function getAllDirectoryObservances(): readonly DirectoryObservance[] {
     gurpurab: 1,
     shaheedi: 2,
     khalsa: 3,
-    sangrand: 4,
-    puranmashi: 5,
-    masya: 6,
+    barsi: 4,
+    sangrand: 5,
+    puranmashi: 6,
+    masya: 7,
   };
 
   items.sort((a, b) => {
@@ -482,7 +483,7 @@ export function getNextMilestones(fromIsoDate: string): {
 
 /**
  * Pure Dual-Time Formatter: formats any UTC timestamp simultaneously in
- * Sri Amritsar Sahib (IST / Asia/Kolkata) and a supplied local IANA timezone.
+ * Sri Anandpur Sahib (IST / Asia/Kolkata) and a supplied local IANA timezone.
  */
 export function formatDualTime(utcIso: string, localTimeZone?: string): DualTimeDisplay {
   const date = new Date(utcIso);
@@ -569,9 +570,9 @@ export function getEffectiveTodayIso(referenceDate: Date = new Date()): string {
   const m = referenceDate.getMonth() + 1;
   const d = referenceDate.getDate();
   const iso = toIsoDate(y, m, d);
-  // If browser clock is within our verified Sambat 2083–2084 span (Nov 2026 – Mar 2028), use exact today;
+  // If browser clock is within our verified Sambat 2083–2084 span (Oct 17, 2026 – Mar 31, 2028), use exact today;
   // otherwise clamp gracefully to Nov 21, 2026 (3 days before 557th Parkash Purab of Sri Guru Nanak Dev Ji).
-  if (iso >= '2026-11-01' && iso <= '2028-03-31') {
+  if (iso >= '2026-10-17' && iso <= '2028-03-31') {
     return iso;
   }
   return '2026-11-21';

@@ -38,7 +38,7 @@ export const SangrandsTableView: React.FC<SangrandsTableViewProps> = ({lang, onS
           <p className="mt-1.5 text-sm text-[#57534E] max-w-2xl">
             {isPa
               ? 'ਪੁਰਾਤਨ ਬਿਕ੍ਰਮੀ ਜੰਤਰੀ ਵਿੱਚ ਹਰ ਸੰਗਰਾਂਦ ਸੂਰਜ ਦੀ ਅਸਲ ਰਾਸ਼ੀ ਪ੍ਰਵੇਸ਼ (ਸੰਕ੍ਰਾਂਤੀ) ’ਤੇ ਅਧਾਰਿਤ ਹੁੰਦੀ ਹੈ, ਨਾ ਕਿ ਨਾਨਕਸ਼ਾਹੀ ਦੀਆਂ ਪੱਕੀਆਂ ਤਾਰੀਖ਼ਾਂ ’ਤੇ।'
-              : 'Each Sangrand follows true sidereal solar ingress (Sankranti) observed at Sri Amritsar Sahib sunrise, preserving the natural 29–32 day solar months of Puratan Bikrami chronology.'}
+              : 'Each Sangrand follows true sidereal solar ingress (Sankranti) observed at Sri Anandpur Sahib (IST) sunrise, preserving the natural 29–32 day solar months of Puratan Bikrami chronology.'}
           </p>
         </div>
 
@@ -77,7 +77,7 @@ export const SangrandsTableView: React.FC<SangrandsTableViewProps> = ({lang, onS
               <th className="py-3 px-4">{isPa ? 'ਦੇਸੀ ਮਹੀਨਾ' : 'Solar Month'}</th>
               <th className="py-3 px-4">{isPa ? 'ਸੰਗਰਾਂਦ (੧ ਤਾਰੀਖ਼)' : 'Sangrand Date'}</th>
               <th className="py-3 px-4">{isPa ? 'ਦਿਨ' : 'Days'}</th>
-              <th className="py-3 px-4">{isPa ? 'ਸੰਕ੍ਰਾਂਤੀ (ਅੰਮ੍ਰਿਤਸਰ IST)' : 'Sankranti (Amritsar IST)'}</th>
+              <th className="py-3 px-4">{isPa ? 'ਸੰਕ੍ਰਾਂਤੀ (ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ IST)' : 'Sankranti (Sri Anandpur Sahib IST)'}</th>
               <th className="py-3 px-4 hidden md:table-cell">{isPa ? 'ਤੁਹਾਡਾ ਸਥਾਨਕ ਸਮਾਂ' : 'Your Local Time'}</th>
               <th className="py-3 px-4 text-right">{isPa ? 'ਬਾਰਹ ਮਾਹਾ' : 'Barah Maha'}</th>
             </tr>
@@ -116,8 +116,8 @@ export const SangrandsTableView: React.FC<SangrandsTableViewProps> = ({lang, onS
                   <td className="py-3.5 px-4 font-mono-tabular text-xs text-[#57534E] hidden md:table-cell whitespace-nowrap">
                     {dual.isSameZone
                       ? isPa
-                        ? 'ਅੰਮ੍ਰਿਤਸਰ IST ਸਮਾਨ'
-                        : 'Same as Amritsar IST'
+                        ? 'ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ IST ਸਮਾਨ'
+                        : 'Same as Sri Anandpur Sahib IST'
                       : `${dual.localDate} · ${dual.localTime}`}
                   </td>
                   <td className="py-3.5 px-4 text-right whitespace-nowrap">

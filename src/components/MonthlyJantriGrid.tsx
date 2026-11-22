@@ -16,7 +16,7 @@ import {
 import {MoonPhaseIcon} from './MoonPhaseIcon';
 import {PWAInstallButton} from './PWAInstallButton';
 
-export type CalendarFilter = 'all' | 'gurpurab' | 'shaheedi' | 'khalsa' | 'lunar';
+export type CalendarFilter = 'all' | 'gurpurab' | 'shaheedi' | 'khalsa' | 'barsi' | 'lunar';
 
 interface MonthlyJantriGridProps {
   gridMode: CalendarGridMode;
@@ -49,12 +49,14 @@ const FILTER_OPTIONS: readonly {
   {id: 'gurpurab', en: 'Gurpurabs', pa: 'ਗੁਰਪੁਰਬ'},
   {id: 'shaheedi', en: 'Shaheedi', pa: 'ਸ਼ਹੀਦੀ'},
   {id: 'khalsa', en: 'Khalsa & Colophons', pa: 'ਖ਼ਾਲਸਾ / ਹਵਾਲੇ'},
+  {id: 'barsi', en: 'Barsis & Mahapurakhs', pa: 'ਬਰਸੀਆਂ / ਮਹਾਂਪੁਰਖ'},
   {id: 'lunar', en: 'Sangrand / Tithis', pa: 'ਸੰਗਰਾਂਦ / ਤਿਥੀਆਂ'},
 ];
 
 function categoryTextClass(category: Exclude<EventCategory, 'sangrand' | 'lunar'>): string {
   if (category === 'gurpurab') return 'text-[#9E4F00] bg-[#C86400]/12';
   if (category === 'shaheedi') return 'text-[#8F1D1D] bg-[#8F1D1D]/10';
+  if (category === 'barsi') return 'text-[#6B4E16] bg-[#B8860B]/15';
   return 'text-[#1B263B] bg-[#1B263B]/10';
 }
 
@@ -356,6 +358,10 @@ export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
           <span>{isPa ? 'ਖ਼ਾਲਸਾ / ਗ੍ਰੰਥ ਹਵਾਲੇ' : 'Khalsa & Colophons'}</span>
         </span>
         <span className="inline-flex items-center gap-1.5">
+          <span className="h-2.5 w-2.5 rounded-xs bg-[#8A6305]" aria-hidden="true" />
+          <span>{isPa ? 'ਬਰਸੀ / ਮਹਾਂਪੁਰਖ' : 'Barsis & Mahapurakhs'}</span>
+        </span>
+        <span className="inline-flex items-center gap-1.5">
           <MoonPhaseIcon elongationDeg={180} size={13} />
           <span>{isPa ? 'ਪੂਰਨਮਾਸ਼ੀ' : 'Puranmashi'}</span>
         </span>
@@ -611,7 +617,9 @@ export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
                               ? 'bg-[#C86400]'
                               : ev.category === 'shaheedi'
                                 ? 'bg-[#8F1D1D]'
-                                : 'bg-[#1B263B]'
+                                : ev.category === 'barsi'
+                                  ? 'bg-[#8A6305]'
+                                  : 'bg-[#1B263B]'
                           }`}
                           aria-hidden="true"
                         />
@@ -677,7 +685,9 @@ export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
                   ? 'text-[#8F1D1D]'
                   : primaryEvent.category === 'khalsa'
                     ? 'text-[#1B263B]'
-                    : 'text-[#9E4F00]'
+                    : primaryEvent.category === 'barsi'
+                      ? 'text-[#6B4E16]'
+                      : 'text-[#9E4F00]'
                 : day.lunar.isMasya
                   ? 'text-[#1B263B]'
                   : day.lunar.isPuranmashi
@@ -689,7 +699,8 @@ export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
                   <button
                     type="button"
                     onClick={() => onSelectDay(day)}
-                    className="w-full min-h-[64px] rounded-lg border border-[#DDD2BE] bg-[#FAF6EE] hover:bg-[#F3ECE0] p-3.5 text-left transition-colors flex items-start justify-between gap-3 cursor-pointer"
+                    data-testid={`marked-card-${day.isoDate}`}
+                    className="group w-full min-h-[72px] rounded-lg border border-[#D8CBB4] bg-[#FAF6EE] hover:bg-[#F3ECE0] hover:border-[#B8860B] hover:shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1B263B] p-3.5 text-left transition-all flex items-start justify-between gap-3 cursor-pointer"
                   >
                     <div className="min-w-0">
                       <p className={`text-xs font-medium ${accentText}`}>
@@ -699,7 +710,7 @@ export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
                         <span aria-hidden="true"> · </span>
                         {formatGregorianDate(day.isoDate, lang, false)}
                       </p>
-                      <p className="mt-1 text-sm font-semibold text-[#1C1917] leading-snug">
+                      <p className="mt-1 text-sm font-semibold text-[#1C1917] group-hover:text-[#1B263B] leading-snug">
                         {heading}
                       </p>
                       <p className="mt-0.5 text-xs text-[#57534E]">
@@ -707,12 +718,25 @@ export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
                           ? `${day.lunar.lunarMonthPa} ${day.lunar.shortTithiPa}`
                           : `${day.lunar.lunarMonthEn} ${day.lunar.shortTithiEn}`}
                       </p>
+                      {day.events.length > 1 && (
+                        <p className="mt-0.5 text-[11px] font-medium text-[#9E4F00]">
+                          {isPa
+                            ? `+${toGurmukhiNumerals(day.events.length - 1)} ਹੋਰ ਦਿਹਾੜਾ`
+                            : `+${day.events.length - 1} more observance`}
+                        </p>
+                      )}
                     </div>
-                    <MoonPhaseIcon
-                      elongationDeg={day.lunar.elongationDeg}
-                      size={22}
-                      className="shrink-0 mt-0.5"
-                    />
+                    <div className="flex flex-col items-end justify-between gap-2 shrink-0">
+                      <MoonPhaseIcon
+                        elongationDeg={day.lunar.elongationDeg}
+                        size={22}
+                        className="mt-0.5"
+                      />
+                      <ChevronRight
+                        className="w-4 h-4 text-[#A8A29E] group-hover:text-[#9E4F00] group-hover:translate-x-0.5 transition-all"
+                        aria-hidden="true"
+                      />
+                    </div>
                   </button>
                 </li>
               );

@@ -2,6 +2,7 @@ import {ArrowUpRight, BookOpen, Clock} from 'lucide-react';
 import React from 'react';
 import {WEEKDAYS} from '../data/sambatData';
 import type {JantriDay, LanguageMode, UpcomingMilestone} from '../data/types';
+import type {LiveClockSnapshot} from '../hooks/useLiveClock';
 import {
   formatDualTime,
   formatGregorianDate,
@@ -12,6 +13,7 @@ import {MoonPhaseIcon} from './MoonPhaseIcon';
 
 interface TodayHeroProps {
   today: JantriDay;
+  liveClock: LiveClockSnapshot;
   milestones: {
     sangrand: UpcomingMilestone | null;
     puranmashi: UpcomingMilestone | null;
@@ -23,6 +25,7 @@ interface TodayHeroProps {
 
 export const TodayHero: React.FC<TodayHeroProps> = ({
   today,
+  liveClock,
   milestones,
   lang,
   onJumpToDate,
@@ -193,31 +196,47 @@ export const TodayHero: React.FC<TodayHeroProps> = ({
             </div>
           </div>
 
-          {/* Dual-Time Tithi Transition Strip + Primary CTA */}
+          {/* Live Dual Clocks & Tithi Transition Strip + Primary CTA */}
           <div className="space-y-4 pt-4 border-t border-[#DDD2BE]">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-[#44403C]">
               <div className="flex flex-col gap-0.5">
                 <span className="inline-flex items-center gap-1.5 font-medium text-[#1C1917]">
                   <Clock className="w-3.5 h-3.5 text-[#9E4F00] shrink-0" aria-hidden="true" />
                   <span>
-                    {isPa ? 'ਸ੍ਰੀ ਅੰਮ੍ਰਿਤਸਰ ਸਾਹਿਬ (IST)' : 'Sri Amritsar Sahib (IST)'}
+                    {isPa ? 'ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ (IST)' : 'Sri Anandpur Sahib (IST)'}
                   </span>
+                </span>
+                <span
+                  data-testid="live-clock-anandpur"
+                  className="font-mono-tabular pl-5 text-sm font-semibold text-[#1B263B]"
+                >
+                  {liveClock.anandpurTime}
                 </span>
                 <span className="font-mono-tabular pl-5 text-[#44403C]">
                   {isPa ? 'ਤਿਥੀ ਸਮਾਪਤੀ ' : 'Tithi ends '}
                   {tithiDual.amritsarTime}, {tithiDual.amritsarDate}
                 </span>
               </div>
-              {!tithiDual.isSameZone && (
-                <div className="flex flex-col gap-0.5 sm:border-l sm:border-[#DDD2BE] sm:pl-4">
-                  <span className="font-medium text-[#1C1917]">
-                    {isPa ? 'ਤੁਹਾਡਾ ਸਥਾਨਕ ਸਮਾਂ' : 'Your Local Time'}
-                  </span>
-                  <span className="font-mono-tabular text-[#44403C]">
-                    {tithiDual.localTime}, {tithiDual.localDate} · {tithiDual.localTimeZoneName}
-                  </span>
-                </div>
-              )}
+              <div className="flex flex-col gap-0.5 sm:border-l sm:border-[#DDD2BE] sm:pl-4">
+                <span className="font-medium text-[#1C1917]">
+                  {isPa
+                    ? 'ਤੁਹਾਡਾ ਸਥਾਨਕ ਸਮਾਂ (ਲਾਈਵ)'
+                    : `Your Local Time · ${liveClock.localTimeZoneLabel}`}
+                </span>
+                <span
+                  data-testid="live-clock-local"
+                  className="font-mono-tabular text-sm font-semibold text-[#1C1917]"
+                >
+                  {liveClock.localTime}
+                </span>
+                <span className="font-mono-tabular text-[#44403C]">
+                  {tithiDual.isSameZone
+                    ? isPa
+                      ? 'ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ (IST) ਸਮਾਨ'
+                      : 'Aligned with Sri Anandpur Sahib (IST)'
+                    : `${isPa ? 'ਤਿਥੀ ਸਮਾਪਤੀ ' : 'Tithi ends '}${tithiDual.localTime}, ${tithiDual.localDate}`}
+                </span>
+              </div>
             </div>
 
             <div className="flex flex-wrap items-center gap-3">

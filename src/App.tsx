@@ -13,12 +13,13 @@ import {MonthlyJantriGrid, type CalendarFilter} from './components/MonthlyJantri
 import {OfflineIndicator} from './components/PWAInstallButton';
 import {PrintJantriView} from './components/PrintJantriView';
 import {SangrandsTableView} from './components/SangrandsTableView';
+import {ShastarAsthaanCard} from './components/ShastarAsthaanCard';
 import {TodayHero} from './components/TodayHero';
-import {POTHI_BASE_URL} from './data/sambatData';
+import {getBikramiMonthMeta, POTHI_BARAH_MAHA_URL} from './data/sambatData';
 import type {CalendarGridMode, JantriDay, LanguageMode} from './data/types';
+import {useLiveClock} from './hooks/useLiveClock';
 import {
   BROWSEABLE_SOLAR_SPANS,
-  getEffectiveTodayIso,
   getJantriDay,
   getMonthCalendarGrid,
   getNextMilestones,
@@ -31,7 +32,8 @@ import {
 const LANG_STORAGE_KEY = 'tatkhalsa_jantri_lang';
 
 export default function App() {
-  const todayIso = useMemo(() => getEffectiveTodayIso(), []);
+  const liveClock = useLiveClock();
+  const todayIso = liveClock.effectiveTodayIso;
   const [todayYear, todayMonth1] = useMemo(() => todayIso.split('-').map(Number), [todayIso]);
   const todaySolarIndex = useMemo(() => getSolarMonthSpanIndexForDate(todayIso), [todayIso]);
 
@@ -77,6 +79,15 @@ export default function App() {
         : getMonthCalendarGrid(viewYear, viewMonth0),
     [gridMode, solarSpanIndex, viewYear, viewMonth0],
   );
+
+  const activeSolarMonthKey = useMemo(() => {
+    if (gridMode === 'solar') {
+      const span = BROWSEABLE_SOLAR_SPANS[solarSpanIndex];
+      return getBikramiMonthMeta(span.monthId).key;
+    }
+    const midDay = monthGrid.find((d) => d.inCurrentGridMonth && d.gregorianDay === 15) ?? monthGrid[15];
+    return midDay ? midDay.solar.monthMeta.key : todayRecord.solar.monthMeta.key;
+  }, [gridMode, solarSpanIndex, monthGrid, todayRecord]);
 
   const handleSelectSolarSpan = (idx: number) => {
     const clamped = Math.max(0, Math.min(BROWSEABLE_SOLAR_SPANS.length - 1, idx));
@@ -188,6 +199,7 @@ export default function App() {
           <>
             <TodayHero
               today={todayRecord}
+              liveClock={liveClock}
               milestones={milestones}
               lang={lang}
               onJumpToDate={handleJumpToDateAndOpen}
@@ -214,6 +226,8 @@ export default function App() {
               onOpenIcsModal={() => setIsIcsOpen(true)}
               onOpenPrintView={() => setActiveView('print')}
             />
+
+            <ShastarAsthaanCard monthKey={activeSolarMonthKey} lang={lang} />
           </>
         )}
 
@@ -256,13 +270,13 @@ export default function App() {
             </p>
             <p>
               {isPa
-                ? 'ਪ੍ਰਮਾਣਿਕ ਚੰਦਰ-ਸੂਰਜੀ ਬਿਕ੍ਰਮੀ ਸੰਮਤ (੨੦੮੩–੨੦੮੪) · ਸ੍ਰੀ ਅੰਮ੍ਰਿਤਸਰ ਸਾਹਿਬ (IST) ਅਨੁਸਾਰ · ਕੋਈ ਜੋਤਿਸ਼ ਜਾਂ ਰਾਸ਼ੀਫ਼ਲ ਨਹੀਂ।'
-                : 'Authentic Luni-Solar Puratan Bikrami Chronology (Sambat 2083–2084) · Anchored to Sri Amritsar Sahib (IST) · Zero astrology or fixed Nanakshahi dates.'}
+                ? 'ਪ੍ਰਮਾਣਿਕ ਚੰਦਰ-ਸੂਰਜੀ ਬਿਕ੍ਰਮੀ ਸੰਮਤ (੨੦੮੩–੨੦੮੪) · ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ (IST) ਅਨੁਸਾਰ · ਕੋਈ ਜੋਤਿਸ਼ ਜਾਂ ਰਾਸ਼ੀਫ਼ਲ ਨਹੀਂ।'
+                : 'Authentic Luni-Solar Puratan Bikrami Chronology (Sambat 2083–2084) · Anchored to Sri Anandpur Sahib (IST) · Zero astrology or fixed Nanakshahi dates.'}
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-4 shrink-0">
             <a
-              href={POTHI_BASE_URL}
+              href={POTHI_BARAH_MAHA_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 font-medium text-[#1B263B] hover:text-[#9E4F00] hover:underline underline-offset-4"
@@ -281,7 +295,12 @@ export default function App() {
         </div>
       </footer>
 
-      <EventColophonDrawer day={drawerDay} lang={lang} onClose={() => setDrawerDay(null)} />
+      <EventColophonDrawer
+        day={drawerDay}
+        liveClock={liveClock}
+        lang={lang}
+        onClose={() => setDrawerDay(null)}
+      />
       <IcsExportModal isOpen={isIcsOpen} lang={lang} onClose={() => setIsIcsOpen(false)} />
       <OfflineIndicator lang={lang} />
     </div>
