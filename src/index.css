@@ -1,10 +1,11 @@
 @import "tailwindcss";
 
 @theme {
+  --font-sans: "Source Serif 4", "Noto Sans Gurmukhi", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Cormorant Garamond", "Noto Sans Gurmukhi", Georgia, serif;
   --font-serif: "Source Serif 4", "Noto Sans Gurmukhi", Georgia, serif;
   --font-gurmukhi: "Noto Sans Gurmukhi", "Source Serif 4", system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-mono: "IBM Plex Mono", "Noto Sans Gurmukhi", ui-monospace, SFMono-Regular, Menlo, monospace;
 
   --color-parchment: #FAF6EE;
   --color-parchment-deep: #F3ECE0;

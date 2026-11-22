@@ -193,14 +193,14 @@ export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
 
                 <div className="mt-1 space-y-0.5">
                   {day.solar.isSangrand && (
-                    <p className="text-[9px] font-bold text-[#9E4F00] leading-tight truncate">
+                    <p className="text-[9px] font-bold text-[#9E4F00] leading-tight break-words">
                       Sangrand · ਸੰਗਰਾਂਦ
                     </p>
                   )}
                   {day.events.slice(0, 2).map((ev) => (
                     <p
                       key={ev.id}
-                      className={`text-[9px] font-semibold leading-tight truncate ${
+                      className={`text-[9px] font-semibold leading-tight break-words ${
                         ev.category === 'shaheedi'
                           ? 'text-[#8F1D1D]'
                           : ev.category === 'khalsa'
@@ -221,15 +221,15 @@ export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
         {monthNotes.length > 0 && (
           <div className="mt-4 pt-3 border-t border-[#D6D3D1]">
             <h2 className="text-xs font-semibold uppercase tracking-wide text-[#44403C] mb-2">
-              {isPa ? 'ਮਹੀਨੇ ਦੇ ਮੁੱਖ ਦਿਹਾੜੇ ਅਤੇ ਸੰਗਰਾਂਦ' : 'Key Observances & Sangrands This Month'}
+              {isPa ? 'ਮਹੀਨੇ ਦੇ ਮੁੱਖ ਦਿਹਾੜੇ ਅਤੇ ਸੰਗਰਾਂਦ' : 'Marked Dates & Key Observances This Month'}
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-1 text-[11px] text-[#292524]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1.5 text-[11px] leading-snug text-[#292524]">
               {monthNotes.map((d) => {
                 const label =
                   d.events.length > 0
-                    ? isPa
-                      ? d.events[0].titlePa
-                      : d.events[0].titleEn
+                    ? d.events
+                        .map((ev) => (isPa ? ev.titlePa : ev.titleEn))
+                        .join(' · ')
                     : d.solar.isSangrand
                       ? isPa
                         ? `${d.solar.monthMeta.namePa} ਸੰਗਰਾਂਦ`
@@ -242,9 +242,11 @@ export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
                           ? `${d.lunar.lunarMonthPa} ਮੱਸਿਆ`
                           : `${d.lunar.lunarMonthEn} Masya`;
                 return (
-                  <p key={d.isoDate} className="truncate">
+                  <p key={d.isoDate} className="break-words">
                     <span className="font-mono-tabular font-semibold">
-                      {d.solar.day} {d.solar.monthMeta.nameEn}
+                      {isPa
+                        ? `${toGurmukhiNumerals(d.solar.day)} ${d.solar.monthMeta.namePa}`
+                        : `${d.solar.day} ${d.solar.monthMeta.nameEn}`}
                     </span>{' '}
                     ({formatGregorianDate(d.isoDate, lang, false)}) — {label}
                   </p>

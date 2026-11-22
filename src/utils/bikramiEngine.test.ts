@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import {HISTORICAL_EVENTS} from '../data/eventsData';
+import {BIKRAMI_MONTHS, POTHI_BASE_URL} from '../data/sambatData';
 import {SOLAR_MONTH_SPANS} from '../data/sambatData';
 import {
   addDaysIso,
@@ -217,4 +219,29 @@ test('RFC 5545 .ics export generates valid VCALENDAR in English, Punjabi, and Bi
   const single = generateSingleDayIcs('2026-11-24', 'Katak Puranmashi', '9 Maghar, Sambat 2083');
   assert.ok(single.includes('BEGIN:VEVENT'));
   assert.ok(single.includes('SUMMARY:Katak Puranmashi'));
+});
+
+test('All Barah Maha and event Pothi references deep-link beyond the root homepage', () => {
+  for (const month of BIKRAMI_MONTHS) {
+    assert.ok(
+      month.pothiUrl.startsWith(`${POTHI_BASE_URL}/sundar-gutka/barah-maha?ang=`),
+      `Expected deep link for ${month.nameEn}, got ${month.pothiUrl}`,
+    );
+  }
+  const linkedEvents = HISTORICAL_EVENTS.filter((e) => Boolean(e.pothiUrl));
+  assert.ok(linkedEvents.length >= 8);
+  for (const ev of linkedEvents) {
+    assert.ok(
+      ev.pothiUrl!.startsWith(`${POTHI_BASE_URL}/`) && ev.pothiUrl!.length > POTHI_BASE_URL.length + 1,
+      `Event ${ev.id} should deep-link past root homepage: ${ev.pothiUrl}`,
+    );
+    for (const cit of ev.citations) {
+      if (cit.pothiUrl) {
+        assert.ok(
+          cit.pothiUrl.startsWith(`${POTHI_BASE_URL}/`) && cit.pothiUrl.length > POTHI_BASE_URL.length + 1,
+          `Citation in ${ev.id} should deep-link past root homepage: ${cit.pothiUrl}`,
+        );
+      }
+    }
+  }
 });

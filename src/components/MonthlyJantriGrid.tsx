@@ -528,7 +528,16 @@ export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
                 {/* Bottom Row: Sangrand / Puranmashi / Masya / Event Markers */}
                 <div className="mt-1.5 space-y-1 w-full">
                   {day.solar.isSangrand && (
-                    <div className="hidden sm:block rounded-xs bg-[#C86400]/12 px-1.5 py-0.5 text-[10px] font-semibold tracking-tight text-[#9E4F00] truncate">
+                    <div
+                      title={
+                        isPa
+                          ? `ਸੰਗਰਾਂਦ · ${day.solar.monthMeta.namePa}`
+                          : isBi
+                            ? `Sangrand · ${day.solar.monthMeta.nameEn} (ਸੰਗਰਾਂਦ · ${day.solar.monthMeta.namePa})`
+                            : `Sangrand · ${day.solar.monthMeta.nameEn}`
+                      }
+                      className="hidden sm:block rounded-xs bg-[#C86400]/12 px-1.5 py-0.5 text-[10px] font-semibold tracking-tight text-[#9E4F00] truncate"
+                    >
                       {isPa
                         ? `ਸੰਗਰਾਂਦ · ${day.solar.monthMeta.namePa}`
                         : isBi
@@ -538,7 +547,14 @@ export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
                   )}
 
                   {!hasPrimaryEvent && day.lunar.isPuranmashi && (
-                    <div className="hidden sm:block rounded-xs bg-[#B8860B]/14 px-1.5 py-0.5 text-[10px] font-semibold text-[#8A6305] truncate">
+                    <div
+                      title={
+                        isPa
+                          ? `${day.lunar.lunarMonthPa} ਪੂਰਨਮਾਸ਼ੀ`
+                          : `${day.lunar.lunarMonthEn} Puranmashi`
+                      }
+                      className="hidden sm:block rounded-xs bg-[#B8860B]/14 px-1.5 py-0.5 text-[10px] font-semibold text-[#8A6305] truncate"
+                    >
                       {isPa
                         ? `${day.lunar.lunarMonthPa} ਪੂਰਨਮਾਸ਼ੀ`
                         : `${day.lunar.lunarMonthEn} Puranmashi`}
@@ -546,7 +562,14 @@ export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
                   )}
 
                   {!hasPrimaryEvent && day.lunar.isMasya && (
-                    <div className="hidden sm:block rounded-xs bg-[#1B263B]/10 px-1.5 py-0.5 text-[10px] font-semibold text-[#1B263B] truncate">
+                    <div
+                      title={
+                        isPa
+                          ? `${day.lunar.lunarMonthPa} ਮੱਸਿਆ`
+                          : `${day.lunar.lunarMonthEn} Masya`
+                      }
+                      className="hidden sm:block rounded-xs bg-[#1B263B]/10 px-1.5 py-0.5 text-[10px] font-semibold text-[#1B263B] truncate"
+                    >
                       {isPa
                         ? `${day.lunar.lunarMonthPa} ਮੱਸਿਆ`
                         : `${day.lunar.lunarMonthEn} Masya`}
@@ -559,6 +582,7 @@ export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
                       {day.events.slice(0, 2).map((ev) => (
                         <div
                           key={ev.id}
+                          title={isPa ? ev.titlePa : isBi ? `${ev.titleEn} · ${ev.titlePa}` : ev.titleEn}
                           className={`rounded-xs px-1.5 py-0.5 text-[10px] sm:text-[11px] font-medium leading-tight truncate ${categoryTextClass(ev.category)}`}
                         >
                           {isPa ? ev.shortLabelPa : ev.shortLabelEn}

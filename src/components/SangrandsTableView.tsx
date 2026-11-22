@@ -53,7 +53,7 @@ export const SangrandsTableView: React.FC<SangrandsTableViewProps> = ({lang, onS
                 : 'text-[#57534E] hover:text-[#1C1917]'
             }`}
           >
-            {isPa ? 'ਸੰਮਤ ੨੦੮੩ (ਕੱਤਕ–ਫੱਗਣ)' : 'Sambat 2083 (Nov ’26–Mar ’27)'}
+            {isPa ? 'ਸੰਮਤ ੨੦੮੩ (ਕੱਤਕ–ਫੱਗਣ)' : 'Sambat 2083 (Oct ’26–Mar ’27)'}
           </button>
           <button
             type="button"

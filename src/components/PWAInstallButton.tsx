@@ -1,5 +1,5 @@
 import {Download, WifiOff, X} from 'lucide-react';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import type {LanguageMode} from '../data/types';
 import {useOnlineStatus} from '../hooks/useOnlineStatus';
 import {usePWAInstall} from '../hooks/usePWAInstall';
@@ -91,19 +91,38 @@ export const PWAInstallButton: React.FC<PWAInstallButtonProps> = ({lang}) => {
 
 export const OfflineIndicator: React.FC<{lang: LanguageMode}> = ({lang}) => {
   const isOnline = useOnlineStatus();
-  if (isOnline) return null;
+  const [dismissed, setDismissed] = useState(false);
+
+  // Reset dismissal whenever the browser comes back online so future offline events notify again
+  useEffect(() => {
+    if (isOnline) {
+      setDismissed(false);
+    }
+  }, [isOnline]);
+
+  // Only render when genuinely offline and not dismissed
+  if (isOnline || dismissed) return null;
 
   return (
     <div
       role="status"
-      className="no-print fixed bottom-20 lg:bottom-4 left-4 z-40 inline-flex items-center gap-2 rounded-md border border-[#C86400]/40 bg-[#FAF6EE] px-3 py-2 text-xs font-medium text-[#1C1917] shadow-md"
+      aria-live="polite"
+      className="no-print fixed bottom-20 lg:bottom-4 left-4 z-40 inline-flex items-center gap-2 rounded-md border border-[#C86400]/40 bg-[#FAF6EE] pl-3 pr-1.5 py-1.5 text-xs font-medium text-[#1C1917] shadow-md max-w-[calc(100vw-2rem)]"
     >
-      <WifiOff className="w-3.5 h-3.5 text-[#9E4F00]" aria-hidden="true" />
+      <WifiOff className="w-3.5 h-3.5 text-[#9E4F00] shrink-0" aria-hidden="true" />
       <span>
         {lang === 'pa'
           ? 'ਆਫ਼ਲਾਈਨ ਮੋਡ — ਪੁਰਾਤਨ ਜੰਤਰੀ ਕੈਸ਼ ਤੋਂ ਚੱਲ ਰਹੀ ਹੈ'
           : 'Offline mode — using cached Puratan Jantri'}
       </span>
+      <button
+        type="button"
+        onClick={() => setDismissed(true)}
+        aria-label={lang === 'pa' ? 'ਆਫ਼ਲਾਈਨ ਸੂਚਨਾ ਬੰਦ ਕਰੋ' : 'Dismiss offline notice'}
+        className="ml-1 inline-flex h-6 w-6 items-center justify-center rounded-sm text-[#57534E] hover:bg-[#EBE2D2] hover:text-[#1C1917] transition-colors shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#1B263B]"
+      >
+        <X className="w-3.5 h-3.5" aria-hidden="true" />
+      </button>
     </div>
   );
 };
