@@ -3,6 +3,7 @@ import type {CalendarFilter} from '../components/MonthlyJantriGrid';
 import type {CalendarGridMode, DirectoryFilterKey, LanguageMode, ThemeId} from '../data/types';
 import {
   BROWSEABLE_SOLAR_SPANS,
+  getBikramiSolarDate,
   LOOKUP_MAX_ISO,
   LOOKUP_MIN_ISO,
   SUPPORTED_MAX_MONTH,
@@ -21,7 +22,7 @@ export interface SessionMonthNavigation {
 }
 
 export type DirectoryFilterState = DirectoryFilterKey;
-export type DirectorySambatState = 'all' | '2082' | '2083' | '2084';
+export type DirectorySambatState = 'all' | '2082' | '2083' | '2084' | (string & {});
 
 export interface PersistedJantriState {
   activeView: AppView;
@@ -40,6 +41,7 @@ export interface PersistedJantriState {
   directoryCategory: DirectoryFilterState;
   directorySambat: DirectorySambatState;
   directoryUpcomingOnly: boolean;
+  lastActiveGregorianDate: string;
   lookupInput: string;
 }
 
@@ -105,8 +107,9 @@ export function createDefaultPersistedState(
     sangrandYear: 2083,
     directoryQuery: '',
     directoryCategory: 'all',
-    directorySambat: 'all',
+    directorySambat: String(getBikramiSolarDate(todayIso).sambat),
     directoryUpcomingOnly: false,
+    lastActiveGregorianDate: todayIso,
     lookupInput: todayIso,
   };
 }
@@ -131,6 +134,7 @@ export function parsePersistedState(
     result.theme = standaloneThemeRaw as ThemeId;
   }
 
+  let isSameDay = false;
   if (raw) {
     let parsed: unknown;
     try {
@@ -141,7 +145,8 @@ export function parsePersistedState(
 
     if (parsed && typeof parsed === 'object') {
       const obj = parsed as Record<string, unknown>;
-
+    isSameDay = obj.lastActiveGregorianDate === defaults.selectedIso;
+      
       // Never restore 'print' across reloads; default back to 'jantri'
       if (
         typeof obj.activeView === 'string' &&
@@ -167,12 +172,12 @@ export function parsePersistedState(
       ) {
         result.gridMode = obj.gridMode as CalendarGridMode;
       }
-      if (isValidIsoInRange(obj.selectedIso)) {
+      if (isSameDay && isValidIsoInRange(obj.selectedIso)) {
         result.selectedIso = obj.selectedIso;
       }
-      if (obj.drawerDateIso === null) {
+      if (isSameDay && obj.drawerDateIso === null) {
         result.drawerDateIso = null;
-      } else if (isValidIsoInRange(obj.drawerDateIso)) {
+      } else if (isSameDay && isValidIsoInRange(obj.drawerDateIso)) {
         result.drawerDateIso = obj.drawerDateIso;
       }
       if (
@@ -202,21 +207,21 @@ export function parsePersistedState(
       }
       if (
         typeof obj.directorySambat === 'string' &&
-        (VALID_DIRECTORY_SAMBATS as readonly string[]).includes(obj.directorySambat)
+        ((VALID_DIRECTORY_SAMBATS as readonly string[]).includes(obj.directorySambat) || /^\d{4}$/.test(obj.directorySambat) || obj.directorySambat === 'all')
       ) {
         result.directorySambat = obj.directorySambat as DirectorySambatState;
       }
       if (typeof obj.directoryUpcomingOnly === 'boolean') {
         result.directoryUpcomingOnly = obj.directoryUpcomingOnly;
       }
-      if (isValidIsoInRange(obj.lookupInput)) {
+      if (isSameDay && isValidIsoInRange(obj.lookupInput)) {
         result.lookupInput = obj.lookupInput;
       }
     }
   }
 
   // Only restore non-default month navigation when explicitly set in the current browser session
-  if (sessionNavRaw) {
+  if (isSameDay && sessionNavRaw) {
     try {
       const navParsed = JSON.parse(sessionNavRaw) as Record<string, unknown>;
       if (
