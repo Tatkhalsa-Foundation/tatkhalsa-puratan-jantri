@@ -67,7 +67,7 @@ const VALID_DIRECTORY_CATEGORIES: readonly DirectoryFilterState[] = [
   'barsi',
   'sangrand-tithi',
 ];
-const VALID_DIRECTORY_SAMBATS: readonly DirectorySambatState[] = ['all', '2082', '2083', '2084'];
+const VALID_DIRECTORY_SAMBATS: readonly DirectorySambatState[] = ['all', '2082', '2083', '2084, '2085', '2086', '2087', '2088', '2089', '2090', '2091', '2092', '2093', '2094', '2095', '2096', '2097''];
 
 function isValidIsoInRange(value: unknown): value is string {
   if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
