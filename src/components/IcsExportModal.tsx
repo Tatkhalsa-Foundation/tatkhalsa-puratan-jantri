@@ -1,4 +1,4 @@
-import {CalendarCheck, Download, X} from 'lucide-react';
+import {CalendarCheck, Download, ExternalLink, X} from 'lucide-react';
 import React, {useEffect, useMemo, useState} from 'react';
 import type {IcsExportOptions, LanguageMode, PersonalDesiDate} from '../data/types';
 import {formatNum} from '../utils/bikramiEngine';
@@ -290,6 +290,33 @@ export const IcsExportModal: React.FC<IcsExportModalProps> = ({
               </span>
             </div>
           )}
+          <div className="rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] p-3.5 space-y-2.5">
+            <div className="flex items-center gap-2 text-xs font-semibold text-[var(--text-heading)]">
+              <CalendarCheck className="w-4 h-4 shrink-0 text-[var(--accent-primary)]" aria-hidden="true" />
+              <span>Live Calendar Subscription (All Purabs)</span>
+            </div>
+            <p className="text-[11px] text-[var(--text-muted)] leading-snug">
+              Subscribe once to automatically receive all Purab updates in your calendar app.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <a
+                href="webcal://calendar.tatkhalsa.in/feeds/all-purabs.ics"
+                className="inline-flex items-center gap-1.5 rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-3 py-1.5 text-xs font-medium text-[var(--text-primary)] hover:bg-[var(--bg-hover)] transition-colors"
+              >
+                <CalendarCheck className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+                <span>Add to Apple Calendar</span>
+              </a>
+              <a
+                href={`https://${'calendar.google.com/calendar/r?cid='}${encodeURIComponent('webcal://calendar.tatkhalsa.in/feeds/all-purabs.ics')}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-3 py-1.5 text-xs font-medium text-[var(--text-primary)] hover:bg-[var(--bg-hover)] transition-colors"
+              >
+                <ExternalLink className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+                <span>1-Click Google Calendar Subscribe</span>
+              </a>
+            </div>
+          </div>
         </div>
 
         <div className="flex items-center justify-between gap-4 border-t border-[var(--border-subtle)] bg-[var(--bg-surface)] px-5 py-3.5 shrink-0">
