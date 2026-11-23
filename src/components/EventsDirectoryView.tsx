@@ -103,7 +103,7 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
   const isPa = lang === 'pa';
   const isBi = lang === 'bi';
 
-  const allObservances = useMemo(() => getAllDirectoryObservances(), []);
+  const allObservances = useMemo(() => getAllDirectoryObservances(), []); const sambatYears = useMemo(() => Array.from(new Set(['2082', '2083', '2084', ...allObservances.filter((o) => o.sambat != null).map((o) => String(o.sambat))])).sort((a, b) => Number(a) - Number(b)), [allObservances]);
   const lookupResult = useMemo(() => lookupGregorianToBikrami(lookupInput), [lookupInput]);
 
   const filtered = useMemo(() => {
@@ -187,7 +187,7 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
                   className="w-full sm:w-auto min-w-[205px] min-h-[44px] pl-10 pr-3.5 py-2 text-sm font-mono-tabular rounded-md border border-[var(--border-strong)] bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] focus:outline-2 focus:outline-[var(--accent-primary)]"
                 />
               </div>
-              {lookupResult.ok && (
+              <button type="button" onClick={() => { onLookupInputChange(todayIso); onSelectDate(todayIso); }} className="min-h-[44px] px-3 py-2 rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-xs font-medium text-[var(--text-primary)] hover:border-[var(--accent-primary)] transition-colors whitespace-nowrap">Today</button> {lookupResult.ok && (
                 <span
                   data-testid="lookup-formatted-date"
                   className="inline-flex items-center px-2.5 py-1 rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-xs font-mono-tabular font-medium text-[var(--text-heading)] whitespace-nowrap self-start sm:self-auto"
@@ -344,34 +344,7 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
-              <div
-                role="group"
-                aria-label={isPa ? 'ਸੰਮਤ ਫਿਲਟਰ' : 'Filter by Sambat'}
-                className="inline-flex items-center rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-1"
-              >
-                {(
-                  [
-                    {id: 'all', en: '2082–84', pa: '੨੦੮੨–੮੪'},
-                    {id: '2082', en: '2082', pa: '੨੦੮੨'},
-                    {id: '2083', en: '2083', pa: '੨੦੮੩'},
-                    {id: '2084', en: '2084', pa: '੨੦੮੪'},
-                  ] as const
-                ).map((opt) => (
-                  <button
-                    key={opt.id}
-                    type="button"
-                    onClick={() => onSambatChange(opt.id)}
-                    aria-pressed={sambat === opt.id}
-                    className={`min-h-[36px] px-3 text-xs font-medium rounded-sm transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
-                      sambat === opt.id
-                        ? 'bg-[var(--bg-surface-elevated)] text-[var(--text-heading)] shadow-xs'
-                        : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
-                    }`}
-                  >
-                    {isPa ? opt.pa : opt.en}
-                  </button>
-                ))}
-              </div>
+              <select aria-label="Filter by Sambat" value={sambat} onChange={(e) => onSambatChange(e.target.value as DirectorySambatState)} className="min-h-[42px] px-3 py-2 text-xs font-medium rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)] transition-colors cursor-pointer"><option value="all">All Sambat Years</option>{sambatYears.map((yr) => (<option key={yr} value={yr}>{isPa ? toGurmukhiNumerals(yr) : 'Sambat ' + yr}</option>))}</select>
 
               <button
                 type="button"
