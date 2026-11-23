@@ -7,6 +7,7 @@ import {ArrowUpRight, Check, Scale, X} from 'lucide-react';
 import {useEffect, useMemo, useRef, useState} from 'react';
 import {EventColophonDrawer} from './components/EventColophonDrawer';
 import {EventsDirectoryView} from './components/EventsDirectoryView';
+import {FeedbackModal} from './components/FeedbackModal';
 import {Header, type AppView} from './components/Header';
 import {IcsExportModal} from './components/IcsExportModal';
 import {LicenseCreditsModal} from './components/LicenseCreditsModal';
@@ -115,7 +116,8 @@ export default function App() {
   const [lookupInput, setLookupInput] = useState<string>(initialPersisted.lookupInput);
   const [isIcsOpen, setIsIcsOpen] = useState<boolean>(false);
   const [isLicenseOpen, setIsLicenseOpen] = useState<boolean>(false);
-
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState<boolean>(false);
+  
   // Personal Desi/Bikrami Family Dates (localStorage)
   const [personalDates, setPersonalDates] = useState<PersonalDesiDate[]>(() => loadPersonalDates());
   const [isPersonalDatesOpen, setIsPersonalDatesOpen] = useState<boolean>(false);
@@ -164,6 +166,7 @@ export default function App() {
       directorySambat,
       directoryUpcomingOnly,
       lookupInput,
+      lastActiveGregorianDate: todayIso,
     });
   }, [
     activeView,
@@ -183,6 +186,7 @@ export default function App() {
     directorySambat,
     directoryUpcomingOnly,
     lookupInput,
+    todayIso,
   ]);
 
   useEffect(() => {
@@ -614,7 +618,10 @@ export default function App() {
             >
               {isPa ? '.ics ਡਾਊਨਲੋਡ' : 'Export .ics'}
             </button>
-          </div>
+ <a href="https://tatkhalsa.in" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-medium text-[var(--text-heading)] hover:text-[var(--accent-primary-text)] hover:underline underline-offset-4"><span>tatkhalsa.in</span><ArrowUpRight className="w-3.5 h-3.5" aria-hidden="true" /></a>
+          <<a href="mailto:info@tatkhalsa.in" className="font-medium text-[var(--text-primary)] hover:text-[var(--accent-primary-text)] hover:underline underline-offset-4">info@tatkhalsa.in</a>
+            /<button type="button" onClick={() => setIsFeedbackOpen(true)} className="font-medium text-[var(--text-primary)] hover:text-[var(--accent-primary-text)] hover:underline underline-offset-4 cursor-pointer">Feedback</button>
+            div>
         </div>
       </footer>
 
@@ -674,6 +681,10 @@ export default function App() {
         lang={lang}
         onClose={() => setIsLicenseOpen(false)}
       />
+      <FeedbackModal
+  isOpen={isFeedbackOpen}
+lang={lang}
+activeDateContext={drawerDateIso ?? selectedIso} onClose={() => setIsFeedbackOpen(false)} />
     </div>
   );
 }
