@@ -4,13 +4,13 @@ import type {LunarInfo, LunarPaksh} from '../data/types';
 /**
  * Pure, framework-agnostic luni-solar astronomy module (Meeus truncated VSOP87 / ELP-2000).
  * Zero DOM/window dependencies — reusable directly in React Native / Capacitor.
- * Anchored to Sri Amritsar Sahib (31.6200° N, 74.8765° E, IST UTC+05:30).
+ * Anchored to Sri Anandpur Sahib (31.2359° N, 76.4988° E, IST UTC+05:30).
  */
 
 const DEG2RAD = Math.PI / 180;
 const RAD2DEG = 180 / Math.PI;
-const AMRITSAR_LAT = 31.62;
-const AMRITSAR_LON = 74.8765;
+const ANANDPUR_SAHIB_LAT = 31.2359;
+const ANANDPUR_SAHIB_LON = 76.4988;
 
 function normalizeDeg(deg: number): number {
   const m = deg % 360;
@@ -125,10 +125,10 @@ export function getLahiriAyanamsaDeg(jd: number): number {
   return 23.853 + yearsSince2000 * (50.29 / 3600);
 }
 
-/** Compute sunrise UTC timestamp (ms) at Sri Amritsar Sahib for YYYY-MM-DD using NOAA solar equation. */
-export function getAmritsarSunriseUtcMs(isoDate: string): number {
+/** Compute sunrise UTC timestamp (ms) at Sri Anandpur Sahib for YYYY-MM-DD using NOAA solar equation. */
+export function getAnandpurSahibSunriseUtcMs(isoDate: string): number {
   const [y, m, d] = isoDate.split('-').map(Number);
-  const noonUtc = Date.UTC(y, m - 1, d, 6, 30, 0); // approx local solar noon in Amritsar (~12:00 IST)
+  const noonUtc = Date.UTC(y, m - 1, d, 6, 30, 0); // approx local solar noon in Sri Anandpur Sahib (~12:00 IST)
   const jd = msToJulianDay(noonUtc);
   const T = (jd - 2451545.0) / 36525.0;
 
@@ -157,14 +157,43 @@ export function getAmritsarSunriseUtcMs(isoDate: string): number {
       0.5 * varY * varY * Math.sin(4 * L0 * DEG2RAD) -
       1.25 * e * e * Math.sin(2 * Mrad));
 
-  const latRad = AMRITSAR_LAT * DEG2RAD;
+  const latRad = ANANDPUR_SAHIB_LAT * DEG2RAD;
   const zenithRad = 90.833 * DEG2RAD;
   const cosHa = Math.cos(zenithRad) / (Math.cos(latRad) * Math.cos(declRad)) - Math.tan(latRad) * Math.tan(declRad);
   const clampedCosHa = Math.max(-1, Math.min(1, cosHa));
   const haDeg = Math.acos(clampedCosHa) * RAD2DEG;
 
-  const sunriseMinutesUtc = 720 - 4 * (AMRITSAR_LON + haDeg) - eqOfTimeMin;
+  const sunriseMinutesUtc = 720 - 4 * (ANANDPUR_SAHIB_LON + haDeg) - eqOfTimeMin;
   return Date.UTC(y, m - 1, d, 0, 0, 0) + Math.round(sunriseMinutesUtc * 60000);
+}
+export const getAmritsarSunriseUtcMs = getAnandpurSahibSunriseUtcMs;
+export function getSiderealSunLongitudeDeg(jd: number): number {
+    return normalizeDeg(getSunLongitudeDeg(jd) - getLahiriAyanamsaDeg(jd));
+}
+export function findSiderealSankrantiUtcMs(approxUtcMs: number, targetSiderealDeg: number): number {
+  const MS_PER_DAY = 86400000;
+  const normTarget = normalizeDeg(targetSiderealDeg);
+const signedDiff = (ms: number) => { const d = normalizeDeg(getSiderealSunLongitudeDeg(msToJulianDay(ms)) - normTarget); return d >= 180 ? d - 360 : d; };
+  const estMs = approxUtcMs - (signedDiff(approxUtcMs) / 0.9856) * MS_PER_DAY;
+let lo = estMs - 2 * MS_PER_DAY;
+let hi = estMs + 2 * MS_PER_DAY;
+while (signedDiff(lo) > 0) lo -= 2 * MS_PER_DAY;
+while (signedDiff(hi) < 0) hi += 2 * MS_PER_DAY;
+for (let i = 0; i < 50; i++) {
+const mid = (lo + hi) / 2;
+if (signedDiff(mid) < 0) lo = mid; else hi = mid;
+}
+return Math.round((lo + hi) / 2);
+}
+export function getUdayaSangrandIsoFromSankranti(sankrantiUtcMs: number): string {
+const IST_OFFSET_MS = 5.5 * 3600 * 1000;
+const MS_PER_DAY = 86400000;
+const istDate = new Date(sankrantiUtcMs + IST_OFFSET_MS);
+const istDateIso = istDate.toISOString().slice(0, 10);
+if (sankrantiUtcMs > getAnandpurSahibSunriseUtcMs(istDateIso)) {
+return new Date(istDate.getTime() + MS_PER_DAY).toISOString().slice(0, 10);
+}
+return istDateIso;
 }
 
 /** Find UTC ms when elongation next reaches targetDeg (mod 360) after startMs. */
@@ -237,18 +266,18 @@ function resolvePurnimantaLunarMonthId(sunriseJd: number, elongationDeg: number)
 
 /**
  * Compute authentic Puratan lunar tithi & Paksh for an ISO date (YYYY-MM-DD)
- * evaluated at Sri Amritsar Sahib sunrise (Udaya Tithi), with traditional Jantri
+ * evaluated at Sri Anandpur Sahib sunrise (Udaya Tithi), with traditional Jantri
  * handling for Kshaya (short) and Vriddhi (spanning two sunrises) Puranmashi/Masya.
  */
 export function computeLunarInfoForDate(isoDate: string): LunarInfo {
-  const sunriseMs = getAmritsarSunriseUtcMs(isoDate);
+  const sunriseMs = getAnandpurSahibSunriseUtcMs(isoDate);
   const sunriseJd = msToJulianDay(sunriseMs);
   const elongationDeg = getMoonSunElongationDeg(sunriseJd);
 
   const nextDayDate = new Date(`${isoDate}T00:00:00Z`);
   nextDayDate.setUTCDate(nextDayDate.getUTCDate() + 1);
   const nextIso = nextDayDate.toISOString().slice(0, 10);
-  const nextSunriseMs = getAmritsarSunriseUtcMs(nextIso);
+  const nextSunriseMs = getAnandpurSahibSunriseUtcMs(nextIso);
   const nextSunriseJd = msToJulianDay(nextSunriseMs);
   const nextElongationDeg = getMoonSunElongationDeg(nextSunriseJd);
 
