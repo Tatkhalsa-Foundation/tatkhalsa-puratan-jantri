@@ -213,7 +213,7 @@ export const LicenseCreditsModal: React.FC<LicenseCreditsModalProps> = ({
 
         {/* Footer */}
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--border-subtle)] bg-[var(--bg-surface)] px-5 py-3.5 shrink-0">
-          <<iv className="flex flex-wrap items-center gap-4"><a href="https://tatkhalsa.in" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--accent-primary-text)] hover:underline underline-offset-4"><span>Tatkhalsa Foundation</span><ArrowUpRight className="w-3.5 h-3.5" aria-hidden="true" /></a><a href="mailto:info@tatkhalsa.in" className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--accent-primary-text)] hover:underline underline-offset-4"><span>info@tatkhalsa.in</span></a>
+          <div className="flex flex-wrap items-center gap-4"><a href="https://tatkhalsa.in" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--accent-primary-text)] hover:underline underline-offset-4"><span>Tatkhalsa Foundation</span><ArrowUpRight className="w-3.5 h-3.5" aria-hidden="true" /></a><a href="mailto:info@tatkhalsa.in" className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--accent-primary-text)] hover:underline underline-offset-4"><span>info@tatkhalsa.in</span></a>
            <a
             href={GITHUB_REPO_URL}
             target="_blank"
