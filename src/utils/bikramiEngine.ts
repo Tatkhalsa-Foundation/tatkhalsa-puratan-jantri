@@ -9,14 +9,14 @@ import {
 import type {
   BikramiSolarDate,
   DirectoryObservance,
-  DualTimeDisplay,
+  DualTimeDisplay, HistoricalEvent,
   JantriDay,
   LanguageMode,
   LunarInfo,
   SolarMonthSpan,
   UpcomingMilestone,
 } from '../data/types';
-import {computeLunarInfoForDate} from './astronomy';
+import {computeLunarInfoForDate, findSiderealSankrantiUtcMs, getUdayaSangrandIsoFromSankranti} from './astronomy';
 
 /**
  * Pure, framework-agnostic Puratan Bikrami Jantri engine.
@@ -24,17 +24,20 @@ import {computeLunarInfoForDate} from './astronomy';
  */
 
 const GURMUKHI_DIGITS = ['੦', '੧', '੨', '੩', '੪', '੫', '੬', '੭', '੮', '੯'] as const;
-
+function buildAllSolarSpans(): readonly SolarMonthSpan[] {
+  const base = SOLAR_MONTH_SPANS.filter((s) => s.sambat <= 2084); const anchor = SOLAR_MONTH_SPANS.find((s) => s.sambat === 2085 && s.monthId === 1);
+  const seeds: Array<{ sambat: number; monthId: number; startDate: string; sankrantiUtc: string; anchor?: SolarMonthSpan }> = []; for (let s = 2085; s <= 2098; s++) { const maxM = s === 2098 ? 1 : 12; for (let m = 1; m <= maxM; m++) { if (s === 2085 && m === 1 && anchor) { seeds.push({ sambat: s, monthId: m, startDate: anchor.startDate, sankrantiUtc: anchor.sankrantiUtc, anchor }); } else { const gy = m <= 10 ? s - 57 : s - 56; const gm = (m + 1) % 12; const ms = findSiderealSankrantiUtcMs(Date.UTC(gy, gm, 14, 12, 0, 0), ((m - 2 + 12) % 12) * 30); seeds.push({ sambat: s, monthId: m, startDate: getUdayaSangrandIsoFromSankranti(ms), sankrantiUtc: new Date(ms).toISOString() }); } } }
+  const v2098Start = getUdayaSangrandIsoFromSankranti(findSiderealSankrantiUtcMs(Date.UTC(2041, 3, 14, 12, 0, 0), 0)); const projected = seeds.map((seed, i) => { const nextStart = i + 1 < seeds.length ? seeds[i + 1].startDate : v2098Start; const endDate = addDaysIso(nextStart, -1); const days = diffDaysIso(seed.startDate, endDate) + 1; return seed.anchor && seed.anchor.endDate === endDate && seed.anchor.days === days ? seed.anchor : { sambat: seed.sambat, monthId: seed.monthId, startDate: seed.startDate, endDate, days, sankrantiUtc: seed.sankrantiUtc }; }); return [...base, ...projected]; } export const ALL_SOLAR_SPANS: readonly SolarMonthSpan[] = buildAllSolarSpans();
 export const SUPPORTED_MIN_MONTH = {year: 2025, monthIndex0: 2}; // March 2025
-export const SUPPORTED_MAX_MONTH = {year: 2028, monthIndex0: 2}; // March 2028
+export const SUPPORTED_MAX_MONTH = {year: 2040, monthIndex0: 11}; // December 2040
 
 /** All browseable Punjabi solar months covering full Sambat 2082, 2083 & 2084 (Chet–Phagun each year). */
-export const BROWSEABLE_SOLAR_SPANS: readonly SolarMonthSpan[] = SOLAR_MONTH_SPANS.filter(
-  (s) => s.sambat === 2082 || s.sambat === 2083 || s.sambat === 2084,
+export const BROWSEABLE_SOLAR_SPANS: readonly SolarMonthSpan[] = ALL_SOLAR_SPANS.filter(
+  (s) => s.endDate <= '2040-12-31',
 );
 
-export const LOOKUP_MIN_ISO = SOLAR_MONTH_SPANS[0].startDate; // 2025-03-14
-export const LOOKUP_MAX_ISO = SOLAR_MONTH_SPANS[SOLAR_MONTH_SPANS.length - 1].endDate; // 2028-04-12
+export const LOOKUP_MIN_ISO = ALL_SOLAR_SPANS[0].startDate; // 2025-03-14
+export const LOOKUP_MAX_ISO = '2040-12-31';
 
 const lunarCache = new Map<string, LunarInfo>();
 let cachedDirectoryObservances: readonly DirectoryObservance[] | null = null;
@@ -76,7 +79,7 @@ export function diffDaysIso(isoA: string, isoB: string): number {
 
 /** Resolve Bikrami solar month, day, Sambat, and Sangrand flag for any ISO date. */
 export function getBikramiSolarDate(isoDate: string): BikramiSolarDate {
-  for (const span of SOLAR_MONTH_SPANS) {
+  for (const span of ALL_SOLAR_SPANS) {
     if (isoDate >= span.startDate && isoDate <= span.endDate) {
       const day = diffDaysIso(span.startDate, isoDate) + 1;
       return {
@@ -92,8 +95,8 @@ export function getBikramiSolarDate(isoDate: string): BikramiSolarDate {
   }
 
   // Fallback for dates outside Sambat 2083–2085 anchor window (e.g. grid boundary padding)
-  const firstSpan = SOLAR_MONTH_SPANS[0];
-  const lastSpan = SOLAR_MONTH_SPANS[SOLAR_MONTH_SPANS.length - 1];
+  const firstSpan = ALL_SOLAR_SPANS[0];
+  const lastSpan = ALL_SOLAR_SPANS[ALL_SOLAR_SPANS.length - 1];
   if (isoDate < firstSpan.startDate) {
     const daysBefore = diffDaysIso(isoDate, firstSpan.startDate);
     const prevMonthId = ((firstSpan.monthId - 2 + 12) % 12) + 1;
@@ -132,14 +135,15 @@ export function getLunarInfoCached(isoDate: string): LunarInfo {
   }
   return info;
 }
-
+type ProjectedTemplate = { kind: 'lunar'; event: HistoricalEvent; lunarMonthEn: string; paksh: string; pakshDay: number } | { kind: 'solar'; event: HistoricalEvent; monthId: number; day: number }; let cachedProjectedTemplates: ProjectedTemplate[] | null = null; function getProjectedTemplates(): ProjectedTemplate[] { if (cachedProjectedTemplates) return cachedProjectedTemplates; const list: ProjectedTemplate[] = []; for (const ev of HISTORICAL_EVENTS) { if (ev.sambat !== 2083) continue; if (/\b(Sudhi|Vadhi|Puranmashi|Pooranmashi|Masya|Amavasya)\b/i.test(ev.tithiRuleEn)) { const l = getLunarInfoCached(ev.date); list.push({ kind: 'lunar', event: ev, lunarMonthEn: l.lunarMonthEn, paksh: l.paksh, pakshDay: l.pakshDay }); } else { const s = getBikramiSolarDate(ev.date); list.push({ kind: 'solar', event: ev, monthId: s.monthId, day: s.day }); } } cachedProjectedTemplates = list; return list; }
+function getEventsForDate(isoDate: string, solar: BikramiSolarDate, lunar: LunarInfo): HistoricalEvent[] { if (solar.sambat <= 2084) return EVENTS_BY_DATE.get(isoDate) ?? []; const out: HistoricalEvent[] = []; const isAdhik = Boolean((lunar as { isAdhik?: boolean }).isAdhik); for (const t of getProjectedTemplates()) { const hit = t.kind === 'lunar' ? !isAdhik && lunar.lunarMonthEn === t.lunarMonthEn && lunar.paksh === t.paksh && lunar.pakshDay === t.pakshDay : solar.monthId === t.monthId && solar.day === t.day; if (hit) out.push({ ...t.event, id: `${t.event.id.replace(/-\d{4}$/, '')}-${solar.sambat}`, date: isoDate, sambat: solar.sambat }); } return out; }
 /** Build full Puratan Jantri Day record for an ISO date. */
 export function getJantriDay(isoDate: string, inCurrentGridMonth = true): JantriDay {
   const [gregorianYear, gregorianMonth, gregorianDay] = isoDate.split('-').map(Number);
   const weekdayIndex = new Date(Date.UTC(gregorianYear, gregorianMonth - 1, gregorianDay)).getUTCDay();
   const solar = getBikramiSolarDate(isoDate);
   const lunar = getLunarInfoCached(isoDate);
-  const events = EVENTS_BY_DATE.get(isoDate) ?? [];
+  const events = getEventsForDate(isoDate, solar, lunar);
 
   return {
     isoDate,
@@ -298,7 +302,7 @@ export function lookupGregorianToBikrami(
   if (trimmed < LOOKUP_MIN_ISO || trimmed > LOOKUP_MAX_ISO) {
     return {
       ok: false,
-      errorEn: 'Verified Puratan Sambat 2082–2084 data covers 14 Mar 2025 to 12 Apr 2028.',
+      errorEn: 'Verified Puratan Sambat 2082–2097 data covers 2025-03-14 to 2040-12-31 / Sambat 2097.',
       errorPa: 'ਪ੍ਰਮਾਣਿਕ ਸੰਮਤ ੨੦੮੨–੨੦੮੪ ਡਾਟਾ ੧੪ ਮਾਰਚ ੨੦੨੫ ਤੋਂ ੧੨ ਅਪ੍ਰੈਲ ੨੦੨੮ ਤੱਕ ਉਪਲਬਧ ਹੈ।',
     };
   }
@@ -360,7 +364,7 @@ export function getAllDirectoryObservances(): readonly DirectoryObservance[] {
 
   // 3. All Puranmashi and Masya dates across Sambat 2082–2084 (1 Chet 2082 / Mar 14, 2025 – 30 Phagun 2084 / Mar 13, 2028)
   let cursor = '2025-03-14';
-  const endDate = '2028-03-13';
+  const endDate = LOOKUP_MAX_ISO;
   while (cursor <= endDate) {
     const solar = getBikramiSolarDate(cursor);
     const lunar = getLunarInfoCached(cursor);
@@ -429,7 +433,7 @@ export function getNextMilestones(fromIsoDate: string): {
   let masya: UpcomingMilestone | null = null;
 
   // Find next Sangrand from verified solar month spans
-  for (const span of SOLAR_MONTH_SPANS) {
+  for (const span of ALL_SOLAR_SPANS) {
     if (span.startDate >= fromIsoDate) {
       const meta = getBikramiMonthMeta(span.monthId);
       sangrand = {
