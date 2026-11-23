@@ -619,7 +619,7 @@ export default function App() {
               {isPa ? '.ics ਡਾਊਨਲੋਡ' : 'Export .ics'}
             </button>
  <a href="https://tatkhalsa.in" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-medium text-[var(--text-heading)] hover:text-[var(--accent-primary-text)] hover:underline underline-offset-4"><span>tatkhalsa.in</span><ArrowUpRight className="w-3.5 h-3.5" aria-hidden="true" /></a>
-          <<a href="mailto:info@tatkhalsa.in" className="font-medium text-[var(--text-primary)] hover:text-[var(--accent-primary-text)] hover:underline underline-offset-4">info@tatkhalsa.in</a>
+          <a href="mailto:info@tatkhalsa.in" className="font-medium text-[var(--text-primary)] hover:text-[var(--accent-primary-text)] hover:underline underline-offset-4">info@tatkhalsa.in</a>
             /<button type="button" onClick={() => setIsFeedbackOpen(true)} className="font-medium text-[var(--text-primary)] hover:text-[var(--accent-primary-text)] hover:underline underline-offset-4 cursor-pointer">Feedback</button>
             div>
         </div>
