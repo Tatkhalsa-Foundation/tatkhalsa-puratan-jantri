@@ -1561,7 +1561,7 @@ export const SAMBAT_2082_AND_2083_EVENTS: readonly HistoricalEvent[] = [
     category: 'khalsa',
     titleEn: 'Chet Sangrand — Bikrami New Year (Sambat 2083) & Shaheedi Akali Baba Phula Singh Ji',
     titlePa: 'ਚੇਤ ਸੰਗਰਾਂਦ — ਬਿਕ੍ਰਮੀ ਨਵਾਂ ਸਾਲ (ਸੰਮਤ ੨੦੮੩) ਅਤੇ ਸ਼ਹੀਦੀ ਅਕਾਲੀ ਬਾਬਾ ਫੂਲਾ ਸਿੰਘ ਜੀ',
-    shortLabelEn: 'Chet Sangrand 2083',
+    shortLabelEn: 'Chet Sangrand',
     shortLabelPa: 'ਚੇਤ ਸੰਗਰਾਂਦ ੨੦੮੩',
     tithiRuleEn: '1 Chet, Sambat 2083 (Meena Sankranti)',
     tithiRulePa: '੧ ਚੇਤ, ਸੰਮਤ ੨੦੮੩ (ਮੀਨ ਸੰਕ੍ਰਾਂਤੀ)',
