@@ -318,7 +318,7 @@ export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
           <span>
             Puratan Bikrami Luni-Solar Chronology (Sri Anandpur Sahib IST) · No Fixed Nanakshahi or Astrology
           </span>
-          <span>pothi.tatkhalsa.in · calendar.tatkhalsa.in</span>
+          <span>pothi.tatkhalsa.in · calendar.tatkhalsa.in &middot; tatkhalsa.in &middot; info@tatkhalsa.in</span>
         </footer>
       </div>
     </section>
