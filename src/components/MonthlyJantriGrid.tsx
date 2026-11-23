@@ -8,7 +8,7 @@ import {
   Printer,
   SlidersHorizontal,
 } from 'lucide-react';
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import {getBikramiMonthMeta, GREGORIAN_MONTHS, WEEKDAYS} from '../data/sambatData';
 import type {
   CalendarGridMode,
@@ -130,7 +130,9 @@ export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
   const isBi = lang === 'bi';
   const isSolarMode = gridMode === 'solar';
   const [filterBarOpen, setFilterBarOpen] = useState(false);
-
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+  
   const currentSolarSpan = BROWSEABLE_SOLAR_SPANS[solarSpanIndex];
   const currentSolarMeta = getBikramiMonthMeta(currentSolarSpan.monthId);
 
@@ -213,9 +215,9 @@ export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
                 onClick={onPrevMonth}
                 disabled={!canGoPrev}
                 aria-label={isPa ? 'ਪਿਛਲਾ ਮਹੀਨਾ' : 'Previous month'}
-                className="min-h-[38px] min-w-[36px] flex items-center justify-center rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] hover:bg-[var(--bg-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                className="min-w-11 min-h-11 flex items-center justify-center rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] hover:bg-[var(--bg-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
-                <ChevronLeft className="w-4 h-4" />
+                <ChevronLeft className="w-4 h-4" strokeWidth={2.5} />
               </button>
               <button
                 type="button"
@@ -229,9 +231,9 @@ export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
                 onClick={onNextMonth}
                 disabled={!canGoNext}
                 aria-label={isPa ? 'ਅਗਲਾ ਮਹੀਨਾ' : 'Next month'}
-                className="min-h-[38px] min-w-[36px] flex items-center justify-center rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] hover:bg-[var(--bg-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                className="min-w-11 min-h-11 flex items-center justify-center rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] hover:bg-[var(--bg-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="w-4 h-4" strokeWidth={2.5} />
               </button>
             </div>
           </div>
@@ -244,9 +246,9 @@ export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
                 onClick={onPrevMonth}
                 disabled={!canGoPrev}
                 aria-label={isPa ? 'ਪਿਛਲਾ ਮਹੀਨਾ' : 'Previous month'}
-                className="min-h-[40px] min-w-[40px] flex items-center justify-center rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] hover:bg-[var(--bg-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                className="min-w-11 min-h-11 flex items-center justify-center rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] hover:bg-[var(--bg-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
-                <ChevronLeft className="w-4 h-4" />
+                <ChevronLeft className="w-4 h-4" strokeWidth={2.5} />
               </button>
               <button
                 type="button"
@@ -260,9 +262,9 @@ export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
                 onClick={onNextMonth}
                 disabled={!canGoNext}
                 aria-label={isPa ? 'ਅਗਲਾ ਮਹੀਨਾ' : 'Next month'}
-                className="min-h-[40px] min-w-[40px] flex items-center justify-center rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] hover:bg-[var(--bg-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                className="min-w-11 min-h-11 flex items-center justify-center rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] hover:bg-[var(--bg-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="w-4 h-4" strokeWidth={2.5} />
               </button>
             </div>
 
@@ -488,7 +490,10 @@ export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
       </div>
 
       {/* 7-Column Puratan Jantri Calendar Grid */}
-      <div className="overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)]">
+      <div className="overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)]" onTouchStart={(e) => {
+        const touch = e.touches[0]; if (touch) { touchStartX.current = touch.clientX; touchStartY.current = touch.clientY; }
+      }} onTouchEnd={(e) => {
+        if (touchStartX.current === null || touchStartY.current === null) return; const touch = e.changedTouches[0]; if (!touch) return; const deltaX = touch.clientX - touchStartX.current; const deltaY = touch.clientY - touchStartY.current; touchStartX.current = null; touchStartY.current = null; if (Math.abs(deltaX) > Math.abs(deltaY) * 1.2) { if (deltaX < -50 && canGoNext) { onNextMonth(); } else if (deltaX > 50 && canGoPrev) { onPrevMonth(); } } }}>
         {/* Weekday Headers */}
         <div className="grid grid-cols-7 border-b border-[var(--border-subtle)] bg-[var(--grid-header-bg)] text-[var(--grid-header-text)]">
           {WEEKDAYS.map((wd) => (
