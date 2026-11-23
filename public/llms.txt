@@ -1,6 +1,6 @@
 # Tat Khalsa Puratan Jantri (ਤੱਤਖ਼ਾਲਸਾ ਪੁਰਾਤਨ ਜੰਤਰੀ)
 
-> Authentic Sikh Puratan Bikrami Sambat luni-solar calendar published by Tatkhalsa Foundation for Bikrami Sambat 2082, 2083, and 2084 (March 2025 – March 2028 CE).
+> Authentic Sikh Puratan Bikrami Sambat luni-solar calendar published by Tatkhalsa Foundation with Sambat 2082-2084+ perpetual astronomical coverage (2025-2035+ CE) anchored to Sri Anandpur Sahib (IST) Udaya Sangrands.
 
 ## Methodology & Chronology
 - **Traditional Puratan Bikrami Luni-Solar Reckoning**: Follows traditional Puratan Sikh Jantri chronology rather than the 2003 solar-fixed Nanakshahi calendar.
@@ -22,3 +22,4 @@
 - **Tatkhalsa Pothi (Scriptural & Barah Maha Reader)**: https://pothi.tatkhalsa.in/
 - **Tatkhalsa Foundation**: https://tatkhalsa.in/
 - **Source Repository**: https://github.com/Tatkhalsa-Foundation/tatkhalsa-puratan-jantri
+- **Contact**: info@tatkhalsa.in
