@@ -217,7 +217,7 @@ export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
                 aria-label={isPa ? 'ਪਿਛਲਾ ਮਹੀਨਾ' : 'Previous month'}
                 className="min-w-11 min-h-11 flex items-center justify-center rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] hover:bg-[var(--bg-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
-                <ChevronLeft className="w-4 h-4" strokeWidth={2.5} />
+                <ChevronLeft className="w-6 h-6" strokeWidth={3} />
               </button>
               <button
                 type="button"
@@ -233,7 +233,7 @@ export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
                 aria-label={isPa ? 'ਅਗਲਾ ਮਹੀਨਾ' : 'Next month'}
                 className="min-w-11 min-h-11 flex items-center justify-center rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] hover:bg-[var(--bg-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
-                <ChevronRight className="w-4 h-4" strokeWidth={2.5} />
+                <ChevronRight className="w-6 h-6" strokeWidth={3} />
               </button>
             </div>
           </div>
@@ -248,7 +248,7 @@ export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
                 aria-label={isPa ? 'ਪਿਛਲਾ ਮਹੀਨਾ' : 'Previous month'}
                 className="min-w-11 min-h-11 flex items-center justify-center rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] hover:bg-[var(--bg-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
-                <ChevronLeft className="w-4 h-4" strokeWidth={2.5} />
+                <ChevronLeft className="w-6 h-6" strokeWidth={3} />
               </button>
               <button
                 type="button"
@@ -264,7 +264,7 @@ export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
                 aria-label={isPa ? 'ਅਗਲਾ ਮਹੀਨਾ' : 'Next month'}
                 className="min-w-11 min-h-11 flex items-center justify-center rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] hover:bg-[var(--bg-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
-                <ChevronRight className="w-4 h-4" strokeWidth={2.5} />
+                <ChevronRight className="w-6 h-6" strokeWidth={3} />
               </button>
             </div>
 
