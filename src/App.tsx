@@ -3,22 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {ArrowUpRight, Check, Scale, X} from 'lucide-react';
-import {useEffect, useMemo, useRef, useState} from 'react';
-import {EventColophonDrawer} from './components/EventColophonDrawer';
-import {EventsDirectoryView} from './components/EventsDirectoryView';
-import {FeedbackModal} from './components/FeedbackModal';
+import {ArrowUpRight, Check, Mail, MessageSquareText, Scale, X} from 'lucide-react';
+import {lazy, Suspense, useEffect, useMemo, useRef, useState} from 'react';
 import {Header, type AppView} from './components/Header';
-import {IcsExportModal} from './components/IcsExportModal';
-import {LicenseCreditsModal} from './components/LicenseCreditsModal';
 import {MonthlyJantriGrid, type CalendarFilter} from './components/MonthlyJantriGrid';
-import {PersonalDatesDrawer} from './components/PersonalDatesDrawer';
 import {PWAInstallButton} from './components/PWAInstallButton';
-import {PrintJantriView} from './components/PrintJantriView';
 import {PurabReminderStrip} from './components/PurabReminderStrip';
-import {SangrandsTableView} from './components/SangrandsTableView';
 import {TodayHero} from './components/TodayHero';
-import {POTHI_BARAH_MAHA_URL} from './data/sambatData';
+import {getBikramiMonthMeta, POTHI_BARAH_MAHA_URL} from './data/sambatData';
 import type {
   CalendarGridMode,
   JantriDay,
@@ -28,12 +20,15 @@ import type {
 } from './data/types';
 import {useLiveClock} from './hooks/useLiveClock';
 import {
-  BROWSEABLE_SOLAR_SPANS,
+  getBikramiSolarDate,
   getJantriDay,
   getMonthCalendarGrid,
   getNextMilestones,
-  getSolarMonthCalendarGrid,
-  getSolarMonthSpanIndexForDate,
+  getSolarMonthCalendarGridByYearMonth,
+  getSolarMonthSpanByYearMonth,
+  MAX_PERPETUAL_SAMBAT,
+  MIN_PERPETUAL_SAMBAT,
+  stepSolarYearMonth,
   SUPPORTED_MAX_MONTH,
   SUPPORTED_MIN_MONTH,
 } from './utils/bikramiEngine';
@@ -48,11 +43,38 @@ import {
   clearSessionNavigation,
   createDefaultPersistedState,
   loadPersistedState,
+  saveLastActiveGregorianDate,
   savePersistedState,
   saveSessionNavigation,
   type DirectoryFilterState,
   type DirectorySambatState,
 } from './utils/statePersistence';
+
+// Lazy-load off-screen views and modals to minimize initial JS parse & Total Blocking Time
+const EventsDirectoryView = lazy(() =>
+  import('./components/EventsDirectoryView').then((m) => ({default: m.EventsDirectoryView})),
+);
+const SangrandsTableView = lazy(() =>
+  import('./components/SangrandsTableView').then((m) => ({default: m.SangrandsTableView})),
+);
+const PrintJantriView = lazy(() =>
+  import('./components/PrintJantriView').then((m) => ({default: m.PrintJantriView})),
+);
+const EventColophonDrawer = lazy(() =>
+  import('./components/EventColophonDrawer').then((m) => ({default: m.EventColophonDrawer})),
+);
+const PersonalDatesDrawer = lazy(() =>
+  import('./components/PersonalDatesDrawer').then((m) => ({default: m.PersonalDatesDrawer})),
+);
+const IcsExportModal = lazy(() =>
+  import('./components/IcsExportModal').then((m) => ({default: m.IcsExportModal})),
+);
+const LicenseCreditsModal = lazy(() =>
+  import('./components/LicenseCreditsModal').then((m) => ({default: m.LicenseCreditsModal})),
+);
+const FeedbackModal = lazy(() =>
+  import('./components/FeedbackModal').then((m) => ({default: m.FeedbackModal})),
+);
 
 const THEME_META_COLOR: Record<ThemeId, string> = {
   parchment: '#FAF6EE',
@@ -67,16 +89,25 @@ function getInitialNotificationPermission(): NotificationPermission | 'unsupport
   return Notification.permission;
 }
 
+const TabLoadingFallback = () => (
+  <div
+    role="status"
+    aria-live="polite"
+    className="min-h-[420px] rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-soft)] animate-pulse"
+  />
+);
+
 export default function App() {
   const liveClock = useLiveClock();
   const todayIso = liveClock.effectiveTodayIso;
   const [todayYear, todayMonth1] = useMemo(() => todayIso.split('-').map(Number), [todayIso]);
-  const todaySolarIndex = useMemo(() => getSolarMonthSpanIndexForDate(todayIso), [todayIso]);
+  const todaySolar = useMemo(() => getBikramiSolarDate(todayIso), [todayIso]);
 
   const initialPersisted = useMemo(() => {
     const defaults = createDefaultPersistedState(
       todayIso,
-      todaySolarIndex,
+      todaySolar.sambat,
+      todaySolar.monthId,
       todayYear,
       todayMonth1 - 1,
     );
@@ -92,7 +123,8 @@ export default function App() {
   );
   const [activeView, setActiveView] = useState<AppView>(initialPersisted.activeView);
   const [gridMode, setGridMode] = useState<CalendarGridMode>(initialPersisted.gridMode);
-  const [solarSpanIndex, setSolarSpanIndex] = useState<number>(initialPersisted.solarSpanIndex);
+  const [activeSambat, setActiveSambat] = useState<number>(initialPersisted.activeSambat);
+  const [activeMonthId, setActiveMonthId] = useState<number>(initialPersisted.activeMonthId);
   const [viewYear, setViewYear] = useState<number>(initialPersisted.viewYear);
   const [viewMonth0, setViewMonth0] = useState<number>(initialPersisted.viewMonth0);
   const [selectedIso, setSelectedIso] = useState<string>(initialPersisted.selectedIso);
@@ -100,9 +132,7 @@ export default function App() {
     initialPersisted.drawerDateIso,
   );
   const [activeFilter, setActiveFilter] = useState<CalendarFilter>(initialPersisted.activeFilter);
-  const [sangrandYear, setSangrandYear] = useState<2082 | 2083 | 2084>(
-    initialPersisted.sangrandYear,
-  );
+  const [sangrandYear, setSangrandYear] = useState<number>(initialPersisted.sangrandYear);
   const [directoryQuery, setDirectoryQuery] = useState<string>(initialPersisted.directoryQuery);
   const [directoryCategory, setDirectoryCategory] = useState<DirectoryFilterState>(
     initialPersisted.directoryCategory,
@@ -117,7 +147,7 @@ export default function App() {
   const [isIcsOpen, setIsIcsOpen] = useState<boolean>(false);
   const [isLicenseOpen, setIsLicenseOpen] = useState<boolean>(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState<boolean>(false);
-  
+
   // Personal Desi/Bikrami Family Dates (localStorage)
   const [personalDates, setPersonalDates] = useState<PersonalDesiDate[]>(() => loadPersonalDates());
   const [isPersonalDatesOpen, setIsPersonalDatesOpen] = useState<boolean>(false);
@@ -129,10 +159,29 @@ export default function App() {
   // Share toast & 1-day-before reminder status
   const [shareToast, setShareToast] = useState<string | null>(null);
   const shareToastTimerRef = useRef<number | null>(null);
+  const prevTodayRef = useRef<string>(todayIso);
   const [notificationPermission, setNotificationPermission] = useState<
     NotificationPermission | 'unsupported'
   >(getInitialNotificationPermission);
   const [reminderFeedback, setReminderFeedback] = useState<string | null>(null);
+
+  // Midnight rollover / daily auto-reset when the active Gregorian day changes
+  useEffect(() => {
+    if (prevTodayRef.current !== todayIso) {
+      prevTodayRef.current = todayIso;
+      setActiveSambat(todaySolar.sambat);
+      setActiveMonthId(todaySolar.monthId);
+      setViewYear(todayYear);
+      setViewMonth0(todayMonth1 - 1);
+      setSelectedIso(todayIso);
+      setDrawerDateIso(null);
+      setLookupInput(todayIso);
+      setDirectorySambat(String(todaySolar.sambat));
+      setSangrandYear(todaySolar.sambat);
+      clearSessionNavigation();
+      saveLastActiveGregorianDate(todayIso);
+    }
+  }, [todayIso, todaySolar.sambat, todaySolar.monthId, todayYear, todayMonth1]);
 
   useEffect(() => {
     document.documentElement.lang = lang === 'pa' ? 'pa' : 'en';
@@ -154,7 +203,8 @@ export default function App() {
       theme,
       remindersEnabled,
       gridMode,
-      solarSpanIndex,
+      activeSambat,
+      activeMonthId,
       viewYear,
       viewMonth0,
       selectedIso,
@@ -166,7 +216,6 @@ export default function App() {
       directorySambat,
       directoryUpcomingOnly,
       lookupInput,
-      lastActiveGregorianDate: todayIso,
     });
   }, [
     activeView,
@@ -174,7 +223,8 @@ export default function App() {
     theme,
     remindersEnabled,
     gridMode,
-    solarSpanIndex,
+    activeSambat,
+    activeMonthId,
     viewYear,
     viewMonth0,
     selectedIso,
@@ -186,7 +236,6 @@ export default function App() {
     directorySambat,
     directoryUpcomingOnly,
     lookupInput,
-    todayIso,
   ]);
 
   useEffect(() => {
@@ -235,10 +284,12 @@ export default function App() {
   const monthGrid = useMemo(
     () =>
       gridMode === 'solar'
-        ? getSolarMonthCalendarGrid(solarSpanIndex)
+        ? getSolarMonthCalendarGridByYearMonth(activeSambat, activeMonthId)
         : getMonthCalendarGrid(viewYear, viewMonth0),
-    [gridMode, solarSpanIndex, viewYear, viewMonth0],
+    [gridMode, activeSambat, activeMonthId, viewYear, viewMonth0],
   );
+
+  const activeMonthMeta = getBikramiMonthMeta(activeMonthId);
 
   const showShareToast = (message: string) => {
     setShareToast(message);
@@ -345,18 +396,27 @@ export default function App() {
     setIsPersonalDatesOpen(true);
   };
 
-  const handleSelectSolarSpan = (idx: number) => {
-    const clamped = Math.max(0, Math.min(BROWSEABLE_SOLAR_SPANS.length - 1, idx));
-    const [sy, sm] = BROWSEABLE_SOLAR_SPANS[clamped].startDate.split('-').map(Number);
-    setSolarSpanIndex(clamped);
+  const handleSelectSolarMonth = (sambat: number, monthId: number) => {
+    const clampedSambat = Math.max(MIN_PERPETUAL_SAMBAT, Math.min(MAX_PERPETUAL_SAMBAT, sambat));
+    const clampedMonth = Math.max(1, Math.min(12, monthId));
+    const span = getSolarMonthSpanByYearMonth(clampedSambat, clampedMonth);
+    const [sy, sm] = span.startDate.split('-').map(Number);
+    setActiveSambat(clampedSambat);
+    setActiveMonthId(clampedMonth);
     setViewYear(sy);
     setViewMonth0(sm - 1);
-    saveSessionNavigation({solarSpanIndex: clamped, viewYear: sy, viewMonth0: sm - 1});
+    saveSessionNavigation({
+      activeSambat: clampedSambat,
+      activeMonthId: clampedMonth,
+      viewYear: sy,
+      viewMonth0: sm - 1,
+    });
   };
 
   const handlePrevMonth = () => {
     if (gridMode === 'solar') {
-      if (solarSpanIndex > 0) handleSelectSolarSpan(solarSpanIndex - 1);
+      const prev = stepSolarYearMonth(activeSambat, activeMonthId, -1);
+      handleSelectSolarMonth(prev.sambat, prev.monthId);
       return;
     }
     if (viewYear === SUPPORTED_MIN_MONTH.year && viewMonth0 <= SUPPORTED_MIN_MONTH.monthIndex0) {
@@ -366,14 +426,18 @@ export default function App() {
     const nextMonth0 = viewMonth0 === 0 ? 11 : viewMonth0 - 1;
     setViewYear(nextYear);
     setViewMonth0(nextMonth0);
-    saveSessionNavigation({solarSpanIndex, viewYear: nextYear, viewMonth0: nextMonth0});
+    saveSessionNavigation({
+      activeSambat,
+      activeMonthId,
+      viewYear: nextYear,
+      viewMonth0: nextMonth0,
+    });
   };
 
   const handleNextMonth = () => {
     if (gridMode === 'solar') {
-      if (solarSpanIndex < BROWSEABLE_SOLAR_SPANS.length - 1) {
-        handleSelectSolarSpan(solarSpanIndex + 1);
-      }
+      const next = stepSolarYearMonth(activeSambat, activeMonthId, 1);
+      handleSelectSolarMonth(next.sambat, next.monthId);
       return;
     }
     if (viewYear === SUPPORTED_MAX_MONTH.year && viewMonth0 >= SUPPORTED_MAX_MONTH.monthIndex0) {
@@ -383,43 +447,25 @@ export default function App() {
     const nextMonth0 = viewMonth0 === 11 ? 0 : viewMonth0 + 1;
     setViewYear(nextYear);
     setViewMonth0(nextMonth0);
-    saveSessionNavigation({solarSpanIndex, viewYear: nextYear, viewMonth0: nextMonth0});
+    saveSessionNavigation({
+      activeSambat,
+      activeMonthId,
+      viewYear: nextYear,
+      viewMonth0: nextMonth0,
+    });
   };
 
   const handleGoToday = () => {
-    setSolarSpanIndex(todaySolarIndex);
+    setActiveSambat(todaySolar.sambat);
+    setActiveMonthId(todaySolar.monthId);
     setViewYear(todayYear);
     setViewMonth0(todayMonth1 - 1);
     setSelectedIso(todayIso);
     clearSessionNavigation();
   };
 
-  const handleJumpSambat = (sambat: 2082 | 2083 | 2084) => {
-    let targetSpanIdx = 0;
-    let targetYear = 2026;
-    if (sambat === 2082) {
-      const chet2082Idx = BROWSEABLE_SOLAR_SPANS.findIndex(
-        (s) => s.sambat === 2082 && s.monthId === 1,
-      );
-      targetSpanIdx = chet2082Idx >= 0 ? chet2082Idx : 0;
-      targetYear = 2025;
-    } else if (sambat === 2083) {
-      const chet2083Idx = BROWSEABLE_SOLAR_SPANS.findIndex(
-        (s) => s.sambat === 2083 && s.monthId === 1,
-      );
-      targetSpanIdx = chet2083Idx >= 0 ? chet2083Idx : 0;
-      targetYear = 2026;
-    } else {
-      const chet2084Idx = BROWSEABLE_SOLAR_SPANS.findIndex(
-        (s) => s.sambat === 2084 && s.monthId === 1,
-      );
-      targetSpanIdx = chet2084Idx >= 0 ? chet2084Idx : 0;
-      targetYear = 2027;
-    }
-    setSolarSpanIndex(targetSpanIdx);
-    setViewYear(targetYear);
-    setViewMonth0(2);
-    saveSessionNavigation({solarSpanIndex: targetSpanIdx, viewYear: targetYear, viewMonth0: 2});
+  const handleJumpSambat = (sambat: number) => {
+    handleSelectSolarMonth(sambat, 1);
   };
 
   const handleSelectDay = (day: JantriDay) => {
@@ -429,24 +475,36 @@ export default function App() {
 
   const handleJumpToDateAndOpen = (isoDate: string) => {
     const [y, m] = isoDate.split('-').map(Number);
-    const targetSpanIdx = getSolarMonthSpanIndexForDate(isoDate);
-    setSolarSpanIndex(targetSpanIdx);
+    const solar = getBikramiSolarDate(isoDate);
+    setActiveSambat(solar.sambat);
+    setActiveMonthId(solar.monthId);
     setViewYear(y);
     setViewMonth0(m - 1);
     setSelectedIso(isoDate);
     setDrawerDateIso(isoDate);
-    saveSessionNavigation({solarSpanIndex: targetSpanIdx, viewYear: y, viewMonth0: m - 1});
+    saveSessionNavigation({
+      activeSambat: solar.sambat,
+      activeMonthId: solar.monthId,
+      viewYear: y,
+      viewMonth0: m - 1,
+    });
   };
 
   const handleJumpToGridDate = (isoDate: string) => {
     const [y, m] = isoDate.split('-').map(Number);
-    const targetSpanIdx = getSolarMonthSpanIndexForDate(isoDate);
-    setSolarSpanIndex(targetSpanIdx);
+    const solar = getBikramiSolarDate(isoDate);
+    setActiveSambat(solar.sambat);
+    setActiveMonthId(solar.monthId);
     setViewYear(y);
     setViewMonth0(m - 1);
     setSelectedIso(isoDate);
     setActiveView('jantri');
-    saveSessionNavigation({solarSpanIndex: targetSpanIdx, viewYear: y, viewMonth0: m - 1});
+    saveSessionNavigation({
+      activeSambat: solar.sambat,
+      activeMonthId: solar.monthId,
+      viewYear: y,
+      viewMonth0: m - 1,
+    });
   };
 
   const isPa = lang === 'pa';
@@ -479,7 +537,8 @@ export default function App() {
 
             <MonthlyJantriGrid
               gridMode={gridMode}
-              solarSpanIndex={solarSpanIndex}
+              activeSambat={activeSambat}
+              activeMonthId={activeMonthId}
               year={viewYear}
               monthIndex0={viewMonth0}
               days={monthGrid}
@@ -489,7 +548,7 @@ export default function App() {
               personalDates={personalDates}
               lang={lang}
               onChangeGridMode={setGridMode}
-              onSelectSolarSpan={handleSelectSolarSpan}
+              onSelectSolarMonth={handleSelectSolarMonth}
               onPrevMonth={handlePrevMonth}
               onNextMonth={handleNextMonth}
               onGoToday={handleGoToday}
@@ -520,46 +579,53 @@ export default function App() {
         )}
 
         {activeView === 'events' && (
-          <EventsDirectoryView
-            todayIso={todayIso}
-            lang={lang}
-            query={directoryQuery}
-            onQueryChange={setDirectoryQuery}
-            category={directoryCategory}
-            onCategoryChange={setDirectoryCategory}
-            sambat={directorySambat}
-            onSambatChange={setDirectorySambat}
-            upcomingOnly={directoryUpcomingOnly}
-            onUpcomingOnlyChange={setDirectoryUpcomingOnly}
-            lookupInput={lookupInput}
-            onLookupInputChange={setLookupInput}
-            onSelectDate={handleJumpToDateAndOpen}
-            onJumpToGridDate={handleJumpToGridDate}
-          />
+          <Suspense fallback={<TabLoadingFallback />}>
+            <EventsDirectoryView
+              todayIso={todayIso}
+              lang={lang}
+              query={directoryQuery}
+              onQueryChange={setDirectoryQuery}
+              category={directoryCategory}
+              onCategoryChange={setDirectoryCategory}
+              sambat={directorySambat}
+              onSambatChange={setDirectorySambat}
+              upcomingOnly={directoryUpcomingOnly}
+              onUpcomingOnlyChange={setDirectoryUpcomingOnly}
+              lookupInput={lookupInput}
+              onLookupInputChange={setLookupInput}
+              onSelectDate={handleJumpToDateAndOpen}
+              onJumpToGridDate={handleJumpToGridDate}
+            />
+          </Suspense>
         )}
 
         {activeView === 'sangrands' && (
-          <SangrandsTableView
-            lang={lang}
-            selectedSambat={sangrandYear}
-            onSelectSambat={setSangrandYear}
-            onSelectDate={handleJumpToDateAndOpen}
-          />
+          <Suspense fallback={<TabLoadingFallback />}>
+            <SangrandsTableView
+              lang={lang}
+              selectedSambat={sangrandYear}
+              onSelectSambat={setSangrandYear}
+              onSelectDate={handleJumpToDateAndOpen}
+            />
+          </Suspense>
         )}
 
         {activeView === 'print' && (
-          <PrintJantriView
-            gridMode={gridMode}
-            solarSpanIndex={solarSpanIndex}
-            year={viewYear}
-            monthIndex0={viewMonth0}
-            days={monthGrid}
-            personalDates={personalDates}
-            lang={lang}
-            onPrevMonth={handlePrevMonth}
-            onNextMonth={handleNextMonth}
-            onBackToInteractive={() => setActiveView('jantri')}
-          />
+          <Suspense fallback={<TabLoadingFallback />}>
+            <PrintJantriView
+              gridMode={gridMode}
+              activeSambat={activeSambat}
+              activeMonthId={activeMonthId}
+              year={viewYear}
+              monthIndex0={viewMonth0}
+              days={monthGrid}
+              personalDates={personalDates}
+              lang={lang}
+              onPrevMonth={handlePrevMonth}
+              onNextMonth={handleNextMonth}
+              onBackToInteractive={() => setActiveView('jantri')}
+            />
+          </Suspense>
         )}
       </main>
 
@@ -568,18 +634,44 @@ export default function App() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between text-xs text-[var(--text-muted)]">
           <div className="space-y-0.5">
             <p className="font-semibold text-[var(--text-heading)]">
-              {isPa
-                ? 'ਤੱਤਖ਼ਾਲਸਾ ਫ਼ਾਊਂਡੇਸ਼ਨ · ਤੱਤਖ਼ਾਲਸਾ ਪੁਰਾਤਨ ਜੰਤਰੀ'
-                : 'Tatkhalsa Foundation · Tat Khalsa Puratan Jantri'}
+              <a
+                href="https://tatkhalsa.in"
+                target="_blank"
+                rel="noopener noreferrer"
+                data-testid="footer-tatkhalsa-link"
+                className="inline-flex items-center gap-0.5 hover:text-[var(--accent-primary-text)] hover:underline underline-offset-4"
+              >
+                <span>{isPa ? 'ਤੱਤਖ਼ਾਲਸਾ ਫ਼ਾਊਂਡੇਸ਼ਨ' : 'Tatkhalsa Foundation'}</span>
+                <ArrowUpRight className="w-3 h-3" aria-hidden="true" />
+              </a>
+              <span aria-hidden="true"> · </span>
+              <span>{isPa ? 'ਤੱਤਖ਼ਾਲਸਾ ਪੁਰਾਤਨ ਜੰਤਰੀ' : 'Tat Khalsa Puratan Jantri'}</span>
             </p>
             <p>
               {isPa
-                ? 'ਪ੍ਰਮਾਣਿਕ ਚੰਦਰ-ਸੂਰਜੀ ਬਿਕ੍ਰਮੀ ਸੰਮਤ (੨੦੮੨–੨੦੮੪) · ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ (IST) ਅਨੁਸਾਰ · ਕੋਈ ਜੋਤਿਸ਼ ਜਾਂ ਰਾਸ਼ੀਫ਼ਲ ਨਹੀਂ।'
-                : 'Authentic Luni-Solar Puratan Bikrami Chronology (Sambat 2082–2084) · Anchored to Sri Anandpur Sahib (IST) · Zero astrology or fixed Nanakshahi dates.'}
+                ? 'ਪ੍ਰਮਾਣਿਕ ਚੰਦਰ-ਸੂਰਜੀ ਬਿਕ੍ਰਮੀ ਸੰਮਤ (੨੦੮੨–੨੦੮੪ ਪ੍ਰਮਾਣਿਤ ਅਤੇ ਸਦੀਵੀ ਇੰਜਣ) · ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ (IST) ਅਨੁਸਾਰ।'
+                : 'Authentic Luni-Solar Puratan Bikrami Chronology (Sambat 2082–2084 Verified & Perpetual Engine) · Anchored to Sri Anandpur Sahib (IST).'}
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 shrink-0">
             <PWAInstallButton lang={lang} variant="footer" />
+            <button
+              type="button"
+              data-testid="open-feedback-btn"
+              onClick={() => setIsFeedbackOpen(true)}
+              className="inline-flex items-center gap-1.5 font-medium text-[var(--text-heading)] hover:text-[var(--accent-primary-text)] hover:underline underline-offset-4 cursor-pointer"
+            >
+              <MessageSquareText className="w-3.5 h-3.5" aria-hidden="true" />
+              <span>{isPa ? 'ਸੁਝਾਅ / ਸੁਧਾਰ' : 'Feedback'}</span>
+            </button>
+            <a
+              href="mailto:info@tatkhalsa.in"
+              data-testid="footer-email-link"
+              className="inline-flex items-center gap-1 font-medium text-[var(--text-primary)] hover:text-[var(--accent-primary-text)] hover:underline underline-offset-4"
+            >
+              <Mail className="w-3.5 h-3.5" aria-hidden="true" />
+              <span>info@tatkhalsa.in</span>
+            </a>
             <button
               type="button"
               data-testid="license-credits-btn"
@@ -589,8 +681,8 @@ export default function App() {
               <Scale className="w-3.5 h-3.5" aria-hidden="true" />
               <span>
                 {isPa
-                  ? 'ਲਾਇਸੈਂਸ ਅਤੇ ਸਰੋਤ (MIT / CC BY-NC-SA 4.0)'
-                  : 'License & Credits (MIT / CC BY-NC-SA 4.0)'}
+                  ? 'ਲਾਇਸੈਂਸ ਅਤੇ ਸਰੋਤ'
+                  : 'License & Credits'}
               </span>
             </button>
             <a
@@ -608,7 +700,7 @@ export default function App() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 font-medium text-[var(--text-heading)] hover:text-[var(--accent-primary-text)] hover:underline underline-offset-4"
             >
-              <span>{isPa ? 'ਪੋਥੀ ਸਾਹਿਬ (ਬਾਰਹ ਮਾਹਾ)' : 'pothi.tatkhalsa.in'}</span>
+              <span>{isPa ? 'ਪੋਥੀ ਸਾਹਿਬ' : 'pothi.tatkhalsa.in'}</span>
               <ArrowUpRight className="w-3.5 h-3.5" aria-hidden="true" />
             </a>
             <button
@@ -616,11 +708,8 @@ export default function App() {
               onClick={() => setIsIcsOpen(true)}
               className="font-medium text-[var(--text-primary)] hover:text-[var(--accent-primary-text)] hover:underline underline-offset-4 cursor-pointer"
             >
-              {isPa ? '.ics ਡਾਊਨਲੋਡ' : 'Export .ics'}
+              {isPa ? '.ics / ਸਿੰਕ' : 'Export .ics'}
             </button>
- <a href="https://tatkhalsa.in" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-medium text-[var(--text-heading)] hover:text-[var(--accent-primary-text)] hover:underline underline-offset-4"><span>tatkhalsa.in</span><ArrowUpRight className="w-3.5 h-3.5" aria-hidden="true" /></a>
-          <a href="mailto:info@tatkhalsa.in" className="font-medium text-[var(--text-primary)] hover:text-[var(--accent-primary-text)] hover:underline underline-offset-4">info@tatkhalsa.in</a>
-            <button type="button" onClick={() => setIsFeedbackOpen(true)} className="font-medium text-[var(--text-primary)] hover:text-[var(--accent-primary-text)] hover:underline underline-offset-4 cursor-pointer">Feedback</button>
           </div>
         </div>
       </footer>
@@ -646,45 +735,72 @@ export default function App() {
         </div>
       )}
 
-      <EventColophonDrawer
-        day={drawerDay}
-        personalDates={personalDates}
-        liveClock={liveClock}
-        lang={lang}
-        onAddPersonalDateForDay={handleOpenPersonalDatesForDay}
-        onClose={() => setDrawerDateIso(null)}
-      />
+      {/* Lazily Mounted Modals & Drawers — Zero startup overhead when closed */}
+      {drawerDay && (
+        <Suspense fallback={null}>
+          <EventColophonDrawer
+            day={drawerDay}
+            personalDates={personalDates}
+            liveClock={liveClock}
+            lang={lang}
+            onAddPersonalDateForDay={handleOpenPersonalDatesForDay}
+            onClose={() => setDrawerDateIso(null)}
+          />
+        </Suspense>
+      )}
 
-      <PersonalDatesDrawer
-        isOpen={isPersonalDatesOpen}
-        lang={lang}
-        todayIso={todayIso}
-        initialMonthId={personalDateDraft?.monthId ?? todayRecord.solar.monthId}
-        initialDay={personalDateDraft?.day ?? todayRecord.solar.day}
-        personalDates={personalDates}
-        onAddPersonalDate={handleAddPersonalDate}
-        onDeletePersonalDate={handleDeletePersonalDate}
-        onJumpToDate={handleJumpToGridDate}
-        onOpenIcsModal={() => setIsIcsOpen(true)}
-        onClose={() => setIsPersonalDatesOpen(false)}
-      />
+      {isPersonalDatesOpen && (
+        <Suspense fallback={null}>
+          <PersonalDatesDrawer
+            isOpen={isPersonalDatesOpen}
+            lang={lang}
+            todayIso={todayIso}
+            initialMonthId={personalDateDraft?.monthId ?? todayRecord.solar.monthId}
+            initialDay={personalDateDraft?.day ?? todayRecord.solar.day}
+            personalDates={personalDates}
+            onAddPersonalDate={handleAddPersonalDate}
+            onDeletePersonalDate={handleDeletePersonalDate}
+            onJumpToDate={handleJumpToGridDate}
+            onOpenIcsModal={() => setIsIcsOpen(true)}
+            onClose={() => setIsPersonalDatesOpen(false)}
+          />
+        </Suspense>
+      )}
 
-      <IcsExportModal
-        isOpen={isIcsOpen}
-        lang={lang}
-        personalDates={personalDates}
-        onClose={() => setIsIcsOpen(false)}
-      />
+      {isIcsOpen && (
+        <Suspense fallback={null}>
+          <IcsExportModal
+            isOpen={isIcsOpen}
+            lang={lang}
+            personalDates={personalDates}
+            onClose={() => setIsIcsOpen(false)}
+          />
+        </Suspense>
+      )}
 
-      <LicenseCreditsModal
-        isOpen={isLicenseOpen}
-        lang={lang}
-        onClose={() => setIsLicenseOpen(false)}
-      />
-      <FeedbackModal
-  isOpen={isFeedbackOpen}
-lang={lang}
-activeDateContext={drawerDateIso ?? selectedIso} onClose={() => setIsFeedbackOpen(false)} />
+      {isLicenseOpen && (
+        <Suspense fallback={null}>
+          <LicenseCreditsModal
+            isOpen={isLicenseOpen}
+            lang={lang}
+            onClose={() => setIsLicenseOpen(false)}
+          />
+        </Suspense>
+      )}
+
+      {isFeedbackOpen && (
+        <Suspense fallback={null}>
+          <FeedbackModal
+            isOpen={isFeedbackOpen}
+            lang={lang}
+            activeDateIso={selectedIso}
+            activeSambat={activeSambat}
+            activeMonthNameEn={activeMonthMeta.nameEn}
+            activeMonthNamePa={activeMonthMeta.namePa}
+            onClose={() => setIsFeedbackOpen(false)}
+          />
+        </Suspense>
+      )}
     </div>
   );
 }

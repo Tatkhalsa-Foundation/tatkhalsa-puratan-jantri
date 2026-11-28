@@ -211,6 +211,6 @@ export interface IcsExportOptions {
   includeBarsis: boolean;
   includePersonalDates?: boolean;
   personalDates?: PersonalDesiDate[];
-  sambatScope: 'all' | '2082' | '2083' | '2084';
+  sambatScope: 'all' | '2082-2086' | string;
   language: LanguageMode;
 }

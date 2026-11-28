@@ -1,10 +1,14 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import {existsSync, readFileSync} from 'node:fs';
+import {join} from 'node:path';
 import {BARAH_MAHA_PAURIS} from '../data/barahMahaData';
 import {resolveCitationReader} from '../data/citationSourcesData';
 import {HISTORICAL_EVENTS} from '../data/eventsData';
+import {PRECOMPUTED_LUNAR_2082_2084} from '../data/precomputedLunar2082_2084';
 import {BIKRAMI_MONTHS, POTHI_BARAH_MAHA_URL, POTHI_BASE_URL, SOLAR_MONTH_SPANS} from '../data/sambatData';
 import {formatLiveClockSnapshot} from '../hooks/useLiveClock';
+import {computeLunarInfoForDate, decodeCompactLunarTuple} from './astronomy';
 import {
   addDaysIso,
   BROWSEABLE_SOLAR_SPANS,
@@ -12,11 +16,13 @@ import {
   formatDualTime,
   getAllDirectoryObservances,
   getBikramiSolarDate,
+  getDirectoryObservancesForSambat,
   getJantriDay,
   getMonthCalendarGrid,
   getNextMilestones,
   getSolarMonthCalendarGrid,
   getSolarMonthSpanIndexForDate,
+  getSolarMonthSpansForSambat,
   lookupGregorianToBikrami,
   toGurmukhiNumerals,
 } from './bikramiEngine';
@@ -156,7 +162,15 @@ test('Gregorian-to-Bikrami lookup validates dates and returns exact Puratan conv
     assert.equal(okRes.day.lunar.isPuranmashi, true);
   }
 
-  const outOfRange = lookupGregorianToBikrami('2030-01-01');
+  const ok2030 = lookupGregorianToBikrami('2030-04-14');
+  assert.equal(ok2030.ok, true);
+  if (ok2030.ok) {
+    assert.equal(ok2030.day.solar.sambat, 2087);
+    assert.equal(ok2030.day.solar.monthMeta.nameEn, 'Vaisakh');
+    assert.equal(ok2030.day.solar.day, 1);
+  }
+
+  const outOfRange = lookupGregorianToBikrami('1800-01-01');
   assert.equal(outOfRange.ok, false);
 
   const invalid = lookupGregorianToBikrami('not-a-date');
@@ -355,9 +369,10 @@ test('Expanded Sambat 2083 Purabs, Shaheedi Divases, and Barsis resolve on verif
   assert.ok(sakaNankana.events.some((e) => e.id === '2083-saka-sri-nankana-sahib'));
 });
 
-test('App state persistence defaults Sangrands to Sambat 2083, round-trips all fields, and recovers cleanly from corrupt JSON', () => {
-  const defaults = createDefaultPersistedState('2026-11-22', 1, 2026, 10);
+test('App state persistence defaults Sangrands and Purabs to current Sambat 2083, round-trips all fields, and recovers cleanly from corrupt JSON', () => {
+  const defaults = createDefaultPersistedState('2026-11-27', 2083, 9, 2026, 10);
   assert.equal(defaults.sangrandYear, 2083);
+  assert.equal(defaults.directorySambat, '2083');
   assert.equal(defaults.activeView, 'jantri');
   assert.equal(defaults.drawerDateIso, null);
 
@@ -365,7 +380,8 @@ test('App state persistence defaults Sangrands to Sambat 2083, round-trips all f
     activeView: 'sangrands',
     lang: 'pa',
     gridMode: 'gregorian',
-    solarSpanIndex: 6,
+    activeSambat: 2084,
+    activeMonthId: 2,
     viewYear: 2027,
     viewMonth0: 3,
     selectedIso: '2027-04-14',
@@ -378,12 +394,13 @@ test('App state persistence defaults Sangrands to Sambat 2083, round-trips all f
     directoryUpcomingOnly: true,
     lookupInput: '2027-04-14',
   });
-  const restoredFresh = parsePersistedState(saved, defaults);
+  const restoredFresh = parsePersistedState(saved, defaults, null, null, null, '2026-11-27');
   assert.equal(restoredFresh.activeView, 'sangrands');
   assert.equal(restoredFresh.lang, 'pa');
   assert.equal(restoredFresh.gridMode, 'gregorian');
   // Fresh visit without sessionNavRaw always opens on today's Desi month
-  assert.equal(restoredFresh.solarSpanIndex, defaults.solarSpanIndex);
+  assert.equal(restoredFresh.activeSambat, defaults.activeSambat);
+  assert.equal(restoredFresh.activeMonthId, defaults.activeMonthId);
   assert.equal(restoredFresh.viewYear, defaults.viewYear);
   assert.equal(restoredFresh.viewMonth0, defaults.viewMonth0);
   assert.equal(restoredFresh.drawerDateIso, '2026-11-24');
@@ -394,16 +411,18 @@ test('App state persistence defaults Sangrands to Sambat 2083, round-trips all f
   assert.equal(restoredFresh.directoryUpcomingOnly, true);
   assert.equal(restoredFresh.lookupInput, '2027-04-14');
 
-  // Explicit navigation within the current session restores solarSpanIndex/viewYear/viewMonth0
+  // Explicit navigation within the current session restores activeSambat/activeMonthId/viewYear/viewMonth0
   const restoredSession = parsePersistedState(
     saved,
     defaults,
     null,
     null,
-    JSON.stringify({solarSpanIndex: 6, viewYear: 2027, viewMonth0: 3}),
+    JSON.stringify({activeSambat: 2087, activeMonthId: 2, viewYear: 2030, viewMonth0: 3}),
+    '2026-11-27',
   );
-  assert.equal(restoredSession.solarSpanIndex, 6);
-  assert.equal(restoredSession.viewYear, 2027);
+  assert.equal(restoredSession.activeSambat, 2087);
+  assert.equal(restoredSession.activeMonthId, 2);
+  assert.equal(restoredSession.viewYear, 2030);
   assert.equal(restoredSession.viewMonth0, 3);
 
   // 'print' view is never restored across reloads — always resets to 'jantri'
@@ -419,18 +438,19 @@ test('App state persistence defaults Sangrands to Sambat 2083, round-trips all f
   const sanitized = parsePersistedState(
     JSON.stringify({
       activeView: 'unknown',
-      sangrandYear: 1999,
-      solarSpanIndex: 999,
-      drawerDateIso: '2099-01-01',
+      sangrandYear: 1800,
+      drawerDateIso: '2999-01-01',
     }),
     defaults,
     null,
     null,
-    JSON.stringify({solarSpanIndex: 999, viewYear: 1999, viewMonth0: 99}),
+    JSON.stringify({activeSambat: 9999, activeMonthId: 99, viewYear: 1800, viewMonth0: 99}),
+    '2026-11-27',
   );
   assert.equal(sanitized.activeView, 'jantri');
   assert.equal(sanitized.sangrandYear, 2083);
-  assert.equal(sanitized.solarSpanIndex, 1);
+  assert.equal(sanitized.activeSambat, 2083);
+  assert.equal(sanitized.activeMonthId, 9);
   assert.equal(sanitized.drawerDateIso, null);
 });
 
@@ -476,7 +496,7 @@ test('Every historical citation across Sambat 2082–2084 routes strictly to pot
 });
 
 test('Theme (parchment/surmai/kesri) and 1-day-before reminder toggle persist and sanitize safely', () => {
-  const defaults = createDefaultPersistedState('2026-11-22', 1, 2026, 10);
+  const defaults = createDefaultPersistedState('2026-11-22', 2083, 9, 2026, 10);
   assert.equal(defaults.theme, 'parchment');
   assert.equal(defaults.remindersEnabled, false);
   assert.equal(defaults.lang, 'en');
@@ -759,7 +779,7 @@ test('Expanded Panthic dataset includes all 15 Bhagats, 11 Bhatts, Gursikh Bani-
   assert.ok(gursikhCount >= 22, `Expected >= 22 Gursikhs & Panj Pyare observances, got ${gursikhCount}`);
 
   // Verify persistence & legacy migration of new directory filter keys
-  const defaults = createDefaultPersistedState('2026-11-22', 1, 2026, 10);
+  const defaults = createDefaultPersistedState('2026-11-22', 2083, 9, 2026, 10);
   assert.equal(
     parsePersistedState(JSON.stringify({directoryCategory: 'bhagat-bhatt'}), defaults).directoryCategory,
     'bhagat-bhatt',
@@ -957,6 +977,147 @@ test('Live clock and dual-time formatters emit consistent uppercase AM/PM across
     assert.equal(/\b(am|pm)\b/.test(dual.localTime), false);
   }
 });
+
+test('Precomputed Sambat 2082–2084 lunar table matches live astronomical calculation exactly', () => {
+  const sampleDates = [
+    '2025-03-14',
+    '2025-11-05',
+    '2026-04-14',
+    '2026-11-24',
+    '2027-04-14',
+    '2027-09-08',
+    '2028-02-29',
+  ];
+  for (const iso of sampleDates) {
+    const tuple = PRECOMPUTED_LUNAR_2082_2084[iso];
+    assert.ok(tuple, `Missing precomputed lunar tuple for ${iso}`);
+    const decoded = decodeCompactLunarTuple(iso, tuple);
+    const computed = computeLunarInfoForDate(iso);
+    assert.equal(decoded.tithiNumber, computed.tithiNumber, `Tithi mismatch on ${iso}`);
+    assert.equal(decoded.paksh, computed.paksh, `Paksh mismatch on ${iso}`);
+    assert.equal(decoded.lunarMonthEn, computed.lunarMonthEn, `Lunar month mismatch on ${iso}`);
+    assert.equal(decoded.isPuranmashi, computed.isPuranmashi, `Puranmashi mismatch on ${iso}`);
+    assert.equal(decoded.isMasya, computed.isMasya, `Masya mismatch on ${iso}`);
+  }
+});
+
+test('Perpetual engine computes full 2030 (Sambat 2087) solar months, dynamic Purab anniversaries, and .ics export', () => {
+  const spans2087 = getSolarMonthSpansForSambat(2087);
+  assert.equal(spans2087.length, 12);
+  let totalDays = 0;
+  for (let i = 0; i < spans2087.length; i++) {
+    const span = spans2087[i];
+    assert.equal(span.monthId, i + 1);
+    assert.equal(diffDaysIso(span.startDate, span.endDate) + 1, span.days);
+    assert.ok(span.days >= 29 && span.days <= 32);
+    totalDays += span.days;
+    if (i > 0) {
+      assert.equal(addDaysIso(spans2087[i - 1].endDate, 1), span.startDate);
+    }
+  }
+  assert.ok(totalDays === 365 || totalDays === 366, `Expected 365 or 366 days in Sambat 2087, got ${totalDays}`);
+
+  // Vaisakhi 2030 = 1 Vaisakh, Sambat 2087 + 331st Khalsa Sajna Divas
+  const vaisakhi2030 = getJantriDay('2030-04-14');
+  assert.equal(vaisakhi2030.solar.sambat, 2087);
+  assert.equal(vaisakhi2030.solar.monthId, 2);
+  assert.equal(vaisakhi2030.solar.day, 1);
+  assert.equal(vaisakhi2030.solar.isSangrand, true);
+  assert.ok(
+    vaisakhi2030.events.some((e) => /331st.*Khalsa Sajna/i.test(e.titleEn)),
+    `Expected 331st Khalsa Sajna Divas on 2030-04-14, got: ${vaisakhi2030.events.map((e) => e.titleEn).join('; ')}`,
+  );
+
+  // Sambat 2087 directory includes 561st Parkash Sri Guru Nanak Dev Ji, Vadde & Chhote Sahibzade
+  const dir2087 = getDirectoryObservancesForSambat(2087);
+  assert.ok(dir2087.length >= 60, `Expected >= 60 directory observances in Sambat 2087, got ${dir2087.length}`);
+  assert.ok(
+    dir2087.some((o) => /561st.*Guru Nanak/i.test(o.titleEn)),
+    'Expected 561st Parkash Purab of Sri Guru Nanak Dev Ji in Sambat 2087',
+  );
+  assert.ok(
+    dir2087.some((o) => /Chamkaur|Ajit Singh/i.test(o.titleEn)),
+    'Expected Vadde Sahibzade Shaheedi (8 Poh) in Sambat 2087',
+  );
+  assert.ok(
+    dir2087.some((o) => /Zorawar|Fateh Singh|Sirhind/i.test(o.titleEn)),
+    'Expected Chhote Sahibzade Shaheedi (13 Poh) in Sambat 2087',
+  );
+
+  // Perpetual .ics export for Sambat 2087
+  const ics2087 = generateJantriIcs({
+    includeDaily: false,
+    includeSangrands: true,
+    includePuranmashi: true,
+    includeMasya: true,
+    includeGurpurabs: true,
+    includeShaheedi: true,
+    includeKhalsa: true,
+    includeBarsis: true,
+    sambatScope: '2087',
+    language: 'en',
+  });
+  assert.ok(ics2087.eventCount >= 55, `Expected >= 55 events in Sambat 2087 .ics, got ${ics2087.eventCount}`);
+  assert.ok(ics2087.content.includes('331st') && ics2087.content.includes('561st'));
+});
+
+test('Daily auto-reset resets active date/month/drawer/Purabs Sambat when calendar day changes while keeping user preferences', () => {
+  const defaultsToday = createDefaultPersistedState('2026-11-28', 2083, 9, 2026, 10);
+  const yesterdaySaved = JSON.stringify({
+    activeView: 'events',
+    lang: 'pa',
+    theme: 'surmai',
+    remindersEnabled: true,
+    gridMode: 'gregorian',
+    selectedIso: '2026-10-05',
+    drawerDateIso: '2026-10-05',
+    sangrandYear: 2084,
+    directorySambat: '2084',
+    lookupInput: '2026-10-05',
+  });
+  const staleSession = JSON.stringify({
+    activeSambat: 2084,
+    activeMonthId: 2,
+    viewYear: 2027,
+    viewMonth0: 3,
+  });
+
+  const resetState = parsePersistedState(
+    yesterdaySaved,
+    defaultsToday,
+    null,
+    null,
+    staleSession,
+    '2026-11-27', // Previous calendar day triggers daily auto-reset!
+  );
+  // Date-specific state resets cleanly to today
+  assert.equal(resetState.selectedIso, '2026-11-28');
+  assert.equal(resetState.activeSambat, 2083);
+  assert.equal(resetState.activeMonthId, 9);
+  assert.equal(resetState.viewYear, 2026);
+  assert.equal(resetState.viewMonth0, 10);
+  assert.equal(resetState.drawerDateIso, null);
+  assert.equal(resetState.directorySambat, '2083');
+  assert.equal(resetState.lookupInput, '2026-11-28');
+  // User preferences are preserved
+  assert.equal(resetState.lang, 'pa');
+  assert.equal(resetState.theme, 'surmai');
+  assert.equal(resetState.remindersEnabled, true);
+  assert.equal(resetState.gridMode, 'gregorian');
+});
+
+test('Static webcal .ics subscription feeds exist and are valid RFC 5545 calendars', () => {
+  const obsPath = join(process.cwd(), 'public', 'feeds', 'puratan-jantri-observances.ics');
+  const dailyPath = join(process.cwd(), 'public', 'feeds', 'puratan-jantri-daily.ics');
+  assert.equal(existsSync(obsPath), true, 'Missing public/feeds/puratan-jantri-observances.ics');
+  assert.equal(existsSync(dailyPath), true, 'Missing public/feeds/puratan-jantri-daily.ics');
+  const obsContent = readFileSync(obsPath, 'utf8');
+  const dailyContent = readFileSync(dailyPath, 'utf8');
+  assert.ok(obsContent.startsWith('BEGIN:VCALENDAR\r\n') && obsContent.includes('END:VCALENDAR\r\n'));
+  assert.ok(dailyContent.startsWith('BEGIN:VCALENDAR\r\n') && dailyContent.includes('END:VCALENDAR\r\n'));
+  assert.ok(obsContent.includes('557th Parkash'));
+});
+
 
 
 

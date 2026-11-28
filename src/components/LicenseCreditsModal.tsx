@@ -4,6 +4,8 @@ import type {LanguageMode} from '../data/types';
 
 export const GITHUB_REPO_URL = 'https://github.com/Tatkhalsa-Foundation/tatkhalsa-puratan-jantri';
 export const CC_LICENSE_URL = 'https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode';
+export const TATKHALSA_ORG_URL = 'https://tatkhalsa.in';
+export const OFFICIAL_EMAIL = 'info@tatkhalsa.in';
 
 interface LicenseCreditsModalProps {
   isOpen: boolean;
@@ -75,9 +77,17 @@ export const LicenseCreditsModal: React.FC<LicenseCreditsModalProps> = ({
               {isPa ? 'ਲਾਇਸੈਂਸ, ਸਰੋਤ ਅਤੇ ਸਿਹਰਾ' : 'License & Credits'}
             </h2>
             <p className="mt-0.5 text-xs text-[var(--text-muted)]">
+              <a
+                href={TATKHALSA_ORG_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-[var(--accent-primary-text)] hover:underline underline-offset-4"
+              >
+                {isPa ? 'ਤੱਤਖ਼ਾਲਸਾ ਫ਼ਾਊਂਡੇਸ਼ਨ' : 'Tatkhalsa Foundation'}
+              </a>
               {isPa
-                ? 'ਤੱਤਖ਼ਾਲਸਾ ਫ਼ਾਊਂਡੇਸ਼ਨ · ਓਪਨ-ਸੋਰਸ ਕੋਡ (MIT) ਅਤੇ ਪੁਰਾਤਨ ਜੰਤਰੀ ਡਾਟਾ (CC BY-NC-SA 4.0)'
-                : 'Tatkhalsa Foundation · Open-Source Code (MIT) & Puratan Calendar Dataset (CC BY-NC-SA 4.0)'}
+                ? ' · ਓਪਨ-ਸੋਰਸ ਕੋਡ (MIT) ਅਤੇ ਪੁਰਾਤਨ ਜੰਤਰੀ ਡਾਟਾ (CC BY-NC-SA 4.0)'
+                : ' · Open-Source Code (MIT) & Puratan Calendar Dataset (CC BY-NC-SA 4.0)'}
             </p>
           </div>
           <button
@@ -209,21 +219,64 @@ export const LicenseCreditsModal: React.FC<LicenseCreditsModalProps> = ({
               </li>
             </ul>
           </section>
+          {/* 4. Official Contact, Corrections & Licensing */}
+          <section className="space-y-2 border-t border-[var(--border-subtle)] pt-5">
+            <h3 className="text-sm font-semibold text-[var(--text-heading)]">
+              {isPa ? '੪. ਅਧਿਕਾਰਤ ਸੰਪਰਕ ਅਤੇ ਸੁਧਾਰ' : '4. Official Contact, Corrections & Licensing'}
+            </h3>
+            <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+              {isPa
+                ? 'ਤਿਥੀ ਜਾਂ ਇਤਿਹਾਸਕ ਹਵਾਲਿਆਂ ਵਿੱਚ ਸੁਧਾਰ, ਸੁਝਾਅ ਜਾਂ ਲਾਇਸੈਂਸ ਸੰਬੰਧੀ ਪੁੱਛਗਿੱਛ ਲਈ '
+                : 'For historical or tithi corrections, feedback, or licensing inquiries, contact '}
+              <a
+                href={TATKHALSA_ORG_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-[var(--accent-primary-text)] hover:underline underline-offset-4"
+              >
+                {isPa ? 'ਤੱਤਖ਼ਾਲਸਾ ਫ਼ਾਊਂਡੇਸ਼ਨ (tatkhalsa.in)' : 'Tatkhalsa Foundation (tatkhalsa.in)'}
+              </a>
+              {isPa ? ' ਨਾਲ ' : ' at '}
+              <a
+                href={`mailto:${OFFICIAL_EMAIL}`}
+                className="font-semibold text-[var(--accent-primary-text)] hover:underline underline-offset-4"
+              >
+                {OFFICIAL_EMAIL}
+              </a>
+              .
+            </p>
+          </section>
         </div>
 
         {/* Footer */}
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--border-subtle)] bg-[var(--bg-surface)] px-5 py-3.5 shrink-0">
-          <div className="flex flex-wrap items-center gap-4"><a href="https://tatkhalsa.in" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--accent-primary-text)] hover:underline underline-offset-4"><span>Tatkhalsa Foundation</span><ArrowUpRight className="w-3.5 h-3.5" aria-hidden="true" /></a><a href="mailto:info@tatkhalsa.in" className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--accent-primary-text)] hover:underline underline-offset-4"><span>info@tatkhalsa.in</span></a>
-           <a
-            href={GITHUB_REPO_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--accent-primary-text)] hover:underline underline-offset-4"
-          >
-            <span>GitHub · Tatkhalsa-Foundation/tatkhalsa-puratan-jantri</span>
-            <ArrowUpRight className="w-3.5 h-3.5" aria-hidden="true" />
-          </a>
-</div>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
+            <a
+              href={TATKHALSA_ORG_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-xs font-semibold text-[var(--accent-primary-text)] hover:underline underline-offset-4"
+            >
+              <span>tatkhalsa.in</span>
+              <ArrowUpRight className="w-3.5 h-3.5" aria-hidden="true" />
+            </a>
+            <a
+              href={`mailto:${OFFICIAL_EMAIL}`}
+              className="text-xs font-semibold text-[var(--text-heading)] hover:text-[var(--accent-primary-text)] hover:underline underline-offset-4"
+            >
+              {OFFICIAL_EMAIL}
+            </a>
+            <a
+              href={GITHUB_REPO_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-xs font-semibold text-[var(--accent-primary-text)] hover:underline underline-offset-4"
+            >
+              <span>GitHub</span>
+              <ArrowUpRight className="w-3.5 h-3.5" aria-hidden="true" />
+            </a>
+          </div>
+
           <button
             type="button"
             onClick={onClose}

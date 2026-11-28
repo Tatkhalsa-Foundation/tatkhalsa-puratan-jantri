@@ -6,6 +6,7 @@ import {
   formatGregorianDate,
   getAllDirectoryObservances,
   getBikramiSolarDate,
+  getDirectoryObservancesForSambat,
   LOOKUP_MAX_ISO,
   LOOKUP_MIN_ISO,
   lookupGregorianToBikrami,
@@ -13,6 +14,8 @@ import {
 } from '../utils/bikramiEngine';
 import type {DirectoryFilterState, DirectorySambatState} from '../utils/statePersistence';
 import {MoonPhaseIcon} from './MoonPhaseIcon';
+
+const PERPETUAL_DIRECTORY_SAMBATS = Array.from({length: 14}, (_, i) => 2082 + i);
 
 interface EventsDirectoryViewProps {
   todayIso: string;
@@ -48,7 +51,7 @@ const QUICK_LOOKUPS: readonly {iso: string; en: string; pa: string}[] = [
   {iso: '2025-11-05', en: '5 Nov 2025 · 556th Parkash', pa: '੫ ਨਵੰ ੨੦੨੫ · ੫੫੬ਵਾਂ ਪ੍ਰਕਾਸ਼'},
   {iso: '2026-11-24', en: '24 Nov 2026 · 557th Parkash', pa: '੨੪ ਨਵੰ ੨੦੨੬ · ੫੫੭ਵਾਂ ਪ੍ਰਕਾਸ਼'},
   {iso: '2027-04-14', en: '14 Apr 2027 · Vaisakhi 2084', pa: '੧੪ ਅਪ੍ਰੈ ੨੦੨੭ · ਵੈਸਾਖੀ ੨੦੮੪'},
-  {iso: '2027-09-08', en: '8 Sep 2027 · Chaupai Colophon', pa: '੮ ਸਤੰ ੨੦੨੭ · ਚੌਪਈ ਹਵਾਲਾ'},
+  {iso: '2030-04-14', en: '14 Apr 2030 · Vaisakhi 2087', pa: '੧੪ ਅਪ੍ਰੈ ੨੦੩੦ · ਵੈਸਾਖੀ ੨੦੮੭'},
 ];
 
 function formatUsSlashDate(iso: string): string {
@@ -103,7 +106,14 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
   const isPa = lang === 'pa';
   const isBi = lang === 'bi';
 
-  const allObservances = useMemo(() => getAllDirectoryObservances(), []); const sambatYears = useMemo(() => Array.from(new Set(['2082', '2083', '2084', ...allObservances.filter((o) => o.sambat != null).map((o) => String(o.sambat))])).sort((a, b) => Number(a) - Number(b)), [allObservances]);
+  const allObservances = useMemo(() => {
+    if (sambat === 'all') return getAllDirectoryObservances();
+    const parsed = Number(sambat);
+    if (Number.isFinite(parsed) && parsed >= 1957 && parsed <= 2207) {
+      return getDirectoryObservancesForSambat(parsed);
+    }
+    return getAllDirectoryObservances();
+  }, [sambat]);
   const lookupResult = useMemo(() => lookupGregorianToBikrami(lookupInput), [lookupInput]);
 
   const filtered = useMemo(() => {
@@ -160,7 +170,7 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
               id="date-lookup-heading"
               className="mt-0.5 font-display text-2xl font-semibold text-[var(--text-heading)]"
             >
-              {isPa ? 'ਕਿਸੇ ਵੀ ਤਾਰੀਖ਼ ਦਾ ਦੇਸੀ ਮਹੀਨਾ ਅਤੇ ਤਿਥੀ ਵੇਖੋ' : 'Convert Any Date in Sambat 2082–2084'}
+              {isPa ? 'ਕਿਸੇ ਵੀ ਤਾਰੀਖ਼ (1900–2150+) ਦਾ ਦੇਸੀ ਮਹੀਨਾ ਅਤੇ ਤਿਥੀ ਵੇਖੋ' : 'Convert Any Date (1900–2150+)'}
             </h2>
           </div>
 
@@ -171,8 +181,8 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
             >
               {isPa ? 'ਅੰਗਰੇਜ਼ੀ ਤਾਰੀਖ਼:' : 'Gregorian Date:'}
             </label>
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2 w-full sm:w-auto">
-              <div className="relative flex items-center w-full sm:w-auto min-w-[205px]">
+            <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 w-full sm:w-auto">
+              <div className="relative flex items-center flex-1 sm:flex-initial min-w-[195px]">
                 <CalendarSearch
                   className="w-4 h-4 text-[var(--text-heading)] absolute left-3.5 pointer-events-none shrink-0"
                   aria-hidden="true"
@@ -184,10 +194,18 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
                   max={LOOKUP_MAX_ISO}
                   value={lookupInput}
                   onChange={(e) => onLookupInputChange(e.target.value)}
-                  className="w-full sm:w-auto min-w-[205px] min-h-[44px] pl-10 pr-3.5 py-2 text-sm font-mono-tabular rounded-md border border-[var(--border-strong)] bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] focus:outline-2 focus:outline-[var(--accent-primary)]"
+                  className="w-full sm:w-auto min-w-[195px] min-h-[44px] pl-10 pr-3.5 py-2 text-sm font-mono-tabular rounded-md border border-[var(--border-strong)] bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] focus:outline-2 focus:outline-[var(--accent-primary)]"
                 />
               </div>
-              <button type="button" onClick={() => { onLookupInputChange(todayIso); onSelectDate(todayIso); }} className="min-h-[44px] px-3 py-2 rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-xs font-medium text-[var(--text-primary)] hover:border-[var(--accent-primary)] transition-colors whitespace-nowrap">Today</button> {lookupResult.ok && (
+              <button
+                type="button"
+                onClick={() => onLookupInputChange(todayIso)}
+                data-testid="lookup-today-btn"
+                className="min-h-[44px] px-3.5 py-2 text-xs font-semibold rounded-md border border-[var(--border-strong)] bg-[var(--bg-surface-elevated)] text-[var(--text-heading)] hover:bg-[var(--bg-hover)] transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+              >
+                {isPa ? 'ਅੱਜ' : 'Today'}
+              </button>
+              {lookupResult.ok && (
                 <span
                   data-testid="lookup-formatted-date"
                   className="inline-flex items-center px-2.5 py-1 rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-xs font-mono-tabular font-medium text-[var(--text-heading)] whitespace-nowrap self-start sm:self-auto"
@@ -295,7 +313,13 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-xs text-[var(--text-faint)]">
-              {isPa ? 'ਸੰਮਤ ੨੦੮੨ – ੨੦੮੪ ਬਿਕ੍ਰਮੀ' : 'Sambat 2082 – 2084 Bikrami'}
+              {sambat === 'all'
+                ? isPa
+                  ? 'ਸੰਮਤ ੨੦੮੨ – ੨੦੮੪ ਬਿਕ੍ਰਮੀ (ਪ੍ਰਮਾਣਿਤ)'
+                  : 'Sambat 2082 – 2084 Bikrami (Verified Core)'
+                : isPa
+                  ? `ਸੰਮਤ ${toGurmukhiNumerals(Number(sambat))} ਬਿਕ੍ਰਮੀ`
+                  : `Sambat ${sambat} Bikrami (${Number(sambat) - 57}–${Number(sambat) - 56} CE)`}
             </p>
             <h1
               id="events-directory-heading"
@@ -308,7 +332,7 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
             <p className="mt-1.5 text-sm text-[var(--text-muted)] max-w-2xl">
               {isPa
                 ? 'ਕਿਸੇ ਵੀ ਦਿਹਾੜੇ ’ਤੇ ਕਲਿੱਕ ਕਰਕੇ ਉਸ ਦਾ ਇਤਿਹਾਸਕ ਪ੍ਰਸੰਗ, ਤਿਥੀ ਸਮਾਂ ਅਤੇ ਗ੍ਰੰਥਾਂ/ਭੱਟ ਵਹੀਆਂ ਦੇ ਪ੍ਰਮਾਣਿਕ ਹਵਾਲੇ ਪੜ੍ਹੋ।'
-                : 'Filter Gurpurabs, Shaheedi Divases, manuscript colophons, Sangrands, Puranmashi, and Masya dates across Sambat 2082–2084.'}
+                : 'Filter Gurpurabs, Shaheedi Divases, manuscript colophons, Sangrands, Puranmashi, and Masya dates for any Sambat year.'}
             </p>
           </div>
           <p className="text-xs font-mono-tabular text-[var(--text-muted)] whitespace-nowrap">
@@ -344,7 +368,58 @@ export const EventsDirectoryView: React.FC<EventsDirectoryViewProps> = ({
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
-              <select aria-label="Filter by Sambat" value={sambat} onChange={(e) => onSambatChange(e.target.value as DirectorySambatState)} className="min-h-[42px] px-3 py-2 text-xs font-medium rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)] transition-colors cursor-pointer"><option value="all">All Sambat Years</option>{sambatYears.map((yr) => (<option key={yr} value={yr}>{isPa ? toGurmukhiNumerals(yr) : 'Sambat ' + yr}</option>))}</select>
+              <div
+                role="group"
+                aria-label={isPa ? 'ਸੰਮਤ ਫਿਲਟਰ' : 'Filter by Sambat'}
+                className="inline-flex items-center rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-1"
+              >
+                {(
+                  [
+                    {id: 'all', en: '2082–84', pa: '੨੦੮੨–੮੪'},
+                    {id: '2082', en: '2082', pa: '੨੦੮੨'},
+                    {id: '2083', en: '2083', pa: '੨੦੮੩'},
+                    {id: '2084', en: '2084', pa: '੨੦੮੪'},
+                  ] as const
+                ).map((opt) => (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    data-testid={`directory-sambat-${opt.id}`}
+                    onClick={() => onSambatChange(opt.id)}
+                    aria-pressed={sambat === opt.id}
+                    className={`min-h-[36px] px-3 text-xs font-medium rounded-sm transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+                      sambat === opt.id
+                        ? 'bg-[var(--bg-surface-elevated)] text-[var(--text-heading)] shadow-xs'
+                        : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+                    }`}
+                  >
+                    {isPa ? opt.pa : opt.en}
+                  </button>
+                ))}
+              </div>
+
+              <div className="shrink-0">
+                <label htmlFor="directory-sambat-select" className="sr-only">
+                  {isPa ? 'ਕੋਈ ਵੀ ਸੰਮਤ ਚੁਣੋ' : 'Select any Sambat year'}
+                </label>
+                <select
+                  id="directory-sambat-select"
+                  data-testid="directory-sambat-select"
+                  aria-label={isPa ? 'ਕੋਈ ਵੀ ਸੰਮਤ ਚੁਣੋ' : 'Select any Sambat year'}
+                  value={sambat}
+                  onChange={(e) => onSambatChange(e.target.value)}
+                  className="min-h-[42px] rounded-md border border-[var(--border-strong)] bg-[var(--bg-surface-elevated)] px-2.5 text-xs font-medium text-[var(--text-primary)] focus:outline-2 focus:outline-[var(--accent-primary)] cursor-pointer"
+                >
+                  <option value="all">{isPa ? 'ਸੰਮਤ ੨੦੮੨–੨੦੮੪' : 'Sambat 2082–2084'}</option>
+                  {PERPETUAL_DIRECTORY_SAMBATS.map((s) => (
+                    <option key={s} value={String(s)}>
+                      {isPa
+                        ? `ਸੰਮਤ ${toGurmukhiNumerals(s)} (${toGurmukhiNumerals(s - 57)}–${toGurmukhiNumerals((s - 56) % 100)})`
+                        : `Sambat ${s} (${s - 57}–${String((s - 56) % 100).padStart(2, '0')})`}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
               <button
                 type="button"

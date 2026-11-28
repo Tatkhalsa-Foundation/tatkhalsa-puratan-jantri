@@ -4,6 +4,20 @@
   Header always set X-Content-Type-Options "nosniff"
 </IfModule>
 
+# Long-lived immutable cache (1 year) for static versioned/hashed assets & optimized images
+<FilesMatch "\.(webp|png|jpg|jpeg|svg|ico|woff2|js|css)$">
+  <IfModule mod_headers.c>
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </IfModule>
+</FilesMatch>
+
+# Keep HTML and static .ics subscription feeds fresh for Google/Apple Calendar clients
+<FilesMatch "\.(html|ics)$">
+  <IfModule mod_headers.c>
+    Header set Cache-Control "public, max-age=3600, must-revalidate"
+  </IfModule>
+</FilesMatch>
+
 # Ensure Workbox service worker and PWA manifest are always revalidated cleanly
 <FilesMatch "^(sw\.js|registerSW\.js|manifest\.webmanifest)$">
   <IfModule mod_headers.c>

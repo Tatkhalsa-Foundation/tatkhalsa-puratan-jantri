@@ -2,10 +2,10 @@ import type {AppView} from '../components/Header';
 import type {CalendarFilter} from '../components/MonthlyJantriGrid';
 import type {CalendarGridMode, DirectoryFilterKey, LanguageMode, ThemeId} from '../data/types';
 import {
-  BROWSEABLE_SOLAR_SPANS,
-  getBikramiSolarDate,
   LOOKUP_MAX_ISO,
   LOOKUP_MIN_ISO,
+  MAX_PERPETUAL_SAMBAT,
+  MIN_PERPETUAL_SAMBAT,
   SUPPORTED_MAX_MONTH,
   SUPPORTED_MIN_MONTH,
 } from './bikramiEngine';
@@ -14,15 +14,17 @@ export const APP_STATE_STORAGE_KEY = 'tatkhalsa_jantri_state_v1';
 export const SESSION_NAV_STORAGE_KEY = 'tatkhalsa_jantri_session_nav_v1';
 export const LEGACY_LANG_STORAGE_KEY = 'tatkhalsa_jantri_lang';
 export const THEME_STORAGE_KEY = 'tatkhalsa_jantri_theme';
+export const LAST_ACTIVE_DATE_KEY = 'tatkhalsa_jantri_last_active_date_v1';
 
 export interface SessionMonthNavigation {
-  solarSpanIndex: number;
+  activeSambat: number;
+  activeMonthId: number;
   viewYear: number;
   viewMonth0: number;
 }
 
 export type DirectoryFilterState = DirectoryFilterKey;
-export type DirectorySambatState = 'all' | '2082' | '2083' | '2084' | (string & {});
+export type DirectorySambatState = 'all' | string;
 
 export interface PersistedJantriState {
   activeView: AppView;
@@ -30,18 +32,18 @@ export interface PersistedJantriState {
   theme: ThemeId;
   remindersEnabled: boolean;
   gridMode: CalendarGridMode;
-  solarSpanIndex: number;
+  activeSambat: number;
+  activeMonthId: number;
   viewYear: number;
   viewMonth0: number;
   selectedIso: string;
   drawerDateIso: string | null;
   activeFilter: CalendarFilter;
-  sangrandYear: 2082 | 2083 | 2084;
+  sangrandYear: number;
   directoryQuery: string;
   directoryCategory: DirectoryFilterState;
   directorySambat: DirectorySambatState;
   directoryUpcomingOnly: boolean;
-  lastActiveGregorianDate: string;
   lookupInput: string;
 }
 
@@ -67,13 +69,28 @@ const VALID_DIRECTORY_CATEGORIES: readonly DirectoryFilterState[] = [
   'barsi',
   'sangrand-tithi',
 ];
-const VALID_DIRECTORY_SAMBATS: readonly DirectorySambatState[] = ['all', '2082', '2083', '2084', '2085', '2086', '2087', '2088', '2089', '2090', '2091', '2092', '2093', '2094', '2095', '2096', '2097']; //']; //]; 
 
 function isValidIsoInRange(value: unknown): value is string {
   if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
     return false;
   }
   return value >= LOOKUP_MIN_ISO && value <= LOOKUP_MAX_ISO;
+}
+
+function isValidSambat(value: unknown): value is number {
+  return (
+    typeof value === 'number' &&
+    Number.isInteger(value) &&
+    value >= MIN_PERPETUAL_SAMBAT &&
+    value <= MAX_PERPETUAL_SAMBAT
+  );
+}
+
+function isValidDirectorySambat(value: unknown): value is DirectorySambatState {
+  if (value === 'all') return true;
+  if (typeof value !== 'string' || !/^\d{4}$/.test(value)) return false;
+  const n = Number(value);
+  return n >= MIN_PERPETUAL_SAMBAT && n <= MAX_PERPETUAL_SAMBAT;
 }
 
 function isValidMonthYear(year: unknown, month0: unknown): boolean {
@@ -88,7 +105,8 @@ function isValidMonthYear(year: unknown, month0: unknown): boolean {
 
 export function createDefaultPersistedState(
   todayIso: string,
-  todaySolarIndex: number,
+  todaySambat: number,
+  todayMonthId: number,
   todayYear: number,
   todayMonth0: number,
 ): PersistedJantriState {
@@ -98,25 +116,27 @@ export function createDefaultPersistedState(
     theme: 'parchment',
     remindersEnabled: false,
     gridMode: 'solar',
-    solarSpanIndex: todaySolarIndex,
+    activeSambat: todaySambat,
+    activeMonthId: todayMonthId,
     viewYear: todayYear,
     viewMonth0: todayMonth0,
     selectedIso: todayIso,
     drawerDateIso: null,
     activeFilter: 'all',
-    sangrandYear: 2083,
+    sangrandYear: todaySambat,
     directoryQuery: '',
     directoryCategory: 'all',
-    directorySambat: String(getBikramiSolarDate(todayIso).sambat),
+    directorySambat: String(todaySambat),
     directoryUpcomingOnly: false,
-    lastActiveGregorianDate: todayIso,
     lookupInput: todayIso,
   };
 }
 
 /**
- * Pure, safe deserializer that merges any valid fields from raw JSON storage
- * with safe defaults, guarding against corrupt JSON or out-of-range values.
+ * Pure, safe deserializer that merges valid fields from storage with defaults.
+ * Daily Auto-Reset: when `lastActiveDateRaw` does not match `defaults.selectedIso` (a new calendar day!),
+ * resets active date, active month, drawer, lookup input, and Purabs Sambat back to TODAY
+ * while preserving user preferences (language, theme, grid mode, reminders).
  */
 export function parsePersistedState(
   raw: string | null,
@@ -124,8 +144,10 @@ export function parsePersistedState(
   legacyLangRaw?: string | null,
   standaloneThemeRaw?: string | null,
   sessionNavRaw?: string | null,
+  lastActiveDateRaw?: string | null,
 ): PersistedJantriState {
   const result: PersistedJantriState = {...defaults};
+  const isNewCalendarDay = Boolean(lastActiveDateRaw && lastActiveDateRaw !== defaults.selectedIso);
 
   if (legacyLangRaw && (VALID_LANGS as readonly string[]).includes(legacyLangRaw)) {
     result.lang = legacyLangRaw as LanguageMode;
@@ -134,7 +156,6 @@ export function parsePersistedState(
     result.theme = standaloneThemeRaw as ThemeId;
   }
 
-  let isSameDay = false;
   if (raw) {
     let parsed: unknown;
     try {
@@ -145,9 +166,7 @@ export function parsePersistedState(
 
     if (parsed && typeof parsed === 'object') {
       const obj = parsed as Record<string, unknown>;
-    isSameDay = obj.lastActiveGregorianDate === defaults.selectedIso;
-      
-      // Never restore 'print' across reloads; default back to 'jantri'
+
       if (
         typeof obj.activeView === 'string' &&
         (PERSISTABLE_VIEWS as readonly string[]).includes(obj.activeView)
@@ -172,22 +191,11 @@ export function parsePersistedState(
       ) {
         result.gridMode = obj.gridMode as CalendarGridMode;
       }
-      if (isSameDay && isValidIsoInRange(obj.selectedIso)) {
-        result.selectedIso = obj.selectedIso;
-      }
-      if (isSameDay && obj.drawerDateIso === null) {
-        result.drawerDateIso = null;
-      } else if (isSameDay && isValidIsoInRange(obj.drawerDateIso)) {
-        result.drawerDateIso = obj.drawerDateIso;
-      }
       if (
         typeof obj.activeFilter === 'string' &&
         (VALID_CALENDAR_FILTERS as readonly string[]).includes(obj.activeFilter)
       ) {
         result.activeFilter = obj.activeFilter as CalendarFilter;
-      }
-      if (obj.sangrandYear === 2082 || obj.sangrandYear === 2083 || obj.sangrandYear === 2084) {
-        result.sangrandYear = obj.sangrandYear;
       }
       if (typeof obj.directoryQuery === 'string') {
         result.directoryQuery = obj.directoryQuery.slice(0, 120);
@@ -205,36 +213,54 @@ export function parsePersistedState(
           result.directoryCategory = 'gursikh';
         }
       }
-      if (
-        typeof obj.directorySambat === 'string' &&
-        ((VALID_DIRECTORY_SAMBATS as readonly string[]).includes(obj.directorySambat) || /^\d{4}$/.test(obj.directorySambat) || obj.directorySambat === 'all')
-      ) {
-        result.directorySambat = obj.directorySambat as DirectorySambatState;
-      }
       if (typeof obj.directoryUpcomingOnly === 'boolean') {
         result.directoryUpcomingOnly = obj.directoryUpcomingOnly;
       }
-      if (isSameDay && isValidIsoInRange(obj.lookupInput)) {
-        result.lookupInput = obj.lookupInput;
+
+      // Only restore date-specific selections when still on the same calendar day
+      if (!isNewCalendarDay) {
+        if (isValidIsoInRange(obj.selectedIso)) {
+          result.selectedIso = obj.selectedIso;
+        }
+        if (obj.drawerDateIso === null) {
+          result.drawerDateIso = null;
+        } else if (isValidIsoInRange(obj.drawerDateIso)) {
+          result.drawerDateIso = obj.drawerDateIso;
+        }
+        if (isValidSambat(obj.sangrandYear)) {
+          result.sangrandYear = obj.sangrandYear;
+        }
+        if (isValidDirectorySambat(obj.directorySambat)) {
+          result.directorySambat = obj.directorySambat;
+        }
+        if (isValidIsoInRange(obj.lookupInput)) {
+          result.lookupInput = obj.lookupInput;
+        }
       }
     }
   }
 
-  // Only restore non-default month navigation when explicitly set in the current browser session
-  if (isSameDay && sessionNavRaw) {
+  // Only restore non-default month navigation when on the same calendar day in the current session
+  if (!isNewCalendarDay && sessionNavRaw) {
     try {
       const navParsed = JSON.parse(sessionNavRaw) as Record<string, unknown>;
       if (
         navParsed &&
         typeof navParsed === 'object' &&
-        typeof navParsed.solarSpanIndex === 'number' &&
-        Number.isInteger(navParsed.solarSpanIndex) &&
-        navParsed.solarSpanIndex >= 0 &&
-        navParsed.solarSpanIndex < BROWSEABLE_SOLAR_SPANS.length
+        isValidSambat(navParsed.activeSambat) &&
+        typeof navParsed.activeMonthId === 'number' &&
+        Number.isInteger(navParsed.activeMonthId) &&
+        navParsed.activeMonthId >= 1 &&
+        navParsed.activeMonthId <= 12
       ) {
-        result.solarSpanIndex = navParsed.solarSpanIndex;
+        result.activeSambat = navParsed.activeSambat;
+        result.activeMonthId = navParsed.activeMonthId;
       }
-      if (navParsed && typeof navParsed === 'object' && isValidMonthYear(navParsed.viewYear, navParsed.viewMonth0)) {
+      if (
+        navParsed &&
+        typeof navParsed === 'object' &&
+        isValidMonthYear(navParsed.viewYear, navParsed.viewMonth0)
+      ) {
         result.viewYear = navParsed.viewYear as number;
         result.viewMonth0 = navParsed.viewMonth0 as number;
       }
@@ -253,7 +279,21 @@ export function loadPersistedState(defaults: PersistedJantriState): PersistedJan
     const legacyLang = window.localStorage.getItem(LEGACY_LANG_STORAGE_KEY);
     const standaloneTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
     const sessionNav = window.sessionStorage.getItem(SESSION_NAV_STORAGE_KEY);
-    return parsePersistedState(raw, defaults, legacyLang, standaloneTheme, sessionNav);
+    const lastActiveDate = window.localStorage.getItem(LAST_ACTIVE_DATE_KEY);
+    const parsed = parsePersistedState(
+      raw,
+      defaults,
+      legacyLang,
+      standaloneTheme,
+      sessionNav,
+      lastActiveDate,
+    );
+    // Record today's Gregorian date as the active date and clear stale session nav on day rollover
+    if (lastActiveDate && lastActiveDate !== defaults.selectedIso) {
+      window.sessionStorage.removeItem(SESSION_NAV_STORAGE_KEY);
+    }
+    window.localStorage.setItem(LAST_ACTIVE_DATE_KEY, defaults.selectedIso);
+    return parsed;
   } catch {
     return defaults;
   }
@@ -264,7 +304,6 @@ export function savePersistedState(state: PersistedJantriState): void {
   try {
     const safeState: PersistedJantriState = {
       ...state,
-      // Never persist 'print' view across reloads
       activeView: state.activeView === 'print' ? 'jantri' : state.activeView,
     };
     window.localStorage.setItem(APP_STATE_STORAGE_KEY, JSON.stringify(safeState));
@@ -272,6 +311,15 @@ export function savePersistedState(state: PersistedJantriState): void {
     window.localStorage.setItem(THEME_STORAGE_KEY, safeState.theme);
   } catch {
     // Ignore storage quota or private-browsing restrictions
+  }
+}
+
+export function saveLastActiveGregorianDate(todayIso: string): void {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage.setItem(LAST_ACTIVE_DATE_KEY, todayIso);
+  } catch {
+    // Ignore storage restrictions
   }
 }
 

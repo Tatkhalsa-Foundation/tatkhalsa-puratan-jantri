@@ -114,7 +114,7 @@ export const TodayHero: React.FC<TodayHeroProps> = ({
     <section
       aria-labelledby="ajj-da-din-heading"
       data-testid="today-hero-card"
-      className="no-print border border-[var(--border-subtle)] bg-[var(--bg-surface-soft)] rounded-2xl p-4 sm:p-5 lg:p-6"
+      className="no-print min-h-[188px] sm:min-h-[144px] border border-[var(--border-subtle)] bg-[var(--bg-surface-soft)] rounded-2xl p-4 sm:p-5 lg:p-6"
     >
       {/* Compact Primary Row: Today's Desi Date + Lunar Tithi + Live Clocks + 2 Clean Action Buttons */}
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -172,7 +172,7 @@ export const TodayHero: React.FC<TodayHeroProps> = ({
         {/* Right: Compact Live Dual Clocks + Two Primary Action Buttons */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center lg:flex-col lg:items-end xl:flex-row xl:items-center shrink-0">
           {/* Compact Live Anandpur Sahib (IST) + Device Clock */}
-          <div className="flex items-center gap-3.5 text-xs border-t border-[var(--border-subtle)] pt-2.5 sm:border-t-0 sm:pt-0">
+          <div className="flex items-center gap-3.5 min-h-[42px] text-xs border-t border-[var(--border-subtle)] pt-2.5 sm:border-t-0 sm:pt-0">
             <div className="min-w-0">
               <span className="inline-flex items-center gap-1 text-[11px] text-[var(--text-muted)] whitespace-nowrap">
                 <Clock className="w-3 h-3 text-[var(--accent-primary-text)] shrink-0" aria-hidden="true" />

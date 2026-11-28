@@ -1,6 +1,11 @@
 import {getBikramiMonthMeta, SOLAR_MONTH_SPANS} from '../data/sambatData';
 import type {PersonalDateKind, PersonalDesiDate} from '../data/types';
-import {addDaysIso, toGurmukhiNumerals} from './bikramiEngine';
+import {
+  addDaysIso,
+  getBikramiSolarDate,
+  getSolarMonthSpansForSambat,
+  toGurmukhiNumerals,
+} from './bikramiEngine';
 
 export const PERSONAL_DATES_STORAGE_KEY = 'tatkhalsa_personal_desi_dates_v1';
 
@@ -116,18 +121,32 @@ export function getPersonalDatesForSolarDay(
 }
 
 /**
- * Resolve all Gregorian ISO dates in Sambat 2082–2084 matching a given Desi Month + Day.
+ * Resolve all Gregorian ISO dates matching a given Desi Month + Day across the selected Sambat scope.
  * Handles 31/32-day months gracefully by clamping to the span's final day if a year's solar month is 1 day shorter.
  */
 export function resolveGregorianOccurrencesForPersonalDate(
   pd: PersonalDesiDate,
-  sambatScope: 'all' | '2082' | '2083' | '2084' = 'all',
+  sambatScope: 'all' | string = 'all',
 ): {isoDate: string; sambat: number; actualDay: number}[] {
+  const sambats: number[] = [];
+  if (sambatScope === 'all') {
+    sambats.push(2082, 2083, 2084);
+  } else if (sambatScope === '2082-2086') {
+    sambats.push(2082, 2083, 2084, 2085, 2086);
+  } else {
+    const parsed = Number(sambatScope);
+    if (Number.isInteger(parsed) && parsed >= 1957 && parsed <= 2207) {
+      sambats.push(parsed);
+    } else {
+      sambats.push(2082, 2083, 2084);
+    }
+  }
+
   const matches: {isoDate: string; sambat: number; actualDay: number}[] = [];
-  for (const span of SOLAR_MONTH_SPANS) {
-    if (sambatScope !== 'all' && String(span.sambat) !== sambatScope) continue;
-    if (span.monthId !== pd.monthId) continue;
-    if (span.sambat < 2082 || span.sambat > 2084) continue;
+  for (const sambat of sambats) {
+    const spans = getSolarMonthSpansForSambat(sambat);
+    const span = spans.find((s) => s.monthId === pd.monthId);
+    if (!span) continue;
     const actualDay = Math.min(pd.day, span.days);
     const isoDate = addDaysIso(span.startDate, actualDay - 1);
     matches.push({isoDate, sambat: span.sambat, actualDay});
@@ -139,8 +158,14 @@ export function resolveNextOccurrenceForPersonalDate(
   pd: PersonalDesiDate,
   fromIso: string,
 ): {isoDate: string; sambat: number} | null {
-  const all = resolveGregorianOccurrencesForPersonalDate(pd, 'all');
-  const upcoming = all.find((occ) => occ.isoDate >= fromIso);
+  const curSambat = getBikramiSolarDate(fromIso).sambat;
+  const candidates = [
+    ...resolveGregorianOccurrencesForPersonalDate(pd, String(curSambat)),
+    ...resolveGregorianOccurrencesForPersonalDate(pd, String(curSambat + 1)),
+  ];
+  const upcoming = candidates.find((occ) => occ.isoDate >= fromIso);
   if (upcoming) return {isoDate: upcoming.isoDate, sambat: upcoming.sambat};
-  return all.length > 0 ? {isoDate: all[all.length - 1].isoDate, sambat: all[all.length - 1].sambat} : null;
+  return candidates.length > 0
+    ? {isoDate: candidates[candidates.length - 1].isoDate, sambat: candidates[candidates.length - 1].sambat}
+    : null;
 }

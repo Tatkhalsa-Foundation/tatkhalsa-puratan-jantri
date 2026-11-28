@@ -1,18 +1,21 @@
 import {ArrowUpRight, ChevronRight} from 'lucide-react';
-import React from 'react';
-import {getBikramiMonthMeta, SOLAR_MONTH_SPANS} from '../data/sambatData';
+import React, {useMemo} from 'react';
+import {getBikramiMonthMeta} from '../data/sambatData';
 import type {LanguageMode} from '../data/types';
 import {
   formatDualTime,
   formatGregorianDate,
   formatNum,
+  getSolarMonthSpansForSambat,
   toGurmukhiNumerals,
 } from '../utils/bikramiEngine';
 
+const PERPETUAL_SANGRAND_SAMBATS = Array.from({length: 16}, (_, i) => 2080 + i);
+
 interface SangrandsTableViewProps {
   lang: LanguageMode;
-  selectedSambat: 2082 | 2083 | 2084;
-  onSelectSambat: (year: 2082 | 2083 | 2084) => void;
+  selectedSambat: number;
+  onSelectSambat: (year: number) => void;
   onSelectDate: (isoDate: string) => void;
 }
 
@@ -23,7 +26,7 @@ export const SangrandsTableView: React.FC<SangrandsTableViewProps> = ({
   onSelectDate,
 }) => {
   const isPa = lang === 'pa';
-  const spans = SOLAR_MONTH_SPANS.filter((s) => s.sambat === selectedSambat);
+  const spans = useMemo(() => getSolarMonthSpansForSambat(selectedSambat), [selectedSambat]);
 
   return (
     <section aria-labelledby="sangrands-heading" className="no-print space-y-6">
@@ -47,34 +50,65 @@ export const SangrandsTableView: React.FC<SangrandsTableViewProps> = ({
           </p>
         </div>
 
-        <div
-          role="group"
-          aria-label={isPa ? 'ਸੰਮਤ ਚੋਣ' : 'Select Sambat year'}
-          className="grid grid-cols-3 sm:inline-flex items-center gap-1 rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-1 w-full sm:w-auto"
-        >
-          {(
-            [
-              {year: 2082 as const, en: '2082 (2025–26)', shortEn: '2082', pa: '੨੦੮੨ (੨੦੨੫–੨੬)', shortPa: '੨੦੮੨'},
-              {year: 2083 as const, en: '2083 (2026–27)', shortEn: '2083', pa: '੨੦੮੩ (੨੦੨੬–੨੭)', shortPa: '੨੦੮੩'},
-              {year: 2084 as const, en: '2084 (2027–28)', shortEn: '2084', pa: '੨੦੮੪ (੨੦੨੭–੨੮)', shortPa: '੨੦੮੪'},
-            ] as const
-          ).map((opt) => (
-            <button
-              key={opt.year}
-              type="button"
-              onClick={() => onSelectSambat(opt.year)}
-              aria-pressed={selectedSambat === opt.year}
-              data-testid={`sangrand-tab-${opt.year}`}
-              className={`min-h-[38px] px-2 sm:px-3.5 text-xs font-medium rounded-sm transition-colors text-center whitespace-nowrap cursor-pointer ${
-                selectedSambat === opt.year
-                  ? 'bg-[var(--bg-surface-elevated)] text-[var(--text-heading)] shadow-xs'
-                  : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
-              }`}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 w-full sm:w-auto">
+          <div
+            role="group"
+            aria-label={isPa ? 'ਸੰਮਤ ਚੋਣ' : 'Select Sambat year'}
+            className="grid grid-cols-3 sm:inline-flex items-center gap-1 rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-1 w-full sm:w-auto"
+          >
+            {(
+              [
+                {year: 2082, en: '2082 (2025–26)', shortEn: '2082', pa: '੨੦੮੨ (੨੦੨੫–੨੬)', shortPa: '੨੦੮੨'},
+                {year: 2083, en: '2083 (2026–27)', shortEn: '2083', pa: '੨੦੮੩ (੨੦੨੬–੨੭)', shortPa: '੨੦੮੩'},
+                {year: 2084, en: '2084 (2027–28)', shortEn: '2084', pa: '੨੦੮੪ (੨੦੨੭–੨੮)', shortPa: '੨੦੮੪'},
+              ] as const
+            ).map((opt) => (
+              <button
+                key={opt.year}
+                type="button"
+                onClick={() => onSelectSambat(opt.year)}
+                aria-pressed={selectedSambat === opt.year}
+                data-testid={`sangrand-tab-${opt.year}`}
+                className={`min-h-[38px] px-2 sm:px-3.5 text-xs font-medium rounded-sm transition-colors text-center whitespace-nowrap cursor-pointer ${
+                  selectedSambat === opt.year
+                    ? 'bg-[var(--bg-surface-elevated)] text-[var(--text-heading)] shadow-xs'
+                    : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
+                }`}
+              >
+                <span className="sm:hidden">{isPa ? `ਸੰਮਤ ${opt.shortPa}` : `Sambat ${opt.shortEn}`}</span>
+                <span className="hidden sm:inline">{isPa ? `ਸੰਮਤ ${opt.pa}` : `Sambat ${opt.en}`}</span>
+              </button>
+            ))}
+          </div>
+
+          <div className="shrink-0">
+            <label htmlFor="sangrand-sambat-select" className="sr-only">
+              {isPa ? 'ਕੋਈ ਵੀ ਸੰਮਤ ਚੁਣੋ' : 'Select any Sambat year'}
+            </label>
+            <select
+              id="sangrand-sambat-select"
+              data-testid="sangrand-sambat-select"
+              aria-label={isPa ? 'ਕੋਈ ਵੀ ਸੰਮਤ ਚੁਣੋ' : 'Select any Sambat year'}
+              value={selectedSambat}
+              onChange={(e) => onSelectSambat(Number(e.target.value))}
+              className="w-full sm:w-auto min-h-[44px] rounded-md border border-[var(--border-strong)] bg-[var(--bg-surface-elevated)] px-2.5 text-xs font-medium text-[var(--text-primary)] focus:outline-2 focus:outline-[var(--accent-primary)] cursor-pointer"
             >
-              <span className="sm:hidden">{isPa ? `ਸੰਮਤ ${opt.shortPa}` : `Sambat ${opt.shortEn}`}</span>
-              <span className="hidden sm:inline">{isPa ? `ਸੰਮਤ ${opt.pa}` : `Sambat ${opt.en}`}</span>
-            </button>
-          ))}
+              {!PERPETUAL_SANGRAND_SAMBATS.includes(selectedSambat) && (
+                <option value={selectedSambat}>
+                  {isPa
+                    ? `ਸੰਮਤ ${toGurmukhiNumerals(selectedSambat)} (${toGurmukhiNumerals(selectedSambat - 57)}–${toGurmukhiNumerals((selectedSambat - 56) % 100)})`
+                    : `Sambat ${selectedSambat} (${selectedSambat - 57}–${String((selectedSambat - 56) % 100).padStart(2, '0')})`}
+                </option>
+              )}
+              {PERPETUAL_SANGRAND_SAMBATS.map((s) => (
+                <option key={s} value={s}>
+                  {isPa
+                    ? `ਸੰਮਤ ${toGurmukhiNumerals(s)} (${toGurmukhiNumerals(s - 57)}–${toGurmukhiNumerals((s - 56) % 100)})`
+                    : `Sambat ${s} (${s - 57}–${String((s - 56) % 100).padStart(2, '0')})`}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 

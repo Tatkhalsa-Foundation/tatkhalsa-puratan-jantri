@@ -126,15 +126,19 @@ export const Header: React.FC<HeaderProps> = ({
               isPa ? 'ਤੱਤਖ਼ਾਲਸਾ ਪੁਰਾਤਨ ਜੰਤਰੀ — ਮੁੱਖ ਪੰਨਾ' : 'Tat Khalsa Puratan Jantri — Home'
             }
           >
-            <img
-              src="./logo.png?v=3"
-              alt={isPa ? 'ਤੱਤਖ਼ਾਲਸਾ ਪੁਰਾਤਨ ਜੰਤਰੀ ਮੋਹਰ' : 'Tat Khalsa Puratan Jantri Logo'}
-              width={36}
-              height={36}
-              loading="eager"
-              decoding="sync"
-              className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg border border-[var(--accent-gold)] object-cover shrink-0 shadow-xs bg-[#FAF6EE]"
-            />
+            <picture className="shrink-0">
+              <source srcSet="./logo.webp?v=4" type="image/webp" />
+              <img
+                src="./logo.png?v=3"
+                alt={isPa ? 'ਤੱਤਖ਼ਾਲਸਾ ਪੁਰਾਤਨ ਜੰਤਰੀ ਮੋਹਰ' : 'Tat Khalsa Puratan Jantri Logo'}
+                width={36}
+                height={36}
+                fetchPriority="high"
+                loading="eager"
+                decoding="async"
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg border border-[var(--accent-gold)] object-cover shrink-0 shadow-xs bg-[#FAF6EE]"
+              />
+            </picture>
             <span
               className={`font-display font-semibold tracking-tight text-[var(--text-heading)] ${
                 isPa ? 'font-gurmukhi text-sm sm:text-lg' : 'text-base sm:text-xl'

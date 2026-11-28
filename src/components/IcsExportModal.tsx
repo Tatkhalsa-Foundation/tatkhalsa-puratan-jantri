@@ -1,8 +1,22 @@
-import {CalendarCheck, Download, ExternalLink, X} from 'lucide-react';
+import {
+  AlertCircle,
+  ArrowUpRight,
+  CalendarCheck,
+  CalendarPlus,
+  CloudUpload,
+  Download,
+  Loader2,
+  X,
+} from 'lucide-react';
 import React, {useEffect, useMemo, useState} from 'react';
 import type {IcsExportOptions, LanguageMode, PersonalDesiDate} from '../data/types';
-import {formatNum} from '../utils/bikramiEngine';
-import {generateJantriIcs} from '../utils/icsExport';
+import {formatNum, toGurmukhiNumerals} from '../utils/bikramiEngine';
+import {
+  isGoogleOAuthConfigured,
+  syncRecordsToGoogleCalendar,
+  type GoogleCalendarSyncResult,
+} from '../utils/googleCalendarSync';
+import {collectJantriIcsRecords, generateJantriIcs} from '../utils/icsExport';
 
 interface IcsExportModalProps {
   isOpen: boolean;
@@ -10,6 +24,10 @@ interface IcsExportModalProps {
   personalDates: PersonalDesiDate[];
   onClose: () => void;
 }
+
+const WEBCAL_OBSERVANCES_URL = 'webcal://calendar.tatkhalsa.in/feeds/puratan-jantri-observances.ics';
+const WEBCAL_DAILY_URL = 'webcal://calendar.tatkhalsa.in/feeds/puratan-jantri-daily.ics';
+const PERPETUAL_EXPORT_SAMBATS = Array.from({length: 11}, (_, i) => 2082 + i);
 
 export const IcsExportModal: React.FC<IcsExportModalProps> = ({
   isOpen,
@@ -30,9 +48,20 @@ export const IcsExportModal: React.FC<IcsExportModalProps> = ({
   const [sambatScope, setSambatScope] = useState<IcsExportOptions['sambatScope']>('all');
   const [downloadedCount, setDownloadedCount] = useState<number | null>(null);
 
+  // Google OAuth sync state (only enabled when VITE_GOOGLE_CLIENT_ID is configured)
+  const googleOAuthReady = isGoogleOAuthConfigured();
+  const [confirmGoogleSync, setConfirmGoogleSync] = useState(false);
+  const [syncInProgress, setSyncInProgress] = useState(false);
+  const [syncProgress, setSyncProgress] = useState<{done: number; total: number} | null>(null);
+  const [syncResult, setSyncResult] = useState<GoogleCalendarSyncResult | null>(null);
+  const [syncError, setSyncError] = useState<string | null>(null);
+
   useEffect(() => {
     if (!isOpen) {
       setDownloadedCount(null);
+      setConfirmGoogleSync(false);
+      setSyncError(null);
+      setSyncResult(null);
       return;
     }
     const onKey = (e: KeyboardEvent) => {
@@ -42,8 +71,8 @@ export const IcsExportModal: React.FC<IcsExportModalProps> = ({
     return () => window.removeEventListener('keydown', onKey);
   }, [isOpen, onClose]);
 
-  const preview = useMemo(() => {
-    return generateJantriIcs({
+  const exportOptions: IcsExportOptions = useMemo(
+    () => ({
       includeDaily,
       includeSangrands,
       includePuranmashi,
@@ -56,23 +85,33 @@ export const IcsExportModal: React.FC<IcsExportModalProps> = ({
       personalDates,
       sambatScope,
       language: lang,
-    });
-  }, [
-    includeDaily,
-    includeSangrands,
-    includePuranmashi,
-    includeMasya,
-    includeGurpurabs,
-    includeShaheedi,
-    includeKhalsa,
-    includeBarsis,
-    includePersonalDates,
-    personalDates,
-    sambatScope,
-    lang,
-  ]);
+    }),
+    [
+      includeDaily,
+      includeSangrands,
+      includePuranmashi,
+      includeMasya,
+      includeGurpurabs,
+      includeShaheedi,
+      includeKhalsa,
+      includeBarsis,
+      includePersonalDates,
+      personalDates,
+      sambatScope,
+      lang,
+    ],
+  );
+
+  // Zero work while modal is closed
+  const preview = useMemo(() => {
+    if (!isOpen) return {content: '', eventCount: 0};
+    return generateJantriIcs(exportOptions);
+  }, [isOpen, exportOptions]);
 
   if (!isOpen) return null;
+
+  const activeWebcalUrl = includeDaily ? WEBCAL_DAILY_URL : WEBCAL_OBSERVANCES_URL;
+  const googleSubscribeUrl = `https://calendar.google.com/calendar/r?cid=${encodeURIComponent(activeWebcalUrl)}`;
 
   const handleDownload = () => {
     if (preview.eventCount === 0) return;
@@ -88,6 +127,32 @@ export const IcsExportModal: React.FC<IcsExportModalProps> = ({
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
     setDownloadedCount(preview.eventCount);
+  };
+
+  const handleConfirmGoogleOAuthSync = async () => {
+    if (!googleOAuthReady || syncInProgress || preview.eventCount === 0) return;
+    setSyncInProgress(true);
+    setSyncError(null);
+    setSyncResult(null);
+    try {
+      const {records} = collectJantriIcsRecords(exportOptions);
+      const res = await syncRecordsToGoogleCalendar(records, (done, total) => {
+        setSyncProgress({done, total});
+      });
+      setSyncResult(res);
+      setConfirmGoogleSync(false);
+    } catch (err) {
+      setSyncError(
+        err instanceof Error
+          ? err.message
+          : isPa
+            ? 'Google Calendar ਸਿੰਕ ਪੂਰਾ ਨਹੀਂ ਹੋ ਸਕਿਆ।'
+            : 'Google Calendar sync could not be completed.',
+      );
+    } finally {
+      setSyncInProgress(false);
+      setSyncProgress(null);
+    }
   };
 
   const toggles = [
@@ -177,19 +242,22 @@ export const IcsExportModal: React.FC<IcsExportModalProps> = ({
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="flex max-h-[90vh] w-full max-w-lg flex-col rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-canvas)] shadow-2xl overflow-hidden">
+      <div
+        data-testid="ics-export-modal"
+        className="flex max-h-[90vh] w-full max-w-lg flex-col rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-canvas)] shadow-2xl overflow-hidden"
+      >
         <div className="flex items-start justify-between gap-4 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] px-5 py-4 shrink-0">
           <div>
             <h2
               id="ics-modal-title"
               className="font-display text-2xl font-semibold text-[var(--text-heading)]"
             >
-              {isPa ? '.ics ਕੈਲੰਡਰ ਡਾਊਨਲੋਡ ਕਰੋ' : 'Export Puratan Jantri (.ics)'}
+              {isPa ? 'ਕੈਲੰਡਰ ਸਿੰਕ ਅਤੇ .ics ਡਾਊਨਲੋਡ' : 'Subscribe & Export Jantri (.ics)'}
             </h2>
             <p className="mt-0.5 text-xs text-[var(--text-muted)]">
               {isPa
-                ? 'Apple Calendar, Google Calendar ਅਤੇ Outlook ਲਈ ਪ੍ਰਮਾਣਿਕ .ics ਫ਼ਾਈਲ'
-                : 'Compatible with Apple Calendar, Google Calendar, and Outlook (RFC 5545)'}
+                ? 'Apple Calendar, Google Calendar ਅਤੇ Outlook ਲਈ 1-ਕਲਿੱਕ ਸਬਸਕ੍ਰਿਪਸ਼ਨ ਅਤੇ .ics ਫ਼ਾਈਲ'
+                : '1-Click Apple & Google Calendar subscription feeds plus custom RFC 5545 .ics export'}
             </p>
           </div>
           <button
@@ -198,15 +266,167 @@ export const IcsExportModal: React.FC<IcsExportModalProps> = ({
             aria-label={isPa ? 'ਬੰਦ ਕਰੋ' : 'Close export dialog'}
             className="min-h-[40px] min-w-[40px] flex items-center justify-center rounded-md text-[var(--text-muted)] hover:bg-[var(--bg-hover)] cursor-pointer"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-5 space-y-4">
-          {/* Sambat Scope Selector */}
-          <div>
-            <span className="block text-xs font-medium text-[var(--text-muted)] mb-2">
-              {isPa ? 'ਸੰਮਤ ਦੀ ਚੋਣ' : 'Sambat Year Scope'}
+        <div className="flex-1 overflow-y-auto p-5 space-y-5">
+          {/* 1-Click Live Subscribe & Direct Google Sync */}
+          <section
+            aria-labelledby="calendar-subscribe-heading"
+            className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-soft)] p-4 space-y-3"
+          >
+            <div>
+              <h3
+                id="calendar-subscribe-heading"
+                className="text-xs font-semibold uppercase tracking-wide text-[var(--text-heading)]"
+              >
+                {isPa ? '1-ਕਲਿੱਕ ਲਾਈਵ ਸਬਸਕ੍ਰਾਈਬ (ਸੰਮਤ ੨੦੮੨–੨੦੮੬)' : '1-Click Live Subscribe (Sambat 2082–2086)'}
+              </h3>
+              <p className="mt-0.5 text-[11px] text-[var(--text-muted)] leading-snug">
+                {includeDaily
+                  ? isPa
+                    ? 'ਰੋਜ਼ਾਨਾ ਦੇਸੀ ਤਾਰੀਖ਼ਾਂ + ਪੁਰਬ ਫ਼ੀਡ (ਹਰ ਰੋਜ਼ ਆਟੋਮੈਟਿਕ ਅੱਪਡੇਟ)'
+                    : 'Subscribes to the full Daily Bikrami & Lunar Dates + Purabs feed (updates automatically).'
+                  : isPa
+                    ? 'ਸੰਗਰਾਂਦਾਂ, ਪੂਰਨਮਾਸ਼ੀ, ਮੱਸਿਆ ਅਤੇ ਗੁਰਪੁਰਬ ਫ਼ੀਡ (ਆਟੋਮੈਟਿਕ ਅੱਪਡੇਟ)'
+                    : 'Subscribes to the Puratan Observances feed (Sangrands, Puranmashi, Masya & Purabs).'}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <a
+                href={activeWebcalUrl}
+                data-testid="apple-calendar-subscribe-link"
+                className="inline-flex items-center justify-center gap-1.5 min-h-[42px] px-3 py-2 text-xs font-semibold rounded-md border border-[var(--border-strong)] bg-[var(--bg-surface-elevated)] text-[var(--text-heading)] hover:bg-[var(--bg-hover)] transition-colors whitespace-nowrap"
+              >
+                <CalendarPlus className="w-3.5 h-3.5 text-[var(--accent-primary-text)] shrink-0" aria-hidden="true" />
+                <span>{isPa ? 'Apple Calendar ਵਿੱਚ ਜੋੜੋ' : 'Add to Apple Calendar'}</span>
+              </a>
+
+              <a
+                href={googleSubscribeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                data-testid="google-calendar-subscribe-link"
+                className="inline-flex items-center justify-center gap-1.5 min-h-[42px] px-3 py-2 text-xs font-semibold rounded-md border border-[var(--border-strong)] bg-[var(--bg-surface-elevated)] text-[var(--text-heading)] hover:bg-[var(--bg-hover)] transition-colors whitespace-nowrap"
+              >
+                <CalendarPlus className="w-3.5 h-3.5 text-[var(--accent-primary-text)] shrink-0" aria-hidden="true" />
+                <span>{isPa ? 'Google Calendar (1-ਕਲਿੱਕ)' : 'Google Calendar (1-Click)'}</span>
+                <ArrowUpRight className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+              </a>
+            </div>
+
+            {/* Direct Google Account OAuth Sync (Client-Side GIS, Zero Client Secret) */}
+            <div className="pt-2 border-t border-[var(--border-divider)] space-y-2">
+              {googleOAuthReady ? (
+                <>
+                  {!confirmGoogleSync ? (
+                    <button
+                      type="button"
+                      disabled={syncInProgress || preview.eventCount === 0}
+                      onClick={() => {
+                        setSyncError(null);
+                        setSyncResult(null);
+                        setConfirmGoogleSync(true);
+                      }}
+                      data-testid="google-oauth-sync-btn"
+                      className="w-full inline-flex items-center justify-center gap-1.5 min-h-[40px] px-3 py-2 text-xs font-semibold rounded-md border border-[var(--accent-primary)] bg-[var(--accent-primary-tint)] text-[var(--text-heading)] hover:bg-[var(--bg-hover)] disabled:opacity-45 cursor-pointer transition-colors"
+                    >
+                      <CloudUpload className="w-4 h-4 text-[var(--accent-primary-text)]" aria-hidden="true" />
+                      <span>
+                        {isPa
+                          ? 'Google ਖਾਤੇ ਵਿੱਚ ਸਿੱਧਾ ਸਿੰਕ ਕਰੋ (ਕਸਟਮ ਚੋਣ ਸਮੇਤ)'
+                          : 'Sync Custom Selection to Google Account (OAuth)'}
+                      </span>
+                    </button>
+                  ) : (
+                    <div className="rounded-lg border border-[var(--accent-primary)] bg-[var(--bg-surface-elevated)] p-3 space-y-2.5 text-xs">
+                      <p className="font-medium text-[var(--text-heading)]">
+                        {isPa
+                          ? `ਕੀ ਤੁਸੀਂ ${formatNum(preview.eventCount, 'pa')} ਦਿਹਾੜੇ ਆਪਣੇ "Tatkhalsa Puratan Jantri" Google Calendar ਵਿੱਚ ਸਿੰਕ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ?`
+                          : `Sync ${preview.eventCount} selected events into a dedicated "Tatkhalsa Puratan Jantri" Google Calendar?`}
+                      </p>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <button
+                          type="button"
+                          disabled={syncInProgress}
+                          onClick={handleConfirmGoogleOAuthSync}
+                          className="inline-flex items-center gap-1.5 min-h-[38px] px-3.5 py-1.5 rounded-md bg-[var(--accent-navy)] text-[var(--accent-on-navy)] font-semibold hover:bg-[var(--accent-navy-hover)] disabled:opacity-50 cursor-pointer"
+                        >
+                          {syncInProgress && <Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden="true" />}
+                          <span>
+                            {syncInProgress && syncProgress
+                              ? `${syncProgress.done}/${syncProgress.total}`
+                              : isPa
+                                ? 'ਹਾਂ, ਸਿੰਕ ਸ਼ੁਰੂ ਕਰੋ'
+                                : 'Confirm & Sync'}
+                          </span>
+                        </button>
+                        <button
+                          type="button"
+                          disabled={syncInProgress}
+                          onClick={() => setConfirmGoogleSync(false)}
+                          className="min-h-[38px] px-3 py-1.5 rounded-md border border-[var(--border-strong)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] cursor-pointer"
+                        >
+                          {isPa ? 'ਰੱਦ ਕਰੋ' : 'Cancel'}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {syncResult && (
+                    <div
+                      role="status"
+                      className="flex items-center gap-2 rounded-md border border-[var(--border-strong)] bg-[var(--accent-navy-tint)] px-3 py-2 text-xs text-[var(--text-heading)]"
+                    >
+                      <CalendarCheck className="w-4 h-4 shrink-0" aria-hidden="true" />
+                      <span>
+                        {isPa
+                          ? `${syncResult.calendarName}: ${formatNum(syncResult.created, 'pa')} ਨਵੇਂ, ${formatNum(syncResult.updated, 'pa')} ਅੱਪਡੇਟ ਹੋਏ।`
+                          : `Synced to ${syncResult.calendarName}: ${syncResult.created} added, ${syncResult.updated} updated.`}
+                      </span>
+                    </div>
+                  )}
+
+                  {syncError && (
+                    <div
+                      role="alert"
+                      className="flex items-center gap-2 rounded-md border border-[var(--accent-shaheedi)]/35 bg-[var(--accent-shaheedi-tint)] px-3 py-2 text-xs text-[var(--accent-shaheedi)]"
+                    >
+                      <AlertCircle className="w-4 h-4 shrink-0" aria-hidden="true" />
+                      <span>{syncError}</span>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1.5">
+                  <button
+                    type="button"
+                    disabled
+                    data-testid="google-oauth-disabled-btn"
+                    className="inline-flex items-center justify-center gap-1.5 min-h-[38px] px-3 py-1.5 text-xs font-medium rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-faint)] opacity-65 cursor-not-allowed"
+                  >
+                    <CloudUpload className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+                    <span>{isPa ? 'Google ਖਾਤਾ OAuth ਸਿੰਕ' : 'Sync via Google Account (OAuth)'}</span>
+                  </button>
+                  <span
+                    data-testid="google-oauth-coming-soon"
+                    className="text-[11px] text-[var(--text-muted)]"
+                  >
+                    {isPa
+                      ? 'ਜਲਦੀ ਆ ਰਿਹਾ ਹੈ — ਉੱਪਰ 1-ਕਲਿੱਕ ਸਬਸਕ੍ਰਾਈਬ ਵਰਤੋ'
+                      : 'Coming soon — use 1-Click Subscribe above'}
+                  </span>
+                </div>
+              )}
+            </div>
+          </section>
+
+          {/* Sambat Scope Selector (Verified Core + Perpetual Any Year) */}
+          <div className="space-y-2">
+            <span className="block text-xs font-medium text-[var(--text-muted)]">
+              {isPa ? 'ਕਸਟਮ .ics ਲਈ ਸੰਮਤ ਦੀ ਚੋਣ' : 'Custom .ics Sambat Year Scope'}
             </span>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-1">
               {(
@@ -221,6 +441,7 @@ export const IcsExportModal: React.FC<IcsExportModalProps> = ({
                   key={opt.id}
                   type="button"
                   onClick={() => setSambatScope(opt.id)}
+                  aria-pressed={sambatScope === opt.id}
                   className={`min-h-[38px] text-xs font-medium rounded-sm transition-colors cursor-pointer ${
                     sambatScope === opt.id
                       ? 'bg-[var(--bg-surface-elevated)] text-[var(--text-heading)] shadow-xs'
@@ -230,6 +451,33 @@ export const IcsExportModal: React.FC<IcsExportModalProps> = ({
                   {isPa ? opt.pa : opt.en}
                 </button>
               ))}
+            </div>
+
+            <div className="flex items-center gap-2">
+              <label
+                htmlFor="ics-perpetual-sambat-select"
+                className="text-xs text-[var(--text-muted)] whitespace-nowrap"
+              >
+                {isPa ? 'ਜਾਂ ਭਵਿੱਖ ਦਾ ਸੰਮਤ:' : 'Or any Sambat year:'}
+              </label>
+              <select
+                id="ics-perpetual-sambat-select"
+                data-testid="ics-sambat-select"
+                aria-label={isPa ? 'ਕੋਈ ਵੀ ਸੰਮਤ ਚੁਣੋ' : 'Select custom Sambat year'}
+                value={sambatScope}
+                onChange={(e) => setSambatScope(e.target.value)}
+                className="flex-1 min-h-[38px] rounded-md border border-[var(--border-strong)] bg-[var(--bg-surface-elevated)] px-2.5 text-xs font-medium text-[var(--text-primary)] focus:outline-2 focus:outline-[var(--accent-primary)] cursor-pointer"
+              >
+                <option value="all">{isPa ? 'ਸੰਮਤ ੨੦੮੨–੨੦੮੪ (੩ ਸਾਲ)' : 'Sambat 2082–2084 (3 Years)'}</option>
+                <option value="2082-2086">{isPa ? 'ਸੰਮਤ ੨੦੮੨–੨੦੮੬ (੫ ਸਾਲ)' : 'Sambat 2082–2086 (5 Years)'}</option>
+                {PERPETUAL_EXPORT_SAMBATS.map((s) => (
+                  <option key={s} value={String(s)}>
+                    {isPa
+                      ? `ਸੰਮਤ ${toGurmukhiNumerals(s)} (${toGurmukhiNumerals(s - 57)}–${toGurmukhiNumerals((s - 56) % 100)})`
+                      : `Sambat ${s} (${s - 57}–${String((s - 56) % 100).padStart(2, '0')})`}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 
@@ -290,33 +538,6 @@ export const IcsExportModal: React.FC<IcsExportModalProps> = ({
               </span>
             </div>
           )}
-          <div className="rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] p-3.5 space-y-2.5">
-            <div className="flex items-center gap-2 text-xs font-semibold text-[var(--text-heading)]">
-              <CalendarCheck className="w-4 h-4 shrink-0 text-[var(--accent-primary)]" aria-hidden="true" />
-              <span>Live Calendar Subscription (All Purabs)</span>
-            </div>
-            <p className="text-[11px] text-[var(--text-muted)] leading-snug">
-              Subscribe once to automatically receive all Purab updates in your calendar app.
-            </p>
-            <div className="flex flex-wrap gap-2">
-              <a
-                href="webcal://calendar.tatkhalsa.in/feeds/all-purabs.ics"
-                className="inline-flex items-center gap-1.5 rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-3 py-1.5 text-xs font-medium text-[var(--text-primary)] hover:bg-[var(--bg-hover)] transition-colors"
-              >
-                <CalendarCheck className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
-                <span>Add to Apple Calendar</span>
-              </a>
-              <a
-                href={`https://${'calendar.google.com/calendar/r?cid='}${encodeURIComponent('webcal://calendar.tatkhalsa.in/feeds/all-purabs.ics')}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-3 py-1.5 text-xs font-medium text-[var(--text-primary)] hover:bg-[var(--bg-hover)] transition-colors"
-              >
-                <ExternalLink className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
-                <span>1-Click Google Calendar Subscribe</span>
-              </a>
-            </div>
-          </div>
         </div>
 
         <div className="flex items-center justify-between gap-4 border-t border-[var(--border-subtle)] bg-[var(--bg-surface)] px-5 py-3.5 shrink-0">

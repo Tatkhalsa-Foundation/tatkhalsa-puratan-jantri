@@ -8,7 +8,7 @@ import {
   Printer,
   SlidersHorizontal,
 } from 'lucide-react';
-import React, {useState, useRef} from 'react';
+import React, {useMemo, useRef, useState} from 'react';
 import {getBikramiMonthMeta, GREGORIAN_MONTHS, WEEKDAYS} from '../data/sambatData';
 import type {
   CalendarGridMode,
@@ -18,12 +18,15 @@ import type {
   PersonalDesiDate,
 } from '../data/types';
 import {
-  BROWSEABLE_SOLAR_SPANS,
   formatGregorianDate,
   formatNum,
   formatShortGregorian,
   getBikramiHeaderForGregorianMonth,
   getGregorianHeaderForSolarSpan,
+  getSolarMonthSpanByYearMonth,
+  getSolarMonthSpansForSambat,
+  MAX_PERPETUAL_SAMBAT,
+  MIN_PERPETUAL_SAMBAT,
   SUPPORTED_MAX_MONTH,
   SUPPORTED_MIN_MONTH,
   toGurmukhiNumerals,
@@ -34,9 +37,12 @@ import {PWAInstallButton} from './PWAInstallButton';
 
 export type CalendarFilter = 'all' | 'gurpurab' | 'shaheedi' | 'khalsa' | 'barsi' | 'lunar';
 
+const PERPETUAL_QUICK_SAMBATS = Array.from({length: 16}, (_, i) => 2080 + i);
+
 interface MonthlyJantriGridProps {
   gridMode: CalendarGridMode;
-  solarSpanIndex: number;
+  activeSambat: number;
+  activeMonthId: number;
   year: number;
   monthIndex0: number;
   days: JantriDay[];
@@ -46,11 +52,11 @@ interface MonthlyJantriGridProps {
   personalDates: PersonalDesiDate[];
   lang: LanguageMode;
   onChangeGridMode: (mode: CalendarGridMode) => void;
-  onSelectSolarSpan: (spanIndex: number) => void;
+  onSelectSolarMonth: (sambat: number, monthId: number) => void;
   onPrevMonth: () => void;
   onNextMonth: () => void;
   onGoToday: () => void;
-  onJumpSambat: (sambat: 2082 | 2083 | 2084) => void;
+  onJumpSambat: (sambat: number) => void;
   onSelectFilter: (filter: CalendarFilter) => void;
   onSelectDay: (day: JantriDay) => void;
   onOpenIcsModal: () => void;
@@ -105,7 +111,8 @@ function dayMatchesFilter(
 
 export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
   gridMode,
-  solarSpanIndex,
+  activeSambat,
+  activeMonthId,
   year,
   monthIndex0,
   days,
@@ -115,7 +122,7 @@ export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
   personalDates,
   lang,
   onChangeGridMode,
-  onSelectSolarSpan,
+  onSelectSolarMonth,
   onPrevMonth,
   onNextMonth,
   onGoToday,
@@ -130,10 +137,16 @@ export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
   const isBi = lang === 'bi';
   const isSolarMode = gridMode === 'solar';
   const [filterBarOpen, setFilterBarOpen] = useState(false);
-  const touchStartX = useRef<number | null>(null);
-  const touchStartY = useRef<number | null>(null);
-  
-  const currentSolarSpan = BROWSEABLE_SOLAR_SPANS[solarSpanIndex];
+  const touchStartRef = useRef<{x: number; y: number} | null>(null);
+
+  const currentSolarSpan = useMemo(
+    () => getSolarMonthSpanByYearMonth(activeSambat, activeMonthId),
+    [activeSambat, activeMonthId],
+  );
+  const activeSambatSpans = useMemo(
+    () => getSolarMonthSpansForSambat(activeSambat),
+    [activeSambat],
+  );
   const currentSolarMeta = getBikramiMonthMeta(currentSolarSpan.monthId);
 
   const primaryHeading = isSolarMode
@@ -157,22 +170,42 @@ export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
     : getBikramiHeaderForGregorianMonth(year, monthIndex0, lang);
 
   const canGoPrev = isSolarMode
-    ? solarSpanIndex > 0
+    ? activeSambat > MIN_PERPETUAL_SAMBAT || activeMonthId > 1
     : year > SUPPORTED_MIN_MONTH.year ||
       (year === SUPPORTED_MIN_MONTH.year && monthIndex0 > SUPPORTED_MIN_MONTH.monthIndex0);
 
   const canGoNext = isSolarMode
-    ? solarSpanIndex < BROWSEABLE_SOLAR_SPANS.length - 1
+    ? activeSambat < MAX_PERPETUAL_SAMBAT || activeMonthId < 12
     : year < SUPPORTED_MAX_MONTH.year ||
       (year === SUPPORTED_MAX_MONTH.year && monthIndex0 < SUPPORTED_MAX_MONTH.monthIndex0);
 
-  const activeSambatView: 2082 | 2083 | 2084 = isSolarMode
-    ? (currentSolarSpan.sambat as 2082 | 2083 | 2084)
-    : year > 2027 || (year === 2027 && monthIndex0 >= 2)
-      ? 2084
-      : year > 2026 || (year === 2026 && monthIndex0 >= 2)
-        ? 2083
-        : 2082;
+  const activeSambatView = isSolarMode
+    ? activeSambat
+    : monthIndex0 >= 2
+      ? year + 57
+      : year + 56;
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (e.touches.length !== 1) return;
+    const t = e.touches[0];
+    touchStartRef.current = {x: t.clientX, y: t.clientY};
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    const start = touchStartRef.current;
+    touchStartRef.current = null;
+    if (!start || e.changedTouches.length !== 1) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - start.x;
+    const dy = t.clientY - start.y;
+    if (Math.abs(dx) >= 55 && Math.abs(dx) > Math.abs(dy) * 1.4) {
+      if (dx < 0 && canGoNext) {
+        onNextMonth();
+      } else if (dx > 0 && canGoPrev) {
+        onPrevMonth();
+      }
+    }
+  };
 
   const inMonthHighlights = days.filter((d) => {
     if (!d.inCurrentGridMonth) return false;
@@ -208,21 +241,23 @@ export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
               </p>
             </div>
 
-            {/* Mobile-only compact < Today > inline with month heading */}
-            <div className="inline-flex sm:hidden items-center gap-1 shrink-0 pt-0.5">
+            {/* Mobile-only bold < Today > inline with month heading */}
+            <div className="inline-flex sm:hidden items-center gap-1.5 shrink-0 pt-0.5">
               <button
                 type="button"
                 onClick={onPrevMonth}
                 disabled={!canGoPrev}
+                data-testid="prev-month-btn-mobile"
                 aria-label={isPa ? 'ਪਿਛਲਾ ਮਹੀਨਾ' : 'Previous month'}
-                className="min-w-11 min-h-11 flex items-center justify-center rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] hover:bg-[var(--bg-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg border-2 border-[var(--border-strong)] bg-[var(--bg-surface)] text-[var(--text-heading)] hover:border-[var(--accent-primary)] hover:bg-[var(--bg-hover)] disabled:opacity-40 disabled:cursor-not-allowed shadow-xs transition-colors cursor-pointer"
               >
-                <ChevronLeft className="w-6 h-6" strokeWidth={3} />
+                <ChevronLeft className="w-5 h-5" strokeWidth={2.5} aria-hidden="true" />
               </button>
               <button
                 type="button"
                 onClick={onGoToday}
-                className="min-h-[38px] px-2.5 text-xs font-medium rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] hover:bg-[var(--bg-hover)] transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+                data-testid="today-btn-mobile"
+                className="min-h-[44px] px-3 text-xs font-semibold rounded-lg border border-[var(--border-strong)] bg-[var(--bg-surface-elevated)] text-[var(--text-heading)] hover:bg-[var(--bg-hover)] transition-colors whitespace-nowrap shrink-0 cursor-pointer"
               >
                 {isPa ? 'ਅੱਜ' : 'Today'}
               </button>
@@ -230,30 +265,33 @@ export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
                 type="button"
                 onClick={onNextMonth}
                 disabled={!canGoNext}
+                data-testid="next-month-btn-mobile"
                 aria-label={isPa ? 'ਅਗਲਾ ਮਹੀਨਾ' : 'Next month'}
-                className="min-w-11 min-h-11 flex items-center justify-center rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] hover:bg-[var(--bg-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg border-2 border-[var(--border-strong)] bg-[var(--bg-surface)] text-[var(--text-heading)] hover:border-[var(--accent-primary)] hover:bg-[var(--bg-hover)] disabled:opacity-40 disabled:cursor-not-allowed shadow-xs transition-colors cursor-pointer"
               >
-                <ChevronRight className="w-6 h-6" strokeWidth={3} />
+                <ChevronRight className="w-5 h-5" strokeWidth={2.5} aria-hidden="true" />
               </button>
             </div>
           </div>
 
           {/* Primary Month Nav (Desktop) + Balanced + My Desi Dates & Filter & Export */}
           <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center">
-            <div className="hidden sm:inline-flex items-center gap-1">
+            <div className="hidden sm:inline-flex items-center gap-1.5">
               <button
                 type="button"
                 onClick={onPrevMonth}
                 disabled={!canGoPrev}
+                data-testid="prev-month-btn"
                 aria-label={isPa ? 'ਪਿਛਲਾ ਮਹੀਨਾ' : 'Previous month'}
-                className="min-w-11 min-h-11 flex items-center justify-center rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] hover:bg-[var(--bg-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg border-2 border-[var(--border-strong)] bg-[var(--bg-surface)] text-[var(--text-heading)] hover:border-[var(--accent-primary)] hover:bg-[var(--bg-hover)] disabled:opacity-40 disabled:cursor-not-allowed shadow-xs transition-colors cursor-pointer"
               >
-                <ChevronLeft className="w-6 h-6" strokeWidth={3} />
+                <ChevronLeft className="w-5 h-5" strokeWidth={2.5} aria-hidden="true" />
               </button>
               <button
                 type="button"
                 onClick={onGoToday}
-                className="min-h-[40px] px-3 text-xs font-medium rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] hover:bg-[var(--bg-hover)] transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+                data-testid="today-btn"
+                className="min-h-[44px] px-3.5 text-xs font-semibold rounded-lg border border-[var(--border-strong)] bg-[var(--bg-surface-elevated)] text-[var(--text-heading)] hover:bg-[var(--bg-hover)] transition-colors whitespace-nowrap shrink-0 cursor-pointer"
               >
                 {isPa ? 'ਅੱਜ' : 'Today'}
               </button>
@@ -261,10 +299,11 @@ export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
                 type="button"
                 onClick={onNextMonth}
                 disabled={!canGoNext}
+                data-testid="next-month-btn"
                 aria-label={isPa ? 'ਅਗਲਾ ਮਹੀਨਾ' : 'Next month'}
-                className="min-w-11 min-h-11 flex items-center justify-center rounded-md border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] text-[var(--text-primary)] hover:bg-[var(--bg-hover)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg border-2 border-[var(--border-strong)] bg-[var(--bg-surface)] text-[var(--text-heading)] hover:border-[var(--accent-primary)] hover:bg-[var(--bg-hover)] disabled:opacity-40 disabled:cursor-not-allowed shadow-xs transition-colors cursor-pointer"
               >
-                <ChevronRight className="w-6 h-6" strokeWidth={3} />
+                <ChevronRight className="w-5 h-5" strokeWidth={2.5} aria-hidden="true" />
               </button>
             </div>
 
@@ -380,6 +419,34 @@ export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
                 ))}
               </div>
 
+              <div className="shrink-0">
+                <label htmlFor="perpetual-sambat-select" className="sr-only">
+                  {isPa ? 'ਕੋਈ ਵੀ ਸੰਮਤ ਚੁਣੋ' : 'Jump to any Sambat year'}
+                </label>
+                <select
+                  id="perpetual-sambat-select"
+                  aria-label={isPa ? 'ਕੋਈ ਵੀ ਸੰਮਤ ਚੁਣੋ' : 'Jump to any Sambat year'}
+                  value={PERPETUAL_QUICK_SAMBATS.includes(activeSambatView) ? activeSambatView : activeSambatView}
+                  onChange={(e) => onJumpSambat(Number(e.target.value))}
+                  className="min-h-[36px] rounded-md border border-[var(--border-strong)] bg-[var(--bg-surface-elevated)] px-2.5 text-xs font-medium text-[var(--text-primary)] focus:outline-2 focus:outline-[var(--accent-primary)] cursor-pointer"
+                >
+                  {!PERPETUAL_QUICK_SAMBATS.includes(activeSambatView) && (
+                    <option value={activeSambatView}>
+                      {isPa
+                        ? `ਸੰਮਤ ${toGurmukhiNumerals(activeSambatView)} (${toGurmukhiNumerals(activeSambatView - 57)}–${toGurmukhiNumerals((activeSambatView - 56) % 100)})`
+                        : `Sambat ${activeSambatView} (${activeSambatView - 57}–${String((activeSambatView - 56) % 100).padStart(2, '0')})`}
+                    </option>
+                  )}
+                  {PERPETUAL_QUICK_SAMBATS.map((s) => (
+                    <option key={s} value={s}>
+                      {isPa
+                        ? `ਸੰਮਤ ${toGurmukhiNumerals(s)} (${toGurmukhiNumerals(s - 57)}–${toGurmukhiNumerals((s - 56) % 100)})`
+                        : `Sambat ${s} (${s - 57}–${String((s - 56) % 100).padStart(2, '0')})`}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               {isSolarMode && (
                 <div className="shrink-0">
                   <label htmlFor="solar-month-select" className="sr-only">
@@ -387,14 +454,15 @@ export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
                   </label>
                   <select
                     id="solar-month-select"
-                    value={solarSpanIndex}
-                    onChange={(e) => onSelectSolarSpan(Number(e.target.value))}
+                    aria-label={isPa ? 'ਦੇਸੀ ਮਹੀਨਾ ਚੁਣੋ' : 'Select Punjabi solar month'}
+                    value={activeMonthId}
+                    onChange={(e) => onSelectSolarMonth(activeSambat, Number(e.target.value))}
                     className="min-h-[36px] rounded-md border border-[var(--border-strong)] bg-[var(--bg-surface-elevated)] px-2.5 text-xs font-medium text-[var(--text-primary)] focus:outline-2 focus:outline-[var(--accent-primary)] cursor-pointer"
                   >
-                    {BROWSEABLE_SOLAR_SPANS.map((span, idx) => {
+                    {activeSambatSpans.map((span) => {
                       const m = getBikramiMonthMeta(span.monthId);
                       return (
-                        <option key={`${span.sambat}-${span.monthId}`} value={idx}>
+                        <option key={`${span.sambat}-${span.monthId}`} value={span.monthId}>
                           {isPa
                             ? `${m.namePa} ${toGurmukhiNumerals(span.sambat)}`
                             : isBi
@@ -489,11 +557,13 @@ export const MonthlyJantriGrid: React.FC<MonthlyJantriGridProps> = ({
         </span>
       </div>
 
-      {/* 7-Column Puratan Jantri Calendar Grid */}
-      <div className="overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)]" onTouchStart={(e) => {
-        const touch = e.touches[0]; if (touch) { touchStartX.current = touch.clientX; touchStartY.current = touch.clientY; }
-      }} onTouchEnd={(e) => {
-        if (touchStartX.current === null || touchStartY.current === null) return; const touch = e.changedTouches[0]; if (!touch) return; const deltaX = touch.clientX - touchStartX.current; const deltaY = touch.clientY - touchStartY.current; touchStartX.current = null; touchStartY.current = null; if (Math.abs(deltaX) > Math.abs(deltaY) * 1.2) { if (deltaX < -50 && canGoNext) { onNextMonth(); } else if (deltaX > 50 && canGoPrev) { onPrevMonth(); } } }}>
+      {/* 7-Column Puratan Jantri Calendar Grid (Touch Swipe Enabled + CLS Min-Height Reserved) */}
+      <div
+        data-testid="calendar-grid-container"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        className="min-h-[430px] sm:min-h-[630px] overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface-elevated)] touch-pan-y"
+      >
         {/* Weekday Headers */}
         <div className="grid grid-cols-7 border-b border-[var(--border-subtle)] bg-[var(--grid-header-bg)] text-[var(--grid-header-text)]">
           {WEEKDAYS.map((wd) => (

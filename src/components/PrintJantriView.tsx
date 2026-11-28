@@ -1,13 +1,15 @@
 import {ArrowLeft, ChevronLeft, ChevronRight, Printer} from 'lucide-react';
-import React from 'react';
+import React, {useMemo} from 'react';
 import {getBikramiMonthMeta, GREGORIAN_MONTHS, WEEKDAYS} from '../data/sambatData';
 import type {CalendarGridMode, JantriDay, LanguageMode, PersonalDesiDate} from '../data/types';
 import {
-  BROWSEABLE_SOLAR_SPANS,
   formatGregorianDate,
   formatShortGregorian,
   getBikramiHeaderForGregorianMonth,
   getGregorianHeaderForSolarSpan,
+  getSolarMonthSpanByYearMonth,
+  MAX_PERPETUAL_SAMBAT,
+  MIN_PERPETUAL_SAMBAT,
   SUPPORTED_MAX_MONTH,
   SUPPORTED_MIN_MONTH,
   toGurmukhiNumerals,
@@ -17,7 +19,8 @@ import {MoonPhaseIcon} from './MoonPhaseIcon';
 
 interface PrintJantriViewProps {
   gridMode: CalendarGridMode;
-  solarSpanIndex: number;
+  activeSambat: number;
+  activeMonthId: number;
   year: number;
   monthIndex0: number;
   days: JantriDay[];
@@ -30,7 +33,8 @@ interface PrintJantriViewProps {
 
 export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
   gridMode,
-  solarSpanIndex,
+  activeSambat,
+  activeMonthId,
   year,
   monthIndex0,
   days,
@@ -42,18 +46,21 @@ export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
 }) => {
   const isPa = lang === 'pa';
   const isSolarMode = gridMode === 'solar';
-  const currentSolarSpan = BROWSEABLE_SOLAR_SPANS[solarSpanIndex];
+  const currentSolarSpan = useMemo(
+    () => getSolarMonthSpanByYearMonth(activeSambat, activeMonthId),
+    [activeSambat, activeMonthId],
+  );
   const currentSolarMeta = getBikramiMonthMeta(currentSolarSpan.monthId);
 
   const bikramiEn = getBikramiHeaderForGregorianMonth(year, monthIndex0, 'en');
   const bikramiPa = getBikramiHeaderForGregorianMonth(year, monthIndex0, 'pa');
 
   const canGoPrev = isSolarMode
-    ? solarSpanIndex > 0
+    ? activeSambat > MIN_PERPETUAL_SAMBAT || activeMonthId > 1
     : year > SUPPORTED_MIN_MONTH.year ||
       (year === SUPPORTED_MIN_MONTH.year && monthIndex0 > SUPPORTED_MIN_MONTH.monthIndex0);
   const canGoNext = isSolarMode
-    ? solarSpanIndex < BROWSEABLE_SOLAR_SPANS.length - 1
+    ? activeSambat < MAX_PERPETUAL_SAMBAT || activeMonthId < 12
     : year < SUPPORTED_MAX_MONTH.year ||
       (year === SUPPORTED_MAX_MONTH.year && monthIndex0 < SUPPORTED_MAX_MONTH.monthIndex0);
 
@@ -118,15 +125,18 @@ export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
         {/* Dual-Script Broadsheet Header */}
         <header className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b-2 border-[#1B263B] pb-3.5">
           <div className="flex items-center gap-3.5">
-            <img
-              src="./logo.png?v=3"
-              alt="Tat Khalsa Puratan Jantri Seal"
-              width={48}
-              height={48}
-              loading="eager"
-              decoding="sync"
-              className="w-12 h-12 rounded-lg border border-[#B8860B] object-cover shrink-0 bg-[#FAF6EE]"
-            />
+            <picture className="shrink-0">
+              <source srcSet="./logo.webp?v=4" type="image/webp" />
+              <img
+                src="./logo.png?v=3"
+                alt="Tat Khalsa Puratan Jantri Seal"
+                width={48}
+                height={48}
+                loading="eager"
+                decoding="async"
+                className="w-12 h-12 rounded-lg border border-[#B8860B] object-cover shrink-0 bg-[#FAF6EE]"
+              />
+            </picture>
             <div>
               <p className="text-[11px] tracking-widest uppercase text-[#57534E]">
                 Tat Khalsa Puratan Jantri · calendar.tatkhalsa.in · Puratan Bikrami
@@ -314,11 +324,11 @@ export const PrintJantriView: React.FC<PrintJantriViewProps> = ({
           </div>
         )}
 
-        <footer className="mt-4 pt-2 border-t border-[#E7E5E4] flex items-center justify-between text-[10px] text-[#78716C]">
+        <footer className="mt-4 pt-2 border-t border-[#E7E5E4] flex flex-wrap items-center justify-between gap-2 text-[10px] text-[#57534E]">
           <span>
             Puratan Bikrami Luni-Solar Chronology (Sri Anandpur Sahib IST) · No Fixed Nanakshahi or Astrology
           </span>
-          <span>pothi.tatkhalsa.in · calendar.tatkhalsa.in &middot; tatkhalsa.in &middot; info@tatkhalsa.in</span>
+          <span>tatkhalsa.in · info@tatkhalsa.in · pothi.tatkhalsa.in · calendar.tatkhalsa.in</span>
         </footer>
       </div>
     </section>

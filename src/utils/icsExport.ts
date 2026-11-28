@@ -1,11 +1,12 @@
-import {HISTORICAL_EVENTS} from '../data/eventsData';
-import {getBikramiMonthMeta, SOLAR_MONTH_SPANS} from '../data/sambatData';
+import {getBikramiMonthMeta} from '../data/sambatData';
 import type {HistoricalEvent, IcsExportOptions, PersonalDesiDate} from '../data/types';
 import {
   addDaysIso,
   formatDualTime,
+  getAllEventsForSambat,
   getBikramiSolarDate,
   getLunarInfoCached,
+  getSolarMonthSpansForSambat,
   toGurmukhiNumerals,
 } from './bikramiEngine';
 import {
@@ -15,16 +16,52 @@ import {
 
 /**
  * Pure RFC 5545 iCalendar (.ics) generator for Tat Khalsa Puratan Jantri.
- * Supports both selective observance export AND full 365-day daily Bikrami + Lunar date export
- * (combining same-day Purabs, Sangrands, Puranmashi, Masya, Shaheedi Divases, Barsis, and Personal Desi Dates cleanly into each daily VEVENT).
+ * Supports perpetual Sambat years (2082–2084 verified + 2085–2150+ projected),
+ * selective observance exports, static subscription feeds, and full 365/366-day daily Bikrami + Lunar exports.
  */
 
-const SCOPE_RANGES: Record<IcsExportOptions['sambatScope'], {start: string; end: string}> = {
-  '2082': {start: '2025-03-14', end: '2026-03-13'}, // 1 Chet 2082 – 30 Phagun 2082 (365 days)
-  '2083': {start: '2026-03-14', end: '2027-03-14'}, // 1 Chet 2083 – 30 Phagun 2083 (366 days)
-  '2084': {start: '2027-03-15', end: '2028-03-13'}, // 1 Chet 2084 – 30 Phagun 2084 (365 days)
-  all: {start: '2025-03-14', end: '2028-03-13'}, // Full Sambat 2082–2084 coverage (1,096 days)
-};
+export interface IcsRecord {
+  uid: string;
+  date: string;
+  summary: string;
+  description: string;
+  categories: string;
+}
+
+export function resolveSambatsForScope(scope: IcsExportOptions['sambatScope']): number[] {
+  if (scope === 'all') return [2082, 2083, 2084];
+  if (scope === '2082-2086') return [2082, 2083, 2084, 2085, 2086];
+  const rangeMatch = scope.match(/^(\d{4})-(\d{4})$/);
+  if (rangeMatch) {
+    const start = Number(rangeMatch[1]);
+    const end = Number(rangeMatch[2]);
+    if (Number.isInteger(start) && Number.isInteger(end) && end >= start && end - start <= 10) {
+      const years: number[] = [];
+      for (let y = start; y <= end; y++) years.push(y);
+      return years;
+    }
+  }
+  const single = Number(scope);
+  if (Number.isInteger(single) && single >= 1957 && single <= 2207) {
+    return [single];
+  }
+  return [2083];
+}
+
+export function resolveDateRangeForScope(scope: IcsExportOptions['sambatScope']): {
+  start: string;
+  end: string;
+  sambats: number[];
+} {
+  const sambats = resolveSambatsForScope(scope);
+  const firstSpans = getSolarMonthSpansForSambat(sambats[0]);
+  const lastSpans = getSolarMonthSpansForSambat(sambats[sambats.length - 1]);
+  return {
+    start: firstSpans[0].startDate,
+    end: lastSpans[lastSpans.length - 1].endDate,
+    sambats,
+  };
+}
 
 /**
  * Strip raw line breaks and ASCII control characters from user-entered personal
@@ -65,14 +102,6 @@ function formatUtcStamp(date: Date): string {
   );
 }
 
-interface IcsRecord {
-  uid: string;
-  date: string;
-  summary: string;
-  description: string;
-  categories: string;
-}
-
 function renderVEvent(record: IcsRecord, dtStamp: string): string {
   const dtStart = isoToIcsDate(record.date);
   const dtEnd = isoToIcsDate(addDaysIso(record.date, 1));
@@ -88,11 +117,6 @@ function renderVEvent(record: IcsRecord, dtStamp: string): string {
     'TRANSP:TRANSPARENT',
     'END:VEVENT',
   ].join('\r\n');
-}
-
-function matchesSambatScope(sambat: number, scope: IcsExportOptions['sambatScope']): boolean {
-  if (scope === 'all') return true;
-  return String(sambat) === scope;
 }
 
 function isHistoricalEventSelected(ev: HistoricalEvent, options: IcsExportOptions): boolean {
@@ -117,28 +141,29 @@ function formatDailyLunarClause(
   return `${lunar.lunarMonthEn} ${lunar.paksh} ${lunar.pakshDay} (${lunar.tithiNameEn})`;
 }
 
-/** Generate a complete RFC 5545 .ics string based on selected Jantri event categories and Sambat scope. */
-export function generateJantriIcs(
-  options: IcsExportOptions,
-  now: Date = new Date(),
-): {
-  content: string;
-  eventCount: number;
+/** Collect deterministic calendar records for ICS download, static feeds, or Google Calendar sync. */
+export function collectJantriIcsRecords(options: IcsExportOptions): {
+  records: IcsRecord[];
+  sambats: number[];
 } {
-  const dtStamp = formatUtcStamp(now);
   const records: IcsRecord[] = [];
   const isPa = options.language === 'pa';
   const isBi = options.language === 'bi';
-  const range = SCOPE_RANGES[options.sambatScope];
+  const range = resolveDateRangeForScope(options.sambatScope);
+  const sambatSet = new Set(range.sambats);
 
-  // Index selected historical events by date for fast lookup
+  // Gather historical/projected events across all Sambats in scope
+  const allScopeEvents: HistoricalEvent[] = [];
   const selectedEventsByDate = new Map<string, HistoricalEvent[]>();
-  for (const ev of HISTORICAL_EVENTS) {
-    if (!matchesSambatScope(ev.sambat, options.sambatScope)) continue;
-    if (!isHistoricalEventSelected(ev, options)) continue;
-    const list = selectedEventsByDate.get(ev.date) ?? [];
-    list.push(ev);
-    selectedEventsByDate.set(ev.date, list);
+  for (const sambat of range.sambats) {
+    const yearEvents = getAllEventsForSambat(sambat);
+    for (const ev of yearEvents) {
+      if (!isHistoricalEventSelected(ev, options)) continue;
+      allScopeEvents.push(ev);
+      const list = selectedEventsByDate.get(ev.date) ?? [];
+      list.push(ev);
+      selectedEventsByDate.set(ev.date, list);
+    }
   }
 
   // Index selected personal Desi dates by Gregorian ISO date
@@ -156,8 +181,6 @@ export function generateJantriIcs(
   }
 
   if (options.includeDaily) {
-    // Full Daily Mode: generate one all-day VEVENT for EVERY calendar day in scope,
-    // combining any matching Sangrand, Puranmashi, Masya, Gurpurab, Shaheedi, Khalsa, Barsi, or Personal Desi Date into that day's SUMMARY & DESCRIPTION.
     let cursor = range.start;
     while (cursor <= range.end) {
       const solar = getBikramiSolarDate(cursor);
@@ -171,7 +194,6 @@ export function generateJantriIcs(
       const lunarClauseEn = formatDailyLunarClause(lunar, 'en');
       const lunarClausePa = formatDailyLunarClause(lunar, 'pa');
 
-      // Special observances appended after em-dash when checked
       const highlights: string[] = [];
       const categories = new Set<string>(['Tat Khalsa Puratan Jantri', 'Daily Bikrami']);
 
@@ -206,7 +228,6 @@ export function generateJantriIcs(
       const summary =
         highlights.length > 0 ? `${baseSummary} — ${highlights.join(' · ')}` : baseSummary;
 
-      // Rich Bilingual DESCRIPTION with Sri Anandpur Sahib (IST) tithi transition time
       const descLines: string[] = [
         `Desi Solar Date: ${solar.day} ${solar.monthMeta.nameEn}, Bikrami Sambat ${solar.sambat} (${toGurmukhiNumerals(solar.day)} ${solar.monthMeta.namePa}, ਸੰਮਤ ${toGurmukhiNumerals(solar.sambat)})`,
         `Lunar Tithi: ${lunar.lunarMonthEn} ${lunar.paksh} ${lunar.pakshDay} (${lunar.tithiNameEn}) · ${lunar.lunarMonthPa} ${lunar.pakshPa} ${toGurmukhiNumerals(lunar.pakshDay)} (${lunar.tithiNamePa})`,
@@ -255,27 +276,27 @@ export function generateJantriIcs(
       cursor = addDaysIso(cursor, 1);
     }
   } else {
-    // Selective Mode: export only chosen observances
-    // 1. Sangrands (Solar Month Transitions)
+    // 1. Sangrands across selected Sambats
     if (options.includeSangrands) {
-      for (const span of SOLAR_MONTH_SPANS) {
-        if (span.startDate < range.start || span.startDate > range.end) continue;
-        if (!matchesSambatScope(span.sambat, options.sambatScope)) continue;
-        const meta = getBikramiMonthMeta(span.monthId);
-        const sankrantiDual = formatDualTime(span.sankrantiUtc, 'Asia/Kolkata');
-        records.push({
-          uid: `sangrand-${span.sambat}-${meta.key}-${span.startDate}`,
-          date: span.startDate,
-          summary: isBi
-            ? `${meta.nameEn} Sangrand / ${meta.namePa} ਸੰਗਰਾਂਦ · 1 ${meta.nameEn}, Sambat ${span.sambat}`
-            : isPa
-              ? `${meta.namePa} ਸੰਗਰਾਂਦ · ੧ ${meta.namePa} ਸੰਮਤ ${toGurmukhiNumerals(span.sambat)}`
-              : `${meta.nameEn} Sangrand · 1 ${meta.nameEn}, Sambat ${span.sambat}`,
-          description: isPa
-            ? `ਪੁਰਾਤਨ ਬਿਕ੍ਰਮੀ ਸੰਗਰਾਂਦ (${meta.barahMahaRefPa})। ਸੰਕ੍ਰਾਂਤੀ (ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ IST): ${sankrantiDual.amritsarTime}, ${sankrantiDual.amritsarDate}। ਬਾਰਹ ਮਾਹਾ: ${meta.pothiUrl}\nhttps://calendar.tatkhalsa.in/`
-            : `Puratan Bikrami Sangrand (${meta.barahMahaRefEn}). Sankranti (Sri Anandpur Sahib IST): ${sankrantiDual.amritsarTime}, ${sankrantiDual.amritsarDate}. Read Barah Maha: ${meta.pothiUrl}\nhttps://calendar.tatkhalsa.in/`,
-          categories: 'Sangrand,Tat Khalsa Puratan Jantri',
-        });
+      for (const sambat of range.sambats) {
+        const spans = getSolarMonthSpansForSambat(sambat);
+        for (const span of spans) {
+          const meta = getBikramiMonthMeta(span.monthId);
+          const sankrantiDual = formatDualTime(span.sankrantiUtc, 'Asia/Kolkata');
+          records.push({
+            uid: `sangrand-${span.sambat}-${meta.key}-${span.startDate}`,
+            date: span.startDate,
+            summary: isBi
+              ? `${meta.nameEn} Sangrand / ${meta.namePa} ਸੰਗਰਾਂਦ · 1 ${meta.nameEn}, Sambat ${span.sambat}`
+              : isPa
+                ? `${meta.namePa} ਸੰਗਰਾਂਦ · ੧ ${meta.namePa} ਸੰਮਤ ${toGurmukhiNumerals(span.sambat)}`
+                : `${meta.nameEn} Sangrand · 1 ${meta.nameEn}, Sambat ${span.sambat}`,
+            description: isPa
+              ? `ਪੁਰਾਤਨ ਬਿਕ੍ਰਮੀ ਸੰਗਰਾਂਦ (${meta.barahMahaRefPa})। ਸੰਕ੍ਰਾਂਤੀ (ਸ੍ਰੀ ਅਨੰਦਪੁਰ ਸਾਹਿਬ IST): ${sankrantiDual.amritsarTime}, ${sankrantiDual.amritsarDate}। ਬਾਰਹ ਮਾਹਾ: ${meta.pothiUrl}\nhttps://calendar.tatkhalsa.in/`
+              : `Puratan Bikrami Sangrand (${meta.barahMahaRefEn}). Sankranti (Sri Anandpur Sahib IST): ${sankrantiDual.amritsarTime}, ${sankrantiDual.amritsarDate}. Read Barah Maha: ${meta.pothiUrl}\nhttps://calendar.tatkhalsa.in/`,
+            categories: 'Sangrand,Tat Khalsa Puratan Jantri',
+          });
+        }
       }
     }
 
@@ -284,7 +305,7 @@ export function generateJantriIcs(
       let cursor = range.start;
       while (cursor <= range.end) {
         const solar = getBikramiSolarDate(cursor);
-        if (matchesSambatScope(solar.sambat, options.sambatScope)) {
+        if (sambatSet.has(solar.sambat)) {
           const lunar = getLunarInfoCached(cursor);
           const tithiDual = formatDualTime(lunar.tithiEndsAtUtc, 'Asia/Kolkata');
           if (options.includePuranmashi && lunar.isPuranmashi) {
@@ -323,10 +344,7 @@ export function generateJantriIcs(
     }
 
     // 3. Gurpurabs, Shaheedi Divases, Khalsa/Sampardai events, and Barsis
-    for (const ev of HISTORICAL_EVENTS) {
-      if (!matchesSambatScope(ev.sambat, options.sambatScope)) continue;
-      if (!isHistoricalEventSelected(ev, options)) continue;
-
+    for (const ev of allScopeEvents) {
       const solar = getBikramiSolarDate(ev.date);
       const lunar = getLunarInfoCached(ev.date);
       const tithiDual = formatDualTime(lunar.tithiEndsAtUtc, 'Asia/Kolkata');
@@ -376,6 +394,29 @@ export function generateJantriIcs(
   }
 
   records.sort((a, b) => a.date.localeCompare(b.date));
+  return {records, sambats: range.sambats};
+}
+
+/** Generate a complete RFC 5545 .ics string based on selected Jantri event categories and Sambat scope. */
+export function generateJantriIcs(
+  options: IcsExportOptions,
+  now: Date = new Date(),
+): {
+  content: string;
+  eventCount: number;
+} {
+  const dtStamp = formatUtcStamp(now);
+  const isPa = options.language === 'pa';
+  const {records, sambats} = collectJantriIcsRecords(options);
+
+  const scopeLabelEn =
+    sambats.length === 1
+      ? `Sambat ${sambats[0]}`
+      : `Sambat ${sambats[0]}–${sambats[sambats.length - 1]}`;
+  const scopeLabelPa =
+    sambats.length === 1
+      ? `ਸੰਮਤ ${toGurmukhiNumerals(sambats[0])}`
+      : `ਸੰਮਤ ${toGurmukhiNumerals(sambats[0])}–${toGurmukhiNumerals(sambats[sambats.length - 1])}`;
 
   const header = [
     'BEGIN:VCALENDAR',
@@ -383,7 +424,7 @@ export function generateJantriIcs(
     'PRODID:-//Tatkhalsa Foundation//Tat Khalsa Puratan Jantri//EN',
     'CALSCALE:GREGORIAN',
     'METHOD:PUBLISH',
-    `X-WR-CALNAME:${isPa ? 'ਤੱਤਖ਼ਾਲਸਾ ਪੁਰਾਤਨ ਜੰਤਰੀ (੨੦੮੨–੨੦੮੪)' : 'Tat Khalsa Puratan Jantri (Sambat 2082–2084)'}`,
+    `X-WR-CALNAME:${isPa ? `ਤੱਤਖ਼ਾਲਸਾ ਪੁਰਾਤਨ ਜੰਤਰੀ (${scopeLabelPa})` : `Tat Khalsa Puratan Jantri (${scopeLabelEn})`}`,
     'X-WR-TIMEZONE:Asia/Kolkata',
   ];
 

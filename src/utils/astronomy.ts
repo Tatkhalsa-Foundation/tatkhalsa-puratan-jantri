@@ -384,3 +384,251 @@ export function computeLunarInfoForDate(isoDate: string): LunarInfo {
     amritsarSunriseUtc: new Date(sunriseMs).toISOString(),
   };
 }
+
+/**
+ * Compact precomputed lunar tuple for O(1) main-thread startup (zero trig loops for Sambat 2082–2084):
+ * [tithiNumber, flags(bit0=Puranmashi, bit1=Masya), lunarMonthId, elongationCentideg, tithiEndsOffsetSec, sunriseOffsetSec]
+ * where offsets are seconds relative to `${isoDate}T00:00:00Z`.
+ */
+export type CompactLunarTuple = readonly [number, number, number, number, number, number];
+
+export function encodeLunarInfoToCompact(isoDate: string, info: LunarInfo): CompactLunarTuple {
+  const midnightMs = Date.parse(`${isoDate}T00:00:00Z`);
+  const flags = (info.isPuranmashi ? 1 : 0) | (info.isMasya ? 2 : 0);
+  const elongCenti = Math.round(info.elongationDeg * 100);
+  const tithiEndSec = Math.round((Date.parse(info.tithiEndsAtUtc) - midnightMs) / 1000);
+  const sunriseSec = Math.round((Date.parse(info.amritsarSunriseUtc) - midnightMs) / 1000);
+  return [info.tithiNumber, flags, info.lunarMonthId, elongCenti, tithiEndSec, sunriseSec];
+}
+
+export function decodeCompactLunarTuple(isoDate: string, tuple: CompactLunarTuple): LunarInfo {
+  const [tithiNumber, flags, lunarMonthId, elongCenti, tithiEndSec, sunriseSec] = tuple;
+  const midnightMs = Date.parse(`${isoDate}T00:00:00Z`);
+  const isPuranmashi = (flags & 1) !== 0;
+  const isMasya = (flags & 2) !== 0;
+  const isSudhi = tithiNumber <= 15;
+  const paksh: LunarPaksh = isSudhi ? 'Sudhi' : 'Vadhi';
+  const pakshPa = isSudhi ? 'ਸੁਦੀ' : 'ਵਦੀ';
+  const pakshDay = isSudhi ? tithiNumber : tithiNumber - 15;
+
+  const isEkadashi = pakshDay === 11;
+  const isAshtami = pakshDay === 8;
+  const isPanchmi = pakshDay === 5;
+  const isSpecialLunar = isPuranmashi || isMasya || isEkadashi || isAshtami || isPanchmi;
+
+  const tithiMeta = TITHI_NAMES[pakshDay - 1];
+  let tithiNameEn = tithiMeta.en;
+  let tithiNamePa = tithiMeta.pa;
+  let shortTithiEn = `${paksh} ${pakshDay}`;
+  let shortTithiPa = `${pakshPa} ${tithiMeta.shortPa.split(' ')[0]}`;
+
+  if (isPuranmashi) {
+    tithiNameEn = 'Puranmashi';
+    tithiNamePa = 'ਪੂਰਨਮਾਸ਼ੀ';
+    shortTithiEn = 'Puranmashi';
+    shortTithiPa = 'ਪੂਰਨਮਾਸ਼ੀ';
+  } else if (isMasya) {
+    tithiNameEn = 'Masya';
+    tithiNamePa = 'ਮੱਸਿਆ';
+    shortTithiEn = 'Masya';
+    shortTithiPa = 'ਮੱਸਿਆ';
+  } else if (tithiNumber === 15) {
+    tithiNameEn = 'Chaudas / Puranmashi Aarambh';
+    tithiNamePa = 'ਚੌਦਸ / ਪੂਰਨਮਾਸ਼ੀ ਆਰੰਭ';
+    shortTithiEn = 'Sudhi 14–15';
+    shortTithiPa = 'ਸੁਦੀ ੧੪-੧੫';
+  } else if (tithiNumber === 30) {
+    tithiNameEn = 'Chaudas / Masya Aarambh';
+    tithiNamePa = 'ਚੌਦਸ / ਮੱਸਿਆ ਆਰੰਭ';
+    shortTithiEn = 'Vadhi 14–15';
+    shortTithiPa = 'ਵਦੀ ੧੪-੧੫';
+  } else if (isEkadashi) {
+    shortTithiEn = `${paksh} 11 · Ekadashi`;
+    shortTithiPa = `${pakshPa} ੧੧ · ਇਕਾਦਸ਼ੀ`;
+  } else if (isAshtami) {
+    shortTithiEn = `${paksh} 8 · Ashtami`;
+    shortTithiPa = `${pakshPa} ੮ · ਅਸ਼ਟਮੀ`;
+  } else if (isPanchmi) {
+    shortTithiEn = `${paksh} 5 · Panchmi`;
+    shortTithiPa = `${pakshPa} ੫ · ਪੰਚਮੀ`;
+  }
+
+  const lunarMonthMeta = getBikramiMonthMeta(lunarMonthId);
+  const elongationDeg = elongCenti / 100;
+  const illumination = (1 - Math.cos(elongationDeg * DEG2RAD)) / 2;
+
+  return {
+    tithiNumber,
+    paksh,
+    pakshPa,
+    pakshDay,
+    tithiNameEn,
+    tithiNamePa,
+    shortTithiEn,
+    shortTithiPa,
+    lunarMonthId,
+    lunarMonthEn: lunarMonthMeta.nameEn,
+    lunarMonthPa: lunarMonthMeta.namePa,
+    isPuranmashi,
+    isMasya,
+    isEkadashi,
+    isAshtami,
+    isPanchmi,
+    isSpecialLunar,
+    elongationDeg,
+    illumination,
+    tithiEndsAtUtc: new Date(midnightMs + tithiEndSec * 1000).toISOString(),
+    amritsarSunriseUtc: new Date(midnightMs + sunriseSec * 1000).toISOString(),
+  };
+}
+
+/** Compute sunset UTC timestamp (ms) at Sri Amritsar / Anandpur Sahib for YYYY-MM-DD using NOAA solar equation. */
+export function getAmritsarSunsetUtcMs(isoDate: string): number {
+  const [y, m, d] = isoDate.split('-').map(Number);
+  const noonUtc = Date.UTC(y, m - 1, d, 6, 30, 0);
+  const jd = msToJulianDay(noonUtc);
+  const T = (jd - 2451545.0) / 36525.0;
+
+  const L0 = normalizeDeg(280.46646 + T * (36000.76983 + T * 0.0003032));
+  const M = normalizeDeg(357.52911 + T * (35999.05029 - 0.0001537 * T));
+  const e = 0.016708634 - T * (0.000042037 + 0.0000001267 * T);
+  const Mrad = M * DEG2RAD;
+  const C =
+    Math.sin(Mrad) * (1.914602 - T * (0.004817 + 0.000014 * T)) +
+    Math.sin(2 * Mrad) * (0.019993 - 0.000101 * T) +
+    Math.sin(3 * Mrad) * 0.000289;
+  const trueLong = L0 + C;
+  const omega = 125.04 - 1934.136 * T;
+  const appLong = trueLong - 0.00569 - 0.00478 * Math.sin(omega * DEG2RAD);
+  const meanObliq = 23 + (26 + (21.448 - T * (46.815 + T * (0.00059 - T * 0.001813))) / 60) / 60;
+  const obliqCorr = meanObliq + 0.00256 * Math.cos(omega * DEG2RAD);
+  const declRad = Math.asin(Math.sin(obliqCorr * DEG2RAD) * Math.sin(appLong * DEG2RAD));
+
+  const varY = Math.pow(Math.tan((obliqCorr / 2) * DEG2RAD), 2);
+  const eqOfTimeMin =
+    4 *
+    RAD2DEG *
+    (varY * Math.sin(2 * L0 * DEG2RAD) -
+      2 * e * Math.sin(Mrad) +
+      4 * e * varY * Math.sin(Mrad) * Math.cos(2 * L0 * DEG2RAD) -
+      0.5 * varY * varY * Math.sin(4 * L0 * DEG2RAD) -
+      1.25 * e * e * Math.sin(2 * Mrad));
+
+  const latRad = AMRITSAR_LAT * DEG2RAD;
+  const zenithRad = 90.833 * DEG2RAD;
+  const cosHa =
+    Math.cos(zenithRad) / (Math.cos(latRad) * Math.cos(declRad)) -
+    Math.tan(latRad) * Math.tan(declRad);
+  const clampedCosHa = Math.max(-1, Math.min(1, cosHa));
+  const haDeg = Math.acos(clampedCosHa) * RAD2DEG;
+
+  const sunsetMinutesUtc = 720 - 4 * (AMRITSAR_LON - haDeg) - eqOfTimeMin;
+  return Date.UTC(y, m - 1, d, 0, 0, 0) + Math.round(sunsetMinutesUtc * 60000);
+}
+
+/**
+ * Find exact UTC ms of sidereal solar Sankranti (Lahiri / Chitrapaksha ayanamsa)
+ * for a given Bikrami Sambat year and solar monthId (1 = Chet/330° ... 12 = Phagun/300°).
+ */
+export function findSiderealSankrantiUtcMs(sambat: number, monthId: number): number {
+  const startGregYear = sambat - 57;
+  // monthId 1 (Chet) -> Mar of startGregYear; monthId 11 (Magh) -> Jan of startGregYear + 1
+  const approxGregMonth = ((monthId + 1) % 12) + 1; // 1->3(Mar), 2->4(Apr), ..., 10->12(Dec), 11->1(Jan), 12->2(Feb)
+  const approxGregYear = monthId >= 11 ? startGregYear + 1 : startGregYear;
+  const targetSiderealDeg = ((monthId - 2 + 12) % 12) * 30;
+
+  let jd = msToJulianDay(Date.UTC(approxGregYear, approxGregMonth - 1, 15, 0, 0, 0));
+  for (let i = 0; i < 10; i++) {
+    const sidereal = normalizeDeg(getSunLongitudeDeg(jd) - getLahiriAyanamsaDeg(jd));
+    let err = targetSiderealDeg - sidereal;
+    if (err > 180) err -= 360;
+    if (err < -180) err += 360;
+    if (Math.abs(err) < 0.00005) break;
+    // Solar apparent motion ~0.9856°/day; refine with local numerical derivative
+    const dt = 0.05;
+    const nextSid = normalizeDeg(getSunLongitudeDeg(jd + dt) - getLahiriAyanamsaDeg(jd + dt));
+    let rate = nextSid - sidereal;
+    if (rate < -180) rate += 360;
+    if (rate > 180) rate -= 360;
+    rate /= dt;
+    jd += err / rate;
+  }
+  return julianDayToMs(jd);
+}
+
+function utcMsToIstDateIso(utcMs: number): string {
+  const istMs = utcMs + 19800000; // UTC+05:30
+  const d = new Date(istMs);
+  const y = d.getUTCFullYear();
+  const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(d.getUTCDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+function shiftIsoDate(isoDate: string, deltaDays: number): string {
+  const [y, m, d] = isoDate.split('-').map(Number);
+  const next = new Date(Date.UTC(y, m - 1, d + deltaDays));
+  return `${next.getUTCFullYear()}-${String(next.getUTCMonth() + 1).padStart(2, '0')}-${String(next.getUTCDate()).padStart(2, '0')}`;
+}
+
+function diffIsoDays(isoA: string, isoB: string): number {
+  const [ya, ma, da] = isoA.split('-').map(Number);
+  const [yb, mb, db] = isoB.split('-').map(Number);
+  return Math.round((Date.UTC(yb, mb - 1, db) - Date.UTC(ya, ma - 1, da)) / 86400000);
+}
+
+/**
+ * Determine the Puratan Punjabi Udaya Sangrand date (YYYY-MM-DD in IST) for a sidereal Sankranti.
+ * Traditional Punjab rule: if Sankranti occurs before local sunset at Sri Anandpur Sahib / Amritsar,
+ * Sangrand is observed that same IST calendar day; if after sunset, Udaya Sangrand begins the next sunrise.
+ */
+export function resolveSangrandDateFromSankranti(sankrantiUtcMs: number): string {
+  const istDate = utcMsToIstDateIso(sankrantiUtcMs);
+  const sunsetUtcMs = getAmritsarSunsetUtcMs(istDate);
+  if (sankrantiUtcMs <= sunsetUtcMs) {
+    return istDate;
+  }
+  return shiftIsoDate(istDate, 1);
+}
+
+/**
+ * Perpetually compute all 12 Puratan Bikrami solar month spans (1 Chet through Phagun)
+ * for any Bikrami Sambat year (e.g. 1900–2150 CE / Sambat 1957–2207) using Meeus sidereal solar ingress.
+ */
+export function computeSolarMonthSpansForSambat(sambat: number): {
+  sambat: number;
+  monthId: number;
+  startDate: string;
+  endDate: string;
+  days: number;
+  sankrantiUtc: string;
+}[] {
+  const starts: {monthId: number; startDate: string; sankrantiUtc: string}[] = [];
+  for (let monthId = 1; monthId <= 12; monthId++) {
+    const sankrantiMs = findSiderealSankrantiUtcMs(sambat, monthId);
+    const startDate = resolveSangrandDateFromSankranti(sankrantiMs);
+    starts.push({
+      monthId,
+      startDate,
+      sankrantiUtc: new Date(sankrantiMs).toISOString(),
+    });
+  }
+  // Compute Chet of next Sambat to close Phagun cleanly
+  const nextChetMs = findSiderealSankrantiUtcMs(sambat + 1, 1);
+  const nextChetStart = resolveSangrandDateFromSankranti(nextChetMs);
+
+  return starts.map((item, idx) => {
+    const nextStart = idx < 11 ? starts[idx + 1].startDate : nextChetStart;
+    const endDate = shiftIsoDate(nextStart, -1);
+    const days = diffIsoDays(item.startDate, nextStart);
+    return {
+      sambat,
+      monthId: item.monthId,
+      startDate: item.startDate,
+      endDate,
+      days,
+      sankrantiUtc: item.sankrantiUtc,
+    };
+  });
+}
+
