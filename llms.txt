@@ -1,0 +1,25 @@
+# Tat Khalsa Puratan Jantri (ਤੱਤਖ਼ਾਲਸਾ ਪੁਰਾਤਨ ਜੰਤਰੀ)
+
+> Authentic perpetual Sikh Puratan Bikrami Sambat luni-solar calendar published by Tatkhalsa Foundation — verified for Bikrami Sambat 2082, 2083, and 2084 (March 2025 – March 2028 CE) with an offline Meeus astronomical engine projecting Sangrands, lunar tithis, and Purabs perpetually (1900–2150+ CE).
+
+## Methodology & Chronology
+- **Traditional Puratan Bikrami Luni-Solar Reckoning**: Follows traditional Puratan Sikh Jantri chronology rather than the 2003 solar-fixed Nanakshahi calendar.
+- **Sri Anandpur Sahib (IST) Udaya Sangrands**: Solar month transitions (Sangrands across all 12 Punjabi months from Chet through Phagun) and lunar tithi endpoints are computed with Sri Anandpur Sahib (India Standard Time, UTC+05:30) as the primary reference alongside the user's local device timezone.
+- **Lunar Tithis**: Tracks daily Sudhi (waxing) and Vadhi (waning) tithis, including Puranmashi (full moon), Masya (new moon), Panchmi, Ashtami, and Ekadashi.
+
+## Coverage (Verified Sambat 2082–2084 & Perpetual Multi-Year Projection)
+- **Full Verified Parity**: Complete coverage of Gurpurabs (Parkash, Gurgaddi, Joti Jot), Shaheedi Divases (including Shaheedi Hafta 6–13 Poh), Khalsa & Sampardai historical days, 15 Bhagats, 11 Bhatts, Gursikh Bani-kars, Guru Ghar families, Panj Pyare, Khalsa Shaheeds, and Sampardai Mahapurakh Barsis across Sambat 2082, 2083, and 2084.
+- **Perpetual Multi-Year Engine (2030+ & Beyond)**: Dynamically calculates sidereal Sankrantis, Udaya Sangrands, lunar tithis, and canonical solar/lunar Purabs for any past or future Bikrami Sambat year offline.
+- **Primary Scriptural Colophons**: Every observance links directly to primary Granth & Barah Maha readings on Tatkhalsa Pothi.
+
+## Calendar Subscriptions & Exports
+- **Observances Feed (RFC 5545 `.ics`)**: https://calendar.tatkhalsa.in/feeds/puratan-jantri-observances.ics
+- **Full Daily Bikrami & Lunar Feed (`.ics`)**: https://calendar.tatkhalsa.in/feeds/puratan-jantri-daily.ics
+- Supports 1-Click Apple Calendar (`webcal://`), 1-Click Google Calendar subscription, custom `.ics` downloads, Personal Desi Date reminders, and A4 printable monthly Jantri broadsheets.
+
+## Canonical Links & Official Contact
+- **Web App**: https://calendar.tatkhalsa.in/
+- **Tatkhalsa Foundation**: https://tatkhalsa.in/
+- **Official Public Contact & Corrections**: info@tatkhalsa.in
+- **Tatkhalsa Pothi (Scriptural & Barah Maha Reader)**: https://pothi.tatkhalsa.in/
+- **Source Repository**: https://github.com/Tatkhalsa-Foundation/tatkhalsa-puratan-jantri

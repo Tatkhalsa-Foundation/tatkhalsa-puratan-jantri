@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tat Khalsa Puratan Jantri — Perpetual Bikrami Sambat Calendar</title>
+    <meta
+      name="description"
+      content="Authentic Puratan Bikrami Sambat calendar by Tatkhalsa Foundation. Track Punjabi solar months, Sangrands, lunar tithis, Gurpurabs, and archival colophons across 2082–2084 and beyond."
+    />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <link rel="canonical" href="https://calendar.tatkhalsa.in/" />
+
+    <!-- Open Graph / Social -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://calendar.tatkhalsa.in/" />
+    <meta property="og:site_name" content="Tat Khalsa Puratan Jantri" />
+    <meta property="og:title" content="Tat Khalsa Puratan Jantri — Perpetual Bikrami Sambat Calendar" />
+    <meta
+      property="og:description"
+      content="Authentic Puratan Bikrami Sambat calendar by Tatkhalsa Foundation. Track Punjabi solar months, Sangrands, lunar tithis, Gurpurabs, and archival colophons."
+    />
+    <meta property="og:image" content="https://calendar.tatkhalsa.in/og-jantri-v3.png" />
+    <meta property="og:image:secure_url" content="https://calendar.tatkhalsa.in/og-jantri-v3.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1024" />
+    <meta property="og:image:height" content="1024" />
+    <meta property="og:image:alt" content="Tat Khalsa Puratan Jantri — Bikrami Sambat Calendar" />
+    <meta property="og:locale" content="en_IN" />
+    <meta property="og:locale:alternate" content="pa_IN" />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Tat Khalsa Puratan Jantri — Perpetual Bikrami Sambat Calendar" />
+    <meta
+      name="twitter:description"
+      content="Authentic Puratan Bikrami Sambat calendar by Tatkhalsa Foundation. Track Punjabi solar months, Sangrands, lunar tithis, Gurpurabs, and archival colophons."
+    />
+    <meta name="twitter:image" content="https://calendar.tatkhalsa.in/og-jantri-v3.png" />
+
+    <!-- PWA & Mobile Safari -->
+    <meta name="theme-color" content="#FAF6EE" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Tat Khalsa" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png?v=3" />
+    <link rel="icon" type="image/png" href="./logo.png?v=3" />
+    <link rel="preload" as="image" type="image/webp" href="./logo.webp?v=4" />
+
+    <!-- Non-blocking Typography: Archival Serif + Gurmukhi + Tabular Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+Gurmukhi:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&display=swap"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+Gurmukhi:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
+
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Tat Khalsa Puratan Jantri",
+        "alternateName": "ਤੱਤਖ਼ਾਲਸਾ ਪੁਰਾਤਨ ਜੰਤਰੀ",
+        "url": "https://calendar.tatkhalsa.in",
+        "applicationCategory": "ReferenceApplication",
+        "operatingSystem": "All",
+        "inLanguage": ["en", "pa"],
+        "description": "Authentic perpetual Puratan Bikrami Sambat luni-solar calendar by Tatkhalsa Foundation tracking 12 Punjabi solar months, Sangrands, Sudhi/Vadhi lunar tithis, Gurpurabs, Shaheedi Divases, and primary scriptural colophons.",
+        "publisher": {
+          "@type": "Organization",
+          "name": "Tatkhalsa Foundation",
+          "url": "https://tatkhalsa.in",
+          "email": "info@tatkhalsa.in",
+          "sameAs": [
+            "https://tatkhalsa.in",
+            "https://pothi.tatkhalsa.in",
+            "https://github.com/Tatkhalsa-Foundation/tatkhalsa-puratan-jantri"
+          ]
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "INR"
+        }
+      }
+    </script>
+
+    <!-- Pre-paint theme bootstrap to avoid flash in Surmai Night / Hazuri Kesri -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('tatkhalsa_jantri_theme');
+          if (t === 'surmai' || t === 'kesri' || t === 'parchment') {
+            document.documentElement.dataset.theme = t;
+            if (t === 'surmai') document.documentElement.classList.add('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <script type="module" crossorigin src="./assets/index-BMsqGqko.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-CiOvO-QA.css">
+  <link rel="manifest" href="./manifest.webmanifest"></head>
+  <body class="bg-[var(--bg-canvas)] text-[var(--text-primary)] antialiased selection:bg-[var(--accent-primary-tint)] selection:text-[var(--text-primary)]">
+    <div id="root"></div>
+    <noscript>
+      <main style="max-width:44rem;margin:2rem auto;padding:1.5rem;font-family:Georgia,serif;line-height:1.6;">
+        <h1>Tat Khalsa Puratan Jantri (ਤੱਤਖ਼ਾਲਸਾ ਪੁਰਾਤਨ ਜੰਤਰੀ)</h1>
+        <p>
+          Tat Khalsa Puratan Jantri is a traditional Sikh Puratan Bikrami Sambat luni-solar calendar by Tatkhalsa Foundation (tatkhalsa.in · info@tatkhalsa.in). Calculated from Sri Anandpur Sahib (IST) Udaya Sangrands, it tracks 12 Punjabi solar months, Sudhi/Vadhi lunar tithis, Puranmashi, Masya, Gurpurabs, Shaheedi Divases, Barsis, and primary scriptural references at pothi.tatkhalsa.in. Enable JavaScript for the interactive calendar and .ics export.
+        </p>
+      </main>
+    </noscript>
+  </body>
+</html>
