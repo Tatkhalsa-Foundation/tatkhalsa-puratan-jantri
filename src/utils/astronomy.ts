@@ -170,21 +170,6 @@ export const getAmritsarSunriseUtcMs = getAnandpurSahibSunriseUtcMs;
 export function getSiderealSunLongitudeDeg(jd: number): number {
     return normalizeDeg(getSunLongitudeDeg(jd) - getLahiriAyanamsaDeg(jd));
 }
-export function findSiderealSankrantiUtcMs(approxUtcMs: number, targetSiderealDeg: number): number {
-  const MS_PER_DAY = 86400000;
-  const normTarget = normalizeDeg(targetSiderealDeg);
-const signedDiff = (ms: number) => { const d = normalizeDeg(getSiderealSunLongitudeDeg(msToJulianDay(ms)) - normTarget); return d >= 180 ? d - 360 : d; };
-  const estMs = approxUtcMs - (signedDiff(approxUtcMs) / 0.9856) * MS_PER_DAY;
-let lo = estMs - 2 * MS_PER_DAY;
-let hi = estMs + 2 * MS_PER_DAY;
-while (signedDiff(lo) > 0) lo -= 2 * MS_PER_DAY;
-while (signedDiff(hi) < 0) hi += 2 * MS_PER_DAY;
-for (let i = 0; i < 50; i++) {
-const mid = (lo + hi) / 2;
-if (signedDiff(mid) < 0) lo = mid; else hi = mid;
-}
-return Math.round((lo + hi) / 2);
-}
 export function getUdayaSangrandIsoFromSankranti(sankrantiUtcMs: number): string {
 const IST_OFFSET_MS = 5.5 * 3600 * 1000;
 const MS_PER_DAY = 86400000;
@@ -514,7 +499,7 @@ export function getAmritsarSunsetUtcMs(isoDate: string): number {
       0.5 * varY * varY * Math.sin(4 * L0 * DEG2RAD) -
       1.25 * e * e * Math.sin(2 * Mrad));
 
-  const latRad = AMRITSAR_LAT * DEG2RAD;
+  const latRad = ANANDPUR_SAHIB_LAT * DEG2RAD;
   const zenithRad = 90.833 * DEG2RAD;
   const cosHa =
     Math.cos(zenithRad) / (Math.cos(latRad) * Math.cos(declRad)) -
@@ -522,7 +507,7 @@ export function getAmritsarSunsetUtcMs(isoDate: string): number {
   const clampedCosHa = Math.max(-1, Math.min(1, cosHa));
   const haDeg = Math.acos(clampedCosHa) * RAD2DEG;
 
-  const sunsetMinutesUtc = 720 - 4 * (AMRITSAR_LON - haDeg) - eqOfTimeMin;
+  const sunsetMinutesUtc = 720 - 4 * (ANANDPUR_SAHIB_LON - haDeg) - eqOfTimeMin;
   return Date.UTC(y, m - 1, d, 0, 0, 0) + Math.round(sunsetMinutesUtc * 60000);
 }
 
